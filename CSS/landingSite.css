@@ -1,0 +1,22 @@
+body {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    position: absolute;
+}
+
+#landingSiteCanvas {
+    background: black;
+    overflow: hidden;
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    display: block;
+    
+}
+
+#colonyPaint1, #colonyPaint2, #fsBackgroundEmpty, #fsBackgroundSoil, #playerTemp {
+    display: none;
+}
