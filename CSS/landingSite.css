@@ -3,20 +3,39 @@ body {
     padding: 0;
     width: 100%;
     height: 100%;
-    overflow: hidden;
-    position: absolute;
 }
 
 #landingSiteCanvas {
     background: black;
-    overflow: hidden;
-    position: absolute;
     width: 100%;
     height: 100%;
     display: block;
+    position: absolute;
+}
+
+#fsBackgroundEmpty, #playerImage {
+    display: none;
+}
+
+#grid {
+    height: 100vh;
+    width: 100vw;
+    margin: 0;
+    background-image:
+      repeating-linear-gradient(#ccc 0 1px, transparent 1px 100%),
+      repeating-linear-gradient(90deg, #ccc 0 1px, transparent 1px 100%);
+    background-size: 40px 40px;
+    position: absolute;
     
 }
 
-#colonyPaint1, #colonyPaint2, #fsBackgroundEmpty, #fsBackgroundSoil, #playerTemp {
-    display: none;
+#menu {
+    width: 40px;
+    height: 40px;
+    background: grey;
+    position: absolute;
+    background: url('../.././Images/menu-icon.png');
+    appearance: none;
+    border-radius: 15%;
+    border: 1px solid rgb(37, 44, 44);
 }
