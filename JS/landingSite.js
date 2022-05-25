@@ -7,19 +7,30 @@ let rightPressed = false;
 let leftPressed = false;
 let upPressed = false;
 let downPressed = false;
+let moving = false;
 
+const grid = document.getElementById('grid');
 const fsBackgroundEmpty = document.getElementById('fsBackgroundEmpty');
-const playerImage = new Image();
-playerImage.src = 'Images/playerV2.png';
+const playerImage = document.getElementById('playerImage');
+
+const menu = document.getElementById('menu');
+const blankOption = document.getElementById('blankOption');
+
+//Background
+function drawBackground() {
+    ctx.drawImage(fsBackgroundEmpty, 0, 0, canvas.width, canvas.height);
+}
 
 //Player
 const player = {
     health: 100,
     x: 50,
-    y: 50,
+    y: 40,
     width: 24,
     height: 40,
-    speed: 5
+    speed: 40,
+    playerLevel: 1,
+    gameLevel: 1
 }
 
 function drawPlayer() {
@@ -37,21 +48,20 @@ function drawPlayer() {
 
 //Health bar container object and draw function
 const healthBarCon = {
-    x: 10,
+    x: 50,
     y: 10,
     width: 200,
     height: 15
 }
 
 function drawHealthBar() {
-    
     ctx.strokeStyle = 'gold';
     ctx.fillStyle = 'black';
     ctx.beginPath();
     ctx.moveTo(healthBarCon.x, healthBarCon.y);
     ctx.lineTo(healthBarCon.x + healthBarCon.width, healthBarCon.y);
     ctx.lineTo(healthBarCon.x + healthBarCon.width, healthBarCon.y + healthBarCon.height);
-    ctx.lineTo(healthBarCon.x, healthBarCon.x + healthBarCon.height);
+    ctx.lineTo(healthBarCon.x, healthBarCon.y + healthBarCon.height);
     ctx.lineTo(healthBarCon.x, healthBarCon.y);
     ctx.fill();
     ctx.stroke();
@@ -67,36 +77,45 @@ function keyDownHandler(e) {
     if(e.key == "Right" || e.key == "ArrowRight") {
         rightPressed = true;
         player.x += player.speed;
+        moving = true;
     }
     else if(e.key == "Left" || e.key == "ArrowLeft") {
         leftPressed = true;
         player.x -= player.speed;
+        moving = true;
     }
     else if(e.key == 'Up' || e.key == 'ArrowUp') {
         upPressed = true;
         player.y -= player.speed;
+        moving = true;
     }
     else if(e.key == 'Down' || e.key == 'ArrowDown') {
         downPressed = true;
         player.y += player.speed;
+        moving = true;
     } 
 }
 
 function keyUpHandler(e) {
     if(e.key == "Right" || e.key == "ArrowRight") {
         rightPressed = false;
+        moving = false;
     }
     else if(e.key == "Left" || e.key == "ArrowLeft") {
         leftPressed = false;
+        moving = false;
     }
-    else if(e.key == 'Up' || e.key == 'UpArrow') {
+    else if(e.key == 'Up' || e.key == 'ArrowUp') {
         upPressed = false;
+        moving = false;
     }
     else if(e.key == 'Down' || e.key == 'ArrowDown') {
         downPressed = false;
+        moving = false;
     } 
 }
 
+//Enemies
 class Enemy {
     constructor() {
         this.health = 50;
@@ -135,8 +154,9 @@ function handleEnemies() {
         enemies[i].draw();
         }
     }
-    }
+}
 
+//Collission Detection
 function colDetect() {
     for(let i = 0; i < enemies.length; i++) {
     if(
@@ -152,9 +172,61 @@ function colDetect() {
     }
 }
 
-//Background
-function drawBackground() {
-    ctx.drawImage(fsBackgroundEmpty, 0, 0, canvas.width, canvas.height);
+//Grid to show player available spaces to move
+// -Using CSS grid
+if(!moving) {
+    grid.style.display = 'none';
+}
+
+/* -Using JS/Canvas grid
+let verticalLines = [];
+let horizontalLines = [];
+function createGrid() {
+    for(let i = 0; i < canvas.width; i += 40) {
+    verticalLines.push(i);
+    }
+    for(let k = 0; k < canvas.height; k += 40) {
+    horizontalLines.push(k);
+    }
+}
+createGrid();
+
+function drawGrid() {
+    for(let j = 0; j < verticalLines.length; j++) {
+    ctx.strokeStyle = 'grey';
+    ctx.beginPath();
+    ctx.moveTo(verticalLines[j], 0);
+    ctx.lineTo(verticalLines[j], canvas.height);
+    ctx.stroke()
+    }
+    for(let l = 0; l < horizontalLines.length; l++) {
+    ctx.strokeStyle = 'grey';
+    ctx.beginPath();
+    ctx.moveTo(0, verticalLines[l]);
+    ctx.lineTo(canvas.width, verticalLines[l]);
+    ctx.stroke()
+    }
+}
+drawGrid();
+*/
+
+//Listens for menu being clicked, saves values of player object
+menu.addEventListener('click', function() {
+    if(menu.value === 'Save Game') {
+        localStorage.setItem('playerInfo', JSON.stringify(player));
+        alert('Note: This game stores save data in the browser. If you clear your browser history, your game progress will be lost.');
+        menu.value = blankOption;
+    } else if(menu.value === 'Delete save data') {
+        localStorage.removeItem('playerInfo');
+        menu.value = blankOption;
+    }
+});
+
+//Access saved player info if it is present in local storage and set player object values to match saved info
+function getSavedInfo() {
+    if(localStorage.getItem('playerInfo') != null) {
+        player = JSON.parse(localStorage.getItem('playerInfo'));
+}
 }
 
 //Animation Loop
@@ -165,6 +237,9 @@ function animate() {
     handleEnemies();
     colDetect();
     drawHealthBar();
+    //if(moving) {
+    //drawGrid();
+    //}
     requestAnimationFrame(animate);
 }
 
