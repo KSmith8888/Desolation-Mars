@@ -39,3 +39,9 @@ body {
     border-radius: 15%;
     border: 1px solid rgb(37, 44, 44);
 }
+
+option {
+    border-bottom: 2px solid black;
+    padding: 20px;
+    background: rgb(211, 207, 207);
+}
