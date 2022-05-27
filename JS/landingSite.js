@@ -22,7 +22,7 @@ function drawBackground() {
 }
 
 //Player
-const player = {
+const player = JSON.parse(localStorage.getItem('playerInfo')) || {
     health: 100,
     x: 50,
     y: 40,
@@ -30,7 +30,8 @@ const player = {
     height: 40,
     speed: 40,
     playerLevel: 1,
-    gameLevel: 1
+    gameLevel: 1,
+    movement: 5
 }
 
 function drawPlayer() {
@@ -78,21 +79,33 @@ function keyDownHandler(e) {
         rightPressed = true;
         player.x += player.speed;
         moving = true;
+        if(player.movement > 0) {
+            player.movement -= 1;
+        }
     }
     else if(e.key == "Left" || e.key == "ArrowLeft") {
         leftPressed = true;
         player.x -= player.speed;
         moving = true;
+        if(player.movement > 0) {
+            player.movement -= 1;
+        }
     }
     else if(e.key == 'Up' || e.key == 'ArrowUp') {
         upPressed = true;
         player.y -= player.speed;
         moving = true;
+        if(player.movement > 0) {
+            player.movement -= 1;
+        }
     }
     else if(e.key == 'Down' || e.key == 'ArrowDown') {
         downPressed = true;
         player.y += player.speed;
         moving = true;
+        if(player.movement > 0) {
+            player.movement -= 1;
+        }
     } 
 }
 
@@ -115,6 +128,14 @@ function keyUpHandler(e) {
     } 
 }
 
+//Turns - Checks each loop to see if players movement property has reached zero and if it has, allows enemies to move before being reset
+function endPlayerTurn() {
+    if(player.movement === 0) {
+        enemyMovement();
+        player.movement = 5;
+    }
+}
+
 //Enemies
 class Enemy {
     constructor() {
@@ -131,30 +152,63 @@ class Enemy {
 }
 
 let enemies = [];
+let storedEnemies = [];
 
 function createEnemies() {
 for(let i = 0; i < 5; i++) {
     enemies.push(new Enemy());
+    storedEnemies = enemies;
+} 
+}
+
+function checkForSavedEnemies() {
+if(localStorage.getItem('enemyInfo') != null) { 
+    storedEnemies = JSON.parse(localStorage.getItem('enemyInfo'))
+    for(let i = 0; i < storedEnemies.length; i++) {
+        enemies.push(new Enemy());
+        enemies[i].health = storedEnemies[i].health;
+        enemies[i].x = storedEnemies[i].x;
+        enemies[i].y = storedEnemies[i].y;
+    }
+} else {
+    createEnemies();
 }
 }
-createEnemies();
+checkForSavedEnemies()
 
 function handleEnemies() {
     for(let i = 0; i < enemies.length; i++) {
-        if(enemies[i].x > canvas.width) {
+        if(enemies[i].x > canvas.width - enemies[i].width) {
             enemies[i].x = canvas.width - enemies[i].width;
         } else if(enemies[i].x < 0) {
             enemies[i].x = 0;
         } else if(enemies[i].y < 0) {
             enemies[i].y = 0;
-        } else if(enemies[i].y > canvas.height) {
+        } else if(enemies[i].y > canvas.height - enemies[i].height) {
             enemies[i].y = canvas.height - enemies[i].height;
         }
         if(enemies[i].health > 0) {
         enemies[i].draw();
+        storedEnemies = enemies;
         }
     }
 }
+
+function enemyMovement() {
+    for(let i = 0; i < enemies.length; i++) {
+    if(player.x > enemies[i].x) {
+        enemies[i].x += 80
+    } else {
+        enemies[i].x -= 80
+    }
+    if(player.y > enemies[i].y) {
+        enemies[i].y += 80
+    } else {
+        enemies[i].y -= 80
+    }
+}
+}
+
 
 //Collission Detection
 function colDetect() {
@@ -167,6 +221,7 @@ function colDetect() {
     ){
         if(player.health > 0) {    
         player.health -= 1;
+        localStorage.setItem('playerInfo', JSON.stringify(player));
         }
         }
     }
@@ -214,20 +269,18 @@ drawGrid();
 menu.addEventListener('click', function() {
     if(menu.value === 'Save Game') {
         localStorage.setItem('playerInfo', JSON.stringify(player));
+        localStorage.setItem('enemyInfo', JSON.stringify(storedEnemies));
         alert('Note: This game stores save data in the browser. If you clear your browser history, your game progress will be lost.');
         menu.value = blankOption;
     } else if(menu.value === 'Delete save data') {
         localStorage.removeItem('playerInfo');
+        localStorage.removeItem('enemyInfo');
+        menu.value = blankOption;
+    } else if(menu.value === 'Exit Game') {
+        location.href = './index.html';
         menu.value = blankOption;
     }
 });
-
-//Access saved player info if it is present in local storage and set player object values to match saved info
-function getSavedInfo() {
-    if(localStorage.getItem('playerInfo') != null) {
-        player = JSON.parse(localStorage.getItem('playerInfo'));
-}
-}
 
 //Animation Loop
 function animate() {
@@ -237,6 +290,7 @@ function animate() {
     handleEnemies();
     colDetect();
     drawHealthBar();
+    endPlayerTurn()
     //if(moving) {
     //drawGrid();
     //}
