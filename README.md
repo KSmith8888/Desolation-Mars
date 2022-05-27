@@ -1,8 +1,8 @@
-# Desolation-Mars
+# Desolation-Mars-2074
 
-A Javascript strategy/RPG, still under construction. 
+A JavaScript strategy/RPG, still under construction. 
 
-Current plan is a turn-based strategy game. Plot will focus on surviving on mars after crash landing on the surface and discovering that your former colony has been taken over. 
+Current plan is a turn-based strategy game. Plot will focus on surviving on mars after crash landing on the surface and discovering that your former colony has been taken over. It will be made entirely in vanilla JavaScript with canvas and use localStorage for saving. 
 
 Attribution:
 
