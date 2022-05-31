@@ -16,6 +16,11 @@ const playerImage = document.getElementById('playerImage');
 const menu = document.getElementById('menu');
 const blankOption = document.getElementById('blankOption');
 
+window.addEventListener('resize', function() {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+});
+
 //Background
 function drawBackground() {
     ctx.drawImage(fsBackgroundEmpty, 0, 0, canvas.width, canvas.height);
@@ -24,9 +29,9 @@ function drawBackground() {
 //Player
 const player = JSON.parse(localStorage.getItem('playerInfo')) || {
     health: 100,
-    x: 50,
+    x: 40,
     y: 40,
-    width: 24,
+    width: 40,
     height: 40,
     speed: 40,
     playerLevel: 1,
@@ -35,14 +40,15 @@ const player = JSON.parse(localStorage.getItem('playerInfo')) || {
 }
 
 function drawPlayer() {
-    if(player.x > canvas.width - player.width) {
-        player.x = canvas.width - player.width;
+    
+    if(player.x > verticalLines[verticalLines.length - 2]) {
+        player.x = verticalLines[verticalLines.length - 2];
     } else if(player.x < 0) {
         player.x = 0;
     } else if(player.y < 0) {
         player.y = 0;
-    } else if(player.y > canvas.height - player.height) {
-        player.y = canvas.height - player.height;
+    } else if(player.y > horizontalLines[horizontalLines.length - 2]) {
+        player.y = horizontalLines[horizontalLines.length - 2];
     }
     ctx.drawImage(playerImage, player.x, player.y, player.width, player.height);
 }
@@ -81,6 +87,7 @@ function keyDownHandler(e) {
         moving = true;
         if(player.movement > 0) {
             player.movement -= 1;
+            console.log(enemies)
         }
     }
     else if(e.key == "Left" || e.key == "ArrowLeft") {
@@ -128,9 +135,17 @@ function keyUpHandler(e) {
     } 
 }
 
-//Turns - Checks each loop to see if players movement property has reached zero and if it has, allows enemies to move before being reset
-function endPlayerTurn() {
-    if(player.movement === 0) {
+/*
+Turns 
+-When players movement property is above 0, makes grid visible
+-Once movement reaches 0, hides grid and allows enemies to move, then resets players movement property
+*/
+
+function turn() {
+    if(player.movement > 0) {
+        grid.style.display = 'grid';
+    } else {
+        grid.style.display = 'none';
         enemyMovement();
         player.movement = 5;
     }
@@ -140,12 +155,12 @@ function endPlayerTurn() {
 class Enemy {
     constructor() {
         this.health = 50;
-        this.width = 80; 
-        this.height = 50;
-        this.x = Math.floor(Math.random() * canvas.width);
-        this.y = Math.floor(Math.random() * canvas.height);
+        this.width = 40; 
+        this.height = 40;
+        this.x = (Math.floor(Math.random() * 20)) * 40;
+        this.y = (Math.floor(Math.random() * 20)) * 40;
         this.image = new Image();
-        this.image.src = 'Images/greenMage.png';
+        this.image.src = 'Images/greenMageV2.png';
     } draw() {
         ctx.drawImage(this.image, this.x, this.y, this.width, this.height);
     }
@@ -178,14 +193,14 @@ checkForSavedEnemies()
 
 function handleEnemies() {
     for(let i = 0; i < enemies.length; i++) {
-        if(enemies[i].x > canvas.width - enemies[i].width) {
-            enemies[i].x = canvas.width - enemies[i].width;
+        if(enemies[i].x > verticalLines[verticalLines.length - 2]) {
+            enemies[i].x = verticalLines[verticalLines.length - 2];
         } else if(enemies[i].x < 0) {
             enemies[i].x = 0;
         } else if(enemies[i].y < 0) {
             enemies[i].y = 0;
-        } else if(enemies[i].y > canvas.height - enemies[i].height) {
-            enemies[i].y = canvas.height - enemies[i].height;
+        } else if(enemies[i].y > horizontalLines[horizontalLines.length - 2]) {
+            enemies[i].y = horizontalLines[horizontalLines.length - 2];
         }
         if(enemies[i].health > 0) {
         enemies[i].draw();
@@ -197,18 +212,17 @@ function handleEnemies() {
 function enemyMovement() {
     for(let i = 0; i < enemies.length; i++) {
     if(player.x > enemies[i].x) {
-        enemies[i].x += 80
+        enemies[i].x += (Math.floor(Math.random() * 3) + 1) * 40;
     } else {
-        enemies[i].x -= 80
+        enemies[i].x -= (Math.floor(Math.random() * 3) + 1) * 40;
     }
     if(player.y > enemies[i].y) {
-        enemies[i].y += 80
+        enemies[i].y += (Math.floor(Math.random() * 3) + 1) * 40;
     } else {
-        enemies[i].y -= 80
+        enemies[i].y -= (Math.floor(Math.random() * 3) + 1) * 40;
     }
 }
 }
-
 
 //Collission Detection
 function colDetect() {
@@ -221,21 +235,19 @@ function colDetect() {
     ){
         if(player.health > 0) {    
         player.health -= 1;
-        localStorage.setItem('playerInfo', JSON.stringify(player));
+        ctx.font = '16px serif';
+        ctx.fillText('Ouch', player.x - 5, player.y - 10);
         }
         }
     }
 }
 
-//Grid to show player available spaces to move
-// -Using CSS grid
-if(!moving) {
-    grid.style.display = 'none';
-}
+//Create dynamic JS grid to control movement
+//Visible grid is CSS only and becomes visible during players turn
 
-/* -Using JS/Canvas grid
 let verticalLines = [];
 let horizontalLines = [];
+
 function createGrid() {
     for(let i = 0; i < canvas.width; i += 40) {
     verticalLines.push(i);
@@ -263,9 +275,14 @@ function drawGrid() {
     }
 }
 drawGrid();
-*/
 
-//Listens for menu being clicked, saves values of player object
+/*Menu-
+Listens for menu being clicked, based on selection-
+--Save game saves player object and enemy array info to localStorage
+--Delete save data removes items from localStorage
+--Restart level reloads current page
+--Exit game changes location to title screen
+*/
 menu.addEventListener('click', function() {
     if(menu.value === 'Save Game') {
         localStorage.setItem('playerInfo', JSON.stringify(player));
@@ -273,12 +290,14 @@ menu.addEventListener('click', function() {
         alert('Note: This game stores save data in the browser. If you clear your browser history, your game progress will be lost.');
         menu.value = blankOption;
     } else if(menu.value === 'Delete save data') {
-        localStorage.removeItem('playerInfo');
-        localStorage.removeItem('enemyInfo');
+        localStorage.clear();
         menu.value = blankOption;
     } else if(menu.value === 'Exit Game') {
         location.href = './index.html';
+        //menu.value = blankOption;
+    } else if(menu.value === 'Load save file') {
         menu.value = blankOption;
+        location.reload();
     }
 });
 
@@ -290,10 +309,7 @@ function animate() {
     handleEnemies();
     colDetect();
     drawHealthBar();
-    endPlayerTurn()
-    //if(moving) {
-    //drawGrid();
-    //}
+    turn();
     requestAnimationFrame(animate);
 }
 
