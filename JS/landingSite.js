@@ -8,6 +8,12 @@ let leftPressed = false;
 let upPressed = false;
 let downPressed = false;
 let moving = false;
+let tileSize = 30;
+let buildingsArray = [];
+let buildingCollideRight = false;
+let buildingCollideLeft = false;
+let buildingCollideUp = false;
+let buildingCollideDown = false;
 
 const grid = document.getElementById('grid');
 const fsBackgroundEmpty = document.getElementById('fsBackgroundEmpty');
@@ -29,11 +35,11 @@ function drawBackground() {
 //Player
 const player = JSON.parse(localStorage.getItem('playerInfo')) || {
     health: 100,
-    x: 40,
-    y: 40,
-    width: 40,
-    height: 40,
-    speed: 40,
+    x: 60,
+    y: 60,
+    width: 30,
+    height: 30,
+    speed: tileSize,
     playerLevel: 1,
     gameLevel: 1,
     movement: 5
@@ -83,36 +89,43 @@ document.addEventListener('keyup', keyUpHandler, false);
 function keyDownHandler(e) {
     if(e.key == "Right" || e.key == "ArrowRight") {
         rightPressed = true;
+        if(!buildingCollideRight) {
         player.x += player.speed;
         moving = true;
         if(player.movement > 0) {
             player.movement -= 1;
-            console.log(enemies)
         }
+    }
     }
     else if(e.key == "Left" || e.key == "ArrowLeft") {
         leftPressed = true;
+        if(!buildingCollideLeft) {
         player.x -= player.speed;
         moving = true;
         if(player.movement > 0) {
             player.movement -= 1;
         }
     }
+    }
     else if(e.key == 'Up' || e.key == 'ArrowUp') {
         upPressed = true;
+        if(!buildingCollideUp) {
         player.y -= player.speed;
         moving = true;
         if(player.movement > 0) {
             player.movement -= 1;
         }
     }
+    }
     else if(e.key == 'Down' || e.key == 'ArrowDown') {
         downPressed = true;
+        if(!buildingCollideDown) {
         player.y += player.speed;
         moving = true;
         if(player.movement > 0) {
             player.movement -= 1;
         }
+    }
     } 
 }
 
@@ -155,12 +168,12 @@ function turn() {
 class Enemy {
     constructor() {
         this.health = 50;
-        this.width = 40; 
-        this.height = 40;
-        this.x = (Math.floor(Math.random() * 20)) * 40;
-        this.y = (Math.floor(Math.random() * 20)) * 40;
+        this.width = 30; 
+        this.height = 30;
+        this.x = (Math.floor(Math.random() * 10)) * tileSize;
+        this.y = (Math.floor(Math.random() * 10)) * tileSize;
         this.image = new Image();
-        this.image.src = 'Images/greenMageV2.png';
+        this.image.src = 'Images/greenMageV3.png';
     } draw() {
         ctx.drawImage(this.image, this.x, this.y, this.width, this.height);
     }
@@ -212,20 +225,20 @@ function handleEnemies() {
 function enemyMovement() {
     for(let i = 0; i < enemies.length; i++) {
     if(player.x > enemies[i].x) {
-        enemies[i].x += (Math.floor(Math.random() * 3) + 1) * 40;
+        enemies[i].x += (Math.floor(Math.random() * 3) + 1) * tileSize;
     } else {
-        enemies[i].x -= (Math.floor(Math.random() * 3) + 1) * 40;
+        enemies[i].x -= (Math.floor(Math.random() * 3) + 1) * tileSize;
     }
     if(player.y > enemies[i].y) {
-        enemies[i].y += (Math.floor(Math.random() * 3) + 1) * 40;
+        enemies[i].y += (Math.floor(Math.random() * 3) + 1) * tileSize;
     } else {
-        enemies[i].y -= (Math.floor(Math.random() * 3) + 1) * 40;
+        enemies[i].y -= (Math.floor(Math.random() * 3) + 1) * tileSize;
     }
 }
 }
 
-//Collission Detection
-function colDetect() {
+//Enemy Collision Detection
+function enemyColDetect() {
     for(let i = 0; i < enemies.length; i++) {
     if(
         player.x < enemies[i].x + enemies[i].width && 
@@ -242,17 +255,17 @@ function colDetect() {
     }
 }
 
-//Create dynamic JS grid to control movement
+//Creates dynamic JS grid to control movement
 //Visible grid is CSS only and becomes visible during players turn
 
 let verticalLines = [];
 let horizontalLines = [];
 
 function createGrid() {
-    for(let i = 0; i < canvas.width; i += 40) {
+    for(let i = 0; i < canvas.width; i += tileSize) {
     verticalLines.push(i);
     }
-    for(let k = 0; k < canvas.height; k += 40) {
+    for(let k = 0; k < canvas.height; k += tileSize) {
     horizontalLines.push(k);
     }
 }
@@ -275,6 +288,82 @@ function drawGrid() {
     }
 }
 drawGrid();
+
+/*Buildings
+-Creates building objects and storesthem in an array
+-Collision detection to prevent player from moving into buildings
+*/
+
+const verticalBarrier1 = {
+    x: verticalLines[9],
+    y: horizontalLines[2],
+    width: tileSize,
+    height: tileSize * 4
+}
+buildingsArray.push(verticalBarrier1);
+const vertBarImage = new Image();
+vertBarImage.src = 'Images/verticalBarrier1.png';
+
+const horizontalBarrier1 = {
+    x: verticalLines[14],
+    y: horizontalLines[10],
+    width: tileSize * 2,
+    height: tileSize * 2
+}
+buildingsArray.push(horizontalBarrier1);
+const horBarImage = new Image();
+horBarImage.src = 'Images/horizontalBarrier1.png';
+
+const destroyedFort1 = {
+    x: verticalLines[15],
+    y: 0,
+    width: tileSize * 5,
+    height: tileSize * 6
+}
+buildingsArray.push(destroyedFort1);
+const destFortImage = new Image();
+destFortImage.src = 'Images/destroyedFort1.png';
+
+function drawBuildings() { 
+    ctx.drawImage(vertBarImage, verticalBarrier1.x, verticalBarrier1.y, verticalBarrier1.width, verticalBarrier1.height);
+    ctx.drawImage(horBarImage, horizontalBarrier1.x, horizontalBarrier1.y, horizontalBarrier1.width, horizontalBarrier1.height);
+    ctx.drawImage(destFortImage, destroyedFort1.x, destroyedFort1.y, destroyedFort1.width, destroyedFort1.height);
+}
+
+//Building Collision Detection
+function buildingColDetect() {
+    buildingCollideRight = false;
+    buildingCollideLeft = false;
+    buildingCollideUp = false;
+    buildingCollideDown = false;
+    for(let i = 0; i < buildingsArray.length; i++) {
+        if( 
+        player.x + player.width === buildingsArray[i].x &&
+        player.y < buildingsArray[i].y + buildingsArray[i].height &&
+        player.y + player.height > buildingsArray[i].y) {
+            buildingCollideRight = true;
+        }
+        if(
+        player.x === buildingsArray[i].x + buildingsArray[i].width &&
+        player.y < buildingsArray[i].y + buildingsArray[i].height &&
+        player.y + player.height > buildingsArray[i].y) {
+            buildingCollideLeft = true;
+        } 
+        if(
+        player.y === buildingsArray[i].y + buildingsArray[i].height &&
+        player.x >= buildingsArray[i].x &&
+        player.x < buildingsArray[i].x + buildingsArray[i].width) {
+            buildingCollideUp = true;
+        } 
+        if(
+        player.y + player.height === buildingsArray[i].y &&
+        player.x >= buildingsArray[i].x &&
+        player.x < buildingsArray[i].x + buildingsArray[i].width
+        ) {
+            buildingCollideDown = true;
+        }
+}
+}
 
 /*Menu-
 Listens for menu being clicked, based on selection-
@@ -305,9 +394,11 @@ menu.addEventListener('click', function() {
 function animate() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     drawBackground();
+    drawBuildings();
     drawPlayer();
     handleEnemies();
-    colDetect();
+    enemyColDetect();
+    buildingColDetect();
     drawHealthBar();
     turn();
     requestAnimationFrame(animate);
