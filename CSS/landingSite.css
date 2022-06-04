@@ -34,7 +34,7 @@ body {
     height: 40px;
     background: grey;
     position: absolute;
-    background: url('https://github.com/KSmith8888/Desolation-Mars-2074/blob/main/Images/menu-icon.png?raw=true');
+    background: url('../Images/menu-icon.png');
     appearance: none;
     border-radius: 15%;
     border: 1px solid rgb(37, 44, 44);
