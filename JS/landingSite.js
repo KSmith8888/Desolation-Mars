@@ -10,10 +10,10 @@ let downPressed = false;
 let moving = false;
 let tileSize = 30;
 let buildingsArray = [];
-let buildingCollideRight = false;
-let buildingCollideLeft = false;
-let buildingCollideUp = false;
-let buildingCollideDown = false;
+let solidCollideRight = false;
+let solidCollideLeft = false;
+let solidCollideUp = false;
+let solidCollideDown = false;
 
 const grid = document.getElementById('grid');
 const fsBackgroundEmpty = document.getElementById('fsBackgroundEmpty');
@@ -27,9 +27,100 @@ window.addEventListener('resize', function() {
     canvas.height = window.innerHeight;
 });
 
-//Background
+//Creates dynamic JS grid to control movement
+//Visible grid is CSS only and becomes visible during players turn
+
+let verticalLines = [];
+let horizontalLines = [];
+
+function createGrid() {
+    for(let i = 0; i < canvas.width; i += tileSize) {
+    verticalLines.push(i);
+    }
+    for(let k = 0; k < canvas.height; k += tileSize) {
+    horizontalLines.push(k);
+    }
+}
+createGrid();
+
+function drawGrid() {
+    for(let j = 0; j < verticalLines.length; j++) {
+    ctx.strokeStyle = 'grey';
+    ctx.beginPath();
+    ctx.moveTo(verticalLines[j], 0);
+    ctx.lineTo(verticalLines[j], canvas.height);
+    ctx.stroke()
+    }
+    for(let l = 0; l < horizontalLines.length; l++) {
+    ctx.strokeStyle = 'grey';
+    ctx.beginPath();
+    ctx.moveTo(0, verticalLines[l]);
+    ctx.lineTo(canvas.width, verticalLines[l]);
+    ctx.stroke()
+    }
+}
+drawGrid();
+
+/*
+Background
+Buildings
+-Creates building objects and storesthem in an array
+-Collision detection to prevent player from moving into buildings
+*/
+
+const verticalBarrier1 = {
+    x: verticalLines[9],
+    y: horizontalLines[2],
+    width: tileSize,
+    height: tileSize * 4
+}
+buildingsArray.push(verticalBarrier1);
+const vertBarImage = new Image();
+vertBarImage.src = 'Images/verticalBarrier1.png';
+
+const horizontalBarrier1 = {
+    x: verticalLines[14],
+    y: horizontalLines[10],
+    width: tileSize * 2,
+    height: tileSize * 2
+}
+buildingsArray.push(horizontalBarrier1);
+const horBarImage = new Image();
+horBarImage.src = 'Images/horizontalBarrier1.png';
+
+const destroyedFort1 = {
+    x: verticalLines[15],
+    y: 0,
+    width: tileSize * 5,
+    height: tileSize * 6
+}
+buildingsArray.push(destroyedFort1);
+const destFortImage = new Image();
+destFortImage.src = 'Images/destroyedFort1.png';
+
 function drawBackground() {
     ctx.drawImage(fsBackgroundEmpty, 0, 0, canvas.width, canvas.height);
+    ctx.drawImage(vertBarImage, verticalBarrier1.x, verticalBarrier1.y, verticalBarrier1.width, verticalBarrier1.height);
+    ctx.drawImage(horBarImage, horizontalBarrier1.x, horizontalBarrier1.y, horizontalBarrier1.width, horizontalBarrier1.height);
+    ctx.drawImage(destFortImage, destroyedFort1.x, destroyedFort1.y, destroyedFort1.width, destroyedFort1.height);
+}
+
+/*Items in the environment
+If player moves onto a tile that holds an item, that item is added to their inventory
+*/
+let backgroundItems = [
+    {name: 'potion', x: tileSize * 7, y: tileSize * 12, found: false},
+    {name: 'weapon', x: tileSize * 4, y: tileSize * 5, found: false}
+];
+
+function pickedUpItem() {
+    for(let i = 0; i < player.items.length; i++) {
+        if(player.items[i].found === true) {
+            delete player.items[i].x;
+            delete player.items[i].y;
+            delete player.items[i].found;
+        }
+    }
 }
 
 //Player
@@ -42,11 +133,11 @@ const player = JSON.parse(localStorage.getItem('playerInfo')) || {
     speed: tileSize,
     playerLevel: 1,
     gameLevel: 1,
-    movement: 5
+    movement: 5,
+    items: []
 }
 
 function drawPlayer() {
-    
     if(player.x > verticalLines[verticalLines.length - 2]) {
         player.x = verticalLines[verticalLines.length - 2];
     } else if(player.x < 0) {
@@ -61,7 +152,7 @@ function drawPlayer() {
 
 //Health bar container object and draw function
 const healthBarCon = {
-    x: 50,
+    x: 60,
     y: 10,
     width: 200,
     height: 15
@@ -89,7 +180,7 @@ document.addEventListener('keyup', keyUpHandler, false);
 function keyDownHandler(e) {
     if(e.key == "Right" || e.key == "ArrowRight") {
         rightPressed = true;
-        if(!buildingCollideRight) {
+        if(!solidCollideRight) {
         player.x += player.speed;
         moving = true;
         if(player.movement > 0) {
@@ -99,7 +190,7 @@ function keyDownHandler(e) {
     }
     else if(e.key == "Left" || e.key == "ArrowLeft") {
         leftPressed = true;
-        if(!buildingCollideLeft) {
+        if(!solidCollideLeft) {
         player.x -= player.speed;
         moving = true;
         if(player.movement > 0) {
@@ -109,7 +200,7 @@ function keyDownHandler(e) {
     }
     else if(e.key == 'Up' || e.key == 'ArrowUp') {
         upPressed = true;
-        if(!buildingCollideUp) {
+        if(!solidCollideUp) {
         player.y -= player.speed;
         moving = true;
         if(player.movement > 0) {
@@ -119,14 +210,24 @@ function keyDownHandler(e) {
     }
     else if(e.key == 'Down' || e.key == 'ArrowDown') {
         downPressed = true;
-        if(!buildingCollideDown) {
+        if(!solidCollideDown) {
         player.y += player.speed;
         moving = true;
         if(player.movement > 0) {
             player.movement -= 1;
         }
+        console.log(backgroundItems);
+        console.log(player.items)
     }
     } 
+    for(let i = 0; i < backgroundItems.length; i++) {
+        if(backgroundItems[i].x === player.x && backgroundItems[i].y === player.y && backgroundItems[i].found === false) {
+            backgroundItems[i].found = true;
+            player.items.push(backgroundItems[i]);
+            alert(`you picked up ${backgroundItems[i].name}`);
+            pickedUpItem();
+        }
+    }
 }
 
 function keyUpHandler(e) {
@@ -170,8 +271,8 @@ class Enemy {
         this.health = 50;
         this.width = 30; 
         this.height = 30;
-        this.x = (Math.floor(Math.random() * 10)) * tileSize;
-        this.y = (Math.floor(Math.random() * 10)) * tileSize;
+        this.x = (Math.floor(Math.random() * 20)) * tileSize;
+        this.y = (Math.floor(Math.random() * 20)) * tileSize;
         this.image = new Image();
         this.image.src = 'Images/greenMageV3.png';
     } draw() {
@@ -255,112 +356,37 @@ function enemyColDetect() {
     }
 }
 
-//Creates dynamic JS grid to control movement
-//Visible grid is CSS only and becomes visible during players turn
-
-let verticalLines = [];
-let horizontalLines = [];
-
-function createGrid() {
-    for(let i = 0; i < canvas.width; i += tileSize) {
-    verticalLines.push(i);
-    }
-    for(let k = 0; k < canvas.height; k += tileSize) {
-    horizontalLines.push(k);
-    }
-}
-createGrid();
-
-function drawGrid() {
-    for(let j = 0; j < verticalLines.length; j++) {
-    ctx.strokeStyle = 'grey';
-    ctx.beginPath();
-    ctx.moveTo(verticalLines[j], 0);
-    ctx.lineTo(verticalLines[j], canvas.height);
-    ctx.stroke()
-    }
-    for(let l = 0; l < horizontalLines.length; l++) {
-    ctx.strokeStyle = 'grey';
-    ctx.beginPath();
-    ctx.moveTo(0, verticalLines[l]);
-    ctx.lineTo(canvas.width, verticalLines[l]);
-    ctx.stroke()
-    }
-}
-drawGrid();
-
-/*Buildings
--Creates building objects and storesthem in an array
--Collision detection to prevent player from moving into buildings
-*/
-
-const verticalBarrier1 = {
-    x: verticalLines[9],
-    y: horizontalLines[2],
-    width: tileSize,
-    height: tileSize * 4
-}
-buildingsArray.push(verticalBarrier1);
-const vertBarImage = new Image();
-vertBarImage.src = 'Images/verticalBarrier1.png';
-
-const horizontalBarrier1 = {
-    x: verticalLines[14],
-    y: horizontalLines[10],
-    width: tileSize * 2,
-    height: tileSize * 2
-}
-buildingsArray.push(horizontalBarrier1);
-const horBarImage = new Image();
-horBarImage.src = 'Images/horizontalBarrier1.png';
-
-const destroyedFort1 = {
-    x: verticalLines[15],
-    y: 0,
-    width: tileSize * 5,
-    height: tileSize * 6
-}
-buildingsArray.push(destroyedFort1);
-const destFortImage = new Image();
-destFortImage.src = 'Images/destroyedFort1.png';
-
-function drawBuildings() { 
-    ctx.drawImage(vertBarImage, verticalBarrier1.x, verticalBarrier1.y, verticalBarrier1.width, verticalBarrier1.height);
-    ctx.drawImage(horBarImage, horizontalBarrier1.x, horizontalBarrier1.y, horizontalBarrier1.width, horizontalBarrier1.height);
-    ctx.drawImage(destFortImage, destroyedFort1.x, destroyedFort1.y, destroyedFort1.width, destroyedFort1.height);
-}
-
-//Building Collision Detection
-function buildingColDetect() {
-    buildingCollideRight = false;
-    buildingCollideLeft = false;
-    buildingCollideUp = false;
-    buildingCollideDown = false;
+//Solid Environmental Collision Detection
+function solidColDetect() {
+    solidCollideRight = false;
+    solidCollideLeft = false;
+    solidCollideUp = false;
+    solidCollideDown = false;
     for(let i = 0; i < buildingsArray.length; i++) {
         if( 
         player.x + player.width === buildingsArray[i].x &&
         player.y < buildingsArray[i].y + buildingsArray[i].height &&
         player.y + player.height > buildingsArray[i].y) {
-            buildingCollideRight = true;
+            solidCollideRight = true;
         }
         if(
         player.x === buildingsArray[i].x + buildingsArray[i].width &&
         player.y < buildingsArray[i].y + buildingsArray[i].height &&
         player.y + player.height > buildingsArray[i].y) {
-            buildingCollideLeft = true;
+            solidCollideLeft = true;
         } 
         if(
         player.y === buildingsArray[i].y + buildingsArray[i].height &&
         player.x >= buildingsArray[i].x &&
         player.x < buildingsArray[i].x + buildingsArray[i].width) {
-            buildingCollideUp = true;
+            solidCollideUp = true;
         } 
         if(
         player.y + player.height === buildingsArray[i].y &&
         player.x >= buildingsArray[i].x &&
         player.x < buildingsArray[i].x + buildingsArray[i].width
         ) {
-            buildingCollideDown = true;
+            solidCollideDown = true;
         }
 }
 }
@@ -382,8 +408,8 @@ menu.addEventListener('click', function() {
         localStorage.clear();
         menu.value = blankOption;
     } else if(menu.value === 'Exit Game') {
+        menu.value = blankOption;
         location.href = './index.html';
-        //menu.value = blankOption;
     } else if(menu.value === 'Load save file') {
         menu.value = blankOption;
         location.reload();
@@ -394,11 +420,10 @@ menu.addEventListener('click', function() {
 function animate() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     drawBackground();
-    drawBuildings();
     drawPlayer();
     handleEnemies();
     enemyColDetect();
-    buildingColDetect();
+    solidColDetect();
     drawHealthBar();
     turn();
     requestAnimationFrame(animate);
