@@ -7,13 +7,23 @@ let rightPressed = false;
 let leftPressed = false;
 let upPressed = false;
 let downPressed = false;
+
 let moving = false;
 let tileSize = 30;
 let buildingsArray = [];
+
+let enemies = [];
+let storedEnemies = [];
+
 let solidCollideRight = false;
 let solidCollideLeft = false;
 let solidCollideUp = false;
 let solidCollideDown = false;
+
+let verticalLines = [];
+let horizontalLines = [];
+
+let menuOpen = false;
 
 const grid = document.getElementById('grid');
 const fsBackgroundEmpty = document.getElementById('fsBackgroundEmpty');
@@ -22,6 +32,18 @@ const playerImage = document.getElementById('playerImage');
 const menu = document.getElementById('menu');
 const blankOption = document.getElementById('blankOption');
 
+const itemsMenu = document.getElementById('itemsMenu');
+const itemsCloseBtn = document.getElementById('itemsCloseBtn');
+/*const item1 = document.getElementById('item1');
+const item2 = document.getElementById('item2');
+const item3 = document.getElementById('item3');
+const item4 = document.getElementById('item4');
+const item5 = document.getElementById('item5');
+const item6 = document.getElementById('item6');
+const item7 = document.getElementById('item7');
+const item8 = document.getElementById('item8');
+const item9 = document.getElementById('item9');*/
+
 window.addEventListener('resize', function() {
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
@@ -29,9 +51,6 @@ window.addEventListener('resize', function() {
 
 //Creates dynamic JS grid to control movement
 //Visible grid is CSS only and becomes visible during players turn
-
-let verticalLines = [];
-let horizontalLines = [];
 
 function createGrid() {
     for(let i = 0; i < canvas.width; i += tileSize) {
@@ -43,7 +62,9 @@ function createGrid() {
 }
 createGrid();
 
-function drawGrid() {
+//Array of tile objects?
+
+/*function drawGrid() {
     for(let j = 0; j < verticalLines.length; j++) {
     ctx.strokeStyle = 'grey';
     ctx.beginPath();
@@ -59,7 +80,7 @@ function drawGrid() {
     ctx.stroke()
     }
 }
-drawGrid();
+drawGrid();*/
 
 /*
 Background
@@ -105,12 +126,26 @@ function drawBackground() {
     ctx.drawImage(destFortImage, destroyedFort1.x, destroyedFort1.y, destroyedFort1.width, destroyedFort1.height);
 }
 
+//Items Menu
+itemsMenu.style.display = 'none';
+
+function openedItemsMenu() {
+    itemsMenu.style.display = 'grid';
+    for(let i = 0; i < player.items.length; i++) {
+        document.getElementById('item' + (i + 1)).style.backgroundImage = `url('${player.items[i].background}')`;
+    }
+}
+
+itemsCloseBtn.addEventListener('click', function() {
+    itemsMenu.style.display = 'none';
+});
+
 /*Items in the environment
 If player moves onto a tile that holds an item, that item is added to their inventory
 */
 let backgroundItems = [
-    {name: 'potion', x: tileSize * 7, y: tileSize * 12, found: false},
-    {name: 'weapon', x: tileSize * 4, y: tileSize * 5, found: false}
+    {name: 'Medkit', background: 'Images/medkit.png', x: tileSize * 7, y: tileSize * 12, found: false},
+    {name: 'Blue Phaser', background: 'Images/bluePhaser.png', x: tileSize * 4, y: tileSize * 5, found: false}
 ];
 
 function pickedUpItem() {
@@ -130,6 +165,7 @@ const player = JSON.parse(localStorage.getItem('playerInfo')) || {
     y: 60,
     width: 30,
     height: 30,
+    damage: 1,
     speed: tileSize,
     playerLevel: 1,
     gameLevel: 1,
@@ -138,6 +174,7 @@ const player = JSON.parse(localStorage.getItem('playerInfo')) || {
 }
 
 function drawPlayer() {
+    //atBoundary = false;
     if(player.x > verticalLines[verticalLines.length - 2]) {
         player.x = verticalLines[verticalLines.length - 2];
     } else if(player.x < 0) {
@@ -180,44 +217,34 @@ document.addEventListener('keyup', keyUpHandler, false);
 function keyDownHandler(e) {
     if(e.key == "Right" || e.key == "ArrowRight") {
         rightPressed = true;
-        if(!solidCollideRight) {
+        if(!solidCollideRight && player.movement > 0) {
         player.x += player.speed;
         moving = true;
-        if(player.movement > 0) {
-            player.movement -= 1;
-        }
+        player.movement -= 1;
     }
     }
     else if(e.key == "Left" || e.key == "ArrowLeft") {
         leftPressed = true;
-        if(!solidCollideLeft) {
+        if(!solidCollideLeft && player.movement > 0) {
         player.x -= player.speed;
         moving = true;
-        if(player.movement > 0) {
-            player.movement -= 1;
-        }
+        player.movement -= 1;
     }
     }
     else if(e.key == 'Up' || e.key == 'ArrowUp') {
         upPressed = true;
-        if(!solidCollideUp) {
+        if(!solidCollideUp && player.movement > 0) {
         player.y -= player.speed;
         moving = true;
-        if(player.movement > 0) {
-            player.movement -= 1;
-        }
+        player.movement -= 1;
     }
     }
     else if(e.key == 'Down' || e.key == 'ArrowDown') {
         downPressed = true;
-        if(!solidCollideDown) {
+        if(!solidCollideDown && player.movement > 0) {
         player.y += player.speed;
         moving = true;
-        if(player.movement > 0) {
-            player.movement -= 1;
-        }
-        console.log(backgroundItems);
-        console.log(player.items)
+        player.movement -= 1;
     }
     } 
     for(let i = 0; i < backgroundItems.length; i++) {
@@ -269,8 +296,10 @@ function turn() {
 class Enemy {
     constructor() {
         this.health = 50;
+        this.defeated = false;
         this.width = 30; 
         this.height = 30;
+        this.damage = 1;
         this.x = (Math.floor(Math.random() * 20)) * tileSize;
         this.y = (Math.floor(Math.random() * 20)) * tileSize;
         this.image = new Image();
@@ -279,9 +308,6 @@ class Enemy {
         ctx.drawImage(this.image, this.x, this.y, this.width, this.height);
     }
 }
-
-let enemies = [];
-let storedEnemies = [];
 
 function createEnemies() {
 for(let i = 0; i < 5; i++) {
@@ -318,8 +344,10 @@ function handleEnemies() {
         }
         if(enemies[i].health > 0) {
         enemies[i].draw();
-        storedEnemies = enemies;
+        } else {
+        enemies[i].defeated = true;
         }
+        storedEnemies = enemies;
     }
 }
 
@@ -347,10 +375,9 @@ function enemyColDetect() {
     player.y < enemies[i].y + enemies[i].height &&
     player.y + player.height > enemies[i].y
     ){
-        if(player.health > 0) {    
-        player.health -= 1;
-        ctx.font = '16px serif';
-        ctx.fillText('Ouch', player.x - 5, player.y - 10);
+        if(player.health > 0 && enemies[i].defeated === false) {    
+        player.health -= enemies[i].damage;
+        enemies[i].health -= player.damage;
         }
         }
     }
@@ -399,6 +426,7 @@ Listens for menu being clicked, based on selection-
 --Exit game changes location to title screen
 */
 menu.addEventListener('click', function() {
+    menuOpen = true;
     if(menu.value === 'Save Game') {
         localStorage.setItem('playerInfo', JSON.stringify(player));
         localStorage.setItem('enemyInfo', JSON.stringify(storedEnemies));
@@ -413,18 +441,22 @@ menu.addEventListener('click', function() {
     } else if(menu.value === 'Load save file') {
         menu.value = blankOption;
         location.reload();
+    } else if(menu.value === 'Items') {
+        menu.value = blankOption;
+        openedItemsMenu();
     }
+    menuOpen = false;
 });
 
 //Animation Loop
 function animate() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     drawBackground();
+    drawHealthBar();
     drawPlayer();
     handleEnemies();
     enemyColDetect();
     solidColDetect();
-    drawHealthBar();
     turn();
     requestAnimationFrame(animate);
 }
