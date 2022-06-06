@@ -11,9 +11,10 @@ body {
     height: 100%;
     display: block;
     position: absolute;
+    z-index: 0;
 }
 
-#fsBackgroundEmpty, #playerImage {
+#playerImage, #fsBackgroundEmpty {
     display: none;
 }
 
@@ -30,7 +31,7 @@ body {
 }
 
 #menu {
-    width: 40px;
+    width: 42px;
     height: 40px;
     background: grey;
     position: absolute;
@@ -42,7 +43,44 @@ body {
 }
 
 option {
-    border-bottom: 2px solid black;
-    padding: 20px;
+    font-weight: bold;
     background: rgb(211, 207, 207);
+}
+
+#itemsMenu {
+    border: 3px solid rgb(90, 78, 9);
+    border-radius: 10%;
+    width: 160px;
+    height: 200px;
+    z-index: 2;
+    position: absolute;
+    background:rgb(175, 163, 163);
+    margin-left: 50px;
+}
+
+.itemsRow {
+    width: 120px;
+    height: 40px;
+    display: grid;
+    grid-template-columns: 33% 33% 33%;
+    grid-template-rows: 100%;
+}
+
+.items {
+    width: 30px;
+    height: 30px;
+    padding: 2px;
+    border: 1px solid black;
+    margin-top: 10px;
+    margin-left: 25px;
+    margin-right: 25px;
+    border-radius: 10%;
+    background:rgb(110, 100, 100);
+    background-repeat: no-repeat;
+}
+
+#itemsCloseBtn {
+    width: 50px;
+    height: 20px;
+    margin-left: 55px;
 }
