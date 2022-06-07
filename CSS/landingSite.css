@@ -48,13 +48,13 @@ option {
 }
 
 #itemsMenu {
-    border: 3px solid rgb(90, 78, 9);
+    border: 3px solid rgb(117, 20, 20);
     border-radius: 10%;
     width: 160px;
     height: 200px;
     z-index: 2;
     position: absolute;
-    background:rgb(175, 163, 163);
+    background:rgb(173, 157, 157);
     margin-left: 50px;
 }
 
@@ -75,8 +75,24 @@ option {
     margin-left: 25px;
     margin-right: 25px;
     border-radius: 10%;
-    background:rgb(110, 100, 100);
+    background:rgb(131, 120, 120);
     background-repeat: no-repeat;
+    z-index: 2;
+}
+
+.items:hover {
+    width: 110px;
+    height: 80px;
+    z-index: 3;
+    padding-top: 30px;
+} 
+
+.itemText {
+    display: none;
+}
+
+.items:hover .itemText {
+    display: contents;
 }
 
 #itemsCloseBtn {
