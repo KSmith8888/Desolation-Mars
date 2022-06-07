@@ -25,6 +25,8 @@ let horizontalLines = [];
 
 let menuOpen = false;
 
+//Set movement to row and column properties on player/enemies
+
 const grid = document.getElementById('grid');
 const fsBackgroundEmpty = document.getElementById('fsBackgroundEmpty');
 const playerImage = document.getElementById('playerImage');
@@ -34,7 +36,7 @@ const blankOption = document.getElementById('blankOption');
 
 const itemsMenu = document.getElementById('itemsMenu');
 const itemsCloseBtn = document.getElementById('itemsCloseBtn');
-/*const item1 = document.getElementById('item1');
+const item1 = document.getElementById('item1');
 const item2 = document.getElementById('item2');
 const item3 = document.getElementById('item3');
 const item4 = document.getElementById('item4');
@@ -42,7 +44,7 @@ const item5 = document.getElementById('item5');
 const item6 = document.getElementById('item6');
 const item7 = document.getElementById('item7');
 const item8 = document.getElementById('item8');
-const item9 = document.getElementById('item9');*/
+const item9 = document.getElementById('item9');
 
 window.addEventListener('resize', function() {
     canvas.width = window.innerWidth;
@@ -61,26 +63,6 @@ function createGrid() {
     }
 }
 createGrid();
-
-//Array of tile objects?
-
-/*function drawGrid() {
-    for(let j = 0; j < verticalLines.length; j++) {
-    ctx.strokeStyle = 'grey';
-    ctx.beginPath();
-    ctx.moveTo(verticalLines[j], 0);
-    ctx.lineTo(verticalLines[j], canvas.height);
-    ctx.stroke()
-    }
-    for(let l = 0; l < horizontalLines.length; l++) {
-    ctx.strokeStyle = 'grey';
-    ctx.beginPath();
-    ctx.moveTo(0, verticalLines[l]);
-    ctx.lineTo(canvas.width, verticalLines[l]);
-    ctx.stroke()
-    }
-}
-drawGrid();*/
 
 /*
 Background
@@ -133,30 +115,17 @@ function openedItemsMenu() {
     itemsMenu.style.display = 'grid';
     for(let i = 0; i < player.items.length; i++) {
         document.getElementById('item' + (i + 1)).style.backgroundImage = `url('${player.items[i].background}')`;
+        document.getElementById('item' + (i + 1) + 'Text').innerText = player.items[i].description;
     }
+    document.getElementById('item' + (player.items.length + 1)).style.backgroundImage = '';
+    document.getElementById('item' + (player.items.length + 1) + 'Text').innerText = '';
 }
 
 itemsCloseBtn.addEventListener('click', function() {
     itemsMenu.style.display = 'none';
 });
 
-/*Items in the environment
-If player moves onto a tile that holds an item, that item is added to their inventory
-*/
-let backgroundItems = [
-    {name: 'Medkit', background: 'Images/medkit.png', x: tileSize * 7, y: tileSize * 12, found: false},
-    {name: 'Blue Phaser', background: 'Images/bluePhaser.png', x: tileSize * 4, y: tileSize * 5, found: false}
-];
 
-function pickedUpItem() {
-    for(let i = 0; i < player.items.length; i++) {
-        if(player.items[i].found === true) {
-            delete player.items[i].x;
-            delete player.items[i].y;
-            delete player.items[i].found;
-        }
-    }
-}
 
 //Player
 const player = JSON.parse(localStorage.getItem('playerInfo')) || {
@@ -210,6 +179,80 @@ function drawHealthBar() {
     ctx.fillRect(healthBarCon.x + 2, healthBarCon.y + 2, player.health * 2 - 4, healthBarCon.height - 4);
 }
 
+/*Items in the environment
+If player moves onto a tile that holds an item, that item is added to their inventory
+*/
+let backgroundItems = [
+    {name: 'Medkit', background: 'Images/medkit.png', description: 'Medkit: Refills health by 50%', x: tileSize * 7, y: tileSize * 12, found: false},
+    {name: 'Blue Phaser', background: 'Images/bluePhaser.png',  description: 'Blue Phaser: Increases damage by 1 for current mission', x: tileSize * 4, y: tileSize * 5, found: false}
+];
+
+function pickedUpItem() {
+    for(let i = 0; i < player.items.length; i++) {
+        if(player.items[i].found === true) {
+            delete player.items[i].x;
+            delete player.items[i].y;
+            delete player.items[i].found;
+        }
+    }
+}
+
+function useItem(index) {
+    if(player.items[index].name === 'Medkit') {
+        player.health += 50;
+    } else if(player.items[index].name === 'Blue Phaser') {
+        player.damage += 1;
+    }
+    player.items.splice(index, 1);
+    openedItemsMenu();
+}
+
+item1.addEventListener('click', function() {
+    if(player.items[0] !== undefined) {
+    useItem(0);
+    }
+});
+item2.addEventListener('click', function() {
+    if(player.items[1] !== undefined) {
+    useItem(1);
+    }
+});
+item3.addEventListener('click', function() {
+    if(player.items[2] !== undefined) {
+    useItem(2);
+    }
+});
+item4.addEventListener('click', function() {
+    if(player.items[3] !== undefined) {
+    useItem(3);
+    }
+});
+item5.addEventListener('click', function() {
+    if(player.items[4] !== undefined) {
+    useItem(4);
+    }
+});
+item6.addEventListener('click', function() {
+    if(player.items[5] !== undefined) {
+    useItem(5);
+    }
+});
+item7.addEventListener('click', function() {
+    if(player.items[6] !== undefined) {
+    useItem(6);
+    }
+});
+item8.addEventListener('click', function() {
+    if(player.items[7] !== undefined) {
+    useItem(7);
+    }
+});
+item9.addEventListener('click', function() {
+    if(player.items[8] !== undefined) {
+    useItem(8);
+    }
+});
+
 //Key Events
 document.addEventListener('keydown', keyDownHandler, false);
 document.addEventListener('keyup', keyUpHandler, false);
@@ -221,6 +264,7 @@ function keyDownHandler(e) {
         player.x += player.speed;
         moving = true;
         player.movement -= 1;
+        console.log(player.items);
     }
     }
     else if(e.key == "Left" || e.key == "ArrowLeft") {
@@ -353,16 +397,16 @@ function handleEnemies() {
 
 function enemyMovement() {
     for(let i = 0; i < enemies.length; i++) {
-    if(player.x > enemies[i].x) {
-        enemies[i].x += (Math.floor(Math.random() * 3) + 1) * tileSize;
-    } else {
-        enemies[i].x -= (Math.floor(Math.random() * 3) + 1) * tileSize;
-    }
-    if(player.y > enemies[i].y) {
-        enemies[i].y += (Math.floor(Math.random() * 3) + 1) * tileSize;
-    } else {
-        enemies[i].y -= (Math.floor(Math.random() * 3) + 1) * tileSize;
-    }
+        if(player.x > enemies[i].x) {
+            enemies[i].x += (Math.floor(Math.random() * 3) + 1) * tileSize;
+        } else {
+            enemies[i].x -= (Math.floor(Math.random() * 3) + 1) * tileSize;
+        }
+        if(player.y > enemies[i].y) {
+            enemies[i].y += (Math.floor(Math.random() * 3) + 1) * tileSize;
+        } else {
+            enemies[i].y -= (Math.floor(Math.random() * 3) + 1) * tileSize;
+        }
 }
 }
 
