@@ -64,6 +64,25 @@ function createGrid() {
 }
 createGrid();
 
+let tiles = [];
+
+function createTiles() {
+    let k = 0;
+    for(let i = 0; i < horizontalLines.length; i++) {
+        for(let j = 0; j < verticalLines.length; j++) {
+            k += 1;
+            tiles.push(
+                {name: 'tile' + (k), 
+                x: verticalLines[j], 
+                y: horizontalLines[i],
+                row: (i + 1), column: (j + 1),
+                width: 30, height: 30,
+                solid: false});
+        }
+    }
+}
+createTiles();
+
 /*
 Background
 Buildings
@@ -125,8 +144,6 @@ itemsCloseBtn.addEventListener('click', function() {
     itemsMenu.style.display = 'none';
 });
 
-
-
 //Player
 const player = JSON.parse(localStorage.getItem('playerInfo')) || {
     health: 100,
@@ -135,7 +152,7 @@ const player = JSON.parse(localStorage.getItem('playerInfo')) || {
     width: 30,
     height: 30,
     damage: 1,
-    speed: tileSize,
+    speed: 30,
     playerLevel: 1,
     gameLevel: 1,
     movement: 5,
@@ -143,7 +160,6 @@ const player = JSON.parse(localStorage.getItem('playerInfo')) || {
 }
 
 function drawPlayer() {
-    //atBoundary = false;
     if(player.x > verticalLines[verticalLines.length - 2]) {
         player.x = verticalLines[verticalLines.length - 2];
     } else if(player.x < 0) {
@@ -253,6 +269,79 @@ item9.addEventListener('click', function() {
     }
 });
 
+/*Click Events
+When user clicks on a tile, conditional statement checks:
+-That the click was not in the top left of the screen where the menu is located
+-That the menu is not currently open and that the players movement property is positive
+
+Then a loop iterates through the array of tile objects with collision detection to determine which tile was clicked. 
+-It then compares the players current position to the clicked tile to determine if the player has a large enough movement property to get them to the clicked tile. 
+-If so, players coordinates are updated to the clicked tile and the movement property is updated.
+-Checks if the space the player landed on has an item on it.
+*/
+document.addEventListener('click', function(e) {
+    if(e.clientX < 60 && e.clientY < 60) {
+        console.log('Invalid Movement Area Clicked');
+    } else if(!menuOpen && player.movement > 0) { 
+    for(let i = 0; i < tiles.length; i++) {
+        if( 
+            e.clientX >= tiles[i].x
+            && e.clientX < tiles[i].x + tiles[i].width
+            && e.clientY >= tiles[i].y
+            && e.clientY < tiles[i].y + tiles[i].height
+            && tiles[i].solid === false) {
+                if(player.x < tiles[i].x && player.movement - ((tiles[i].x - player.x) / 30) >= 0) {
+                    if(player.y < tiles[i].y && player.movement - ((tiles[i].y - player.y) / 30) - ((tiles[i].x - player.x) / 30) >= 0) {
+                        player.movement -= (((tiles[i].y - player.y) / 30) + ((tiles[i].x - player.x) / 30));
+                        player.y = tiles[i].y;
+                        player.x = tiles[i].x;
+                    } else if(player.y > tiles[i].y && player.movement - ((player.y - tiles[i].y) / 30) - ((tiles[i].x - player.x) / 30) >= 0){
+                        player.movement -= (((player.y - tiles[i].y) / 30) + ((tiles[i].x - player.x) / 30));
+                        player.y = tiles[i].y;
+                        player.x = tiles[i].x;
+                    } else if(tiles[i].y === player.y) {
+                        player.movement -= ((tiles[i].x - player.x) / 30);
+                        player.y = tiles[i].y;
+                        player.x = tiles[i].x;
+                    }
+                } else if(player.x > tiles[i].x && player.movement - ((player.x - tiles[i].x) / 30) >= 0){
+                    if(player.y < tiles[i].y && player.movement - ((tiles[i].y - player.y) / 30) - ((player.x - tiles[i].x) / 30) >= 0) {
+                        player.movement -= (((tiles[i].y - player.y) / 30) + ((tiles[i].x - player.x) / 30));
+                        player.y = tiles[i].y;
+                        player.x = tiles[i].x;
+                    } else if(player.y > tiles[i].y && player.movement - ((player.y - tiles[i].y) / 30) - ((player.x - tiles[i].x) / 30) >= 0){
+                        player.movement -= (((player.y - tiles[i].y) / 30) + ((tiles[i].x - player.x) / 30));
+                        player.y = tiles[i].y;
+                        player.x = tiles[i].x;
+                    } else if(tiles[i].y === player.y) {
+                        player.movement -= ((player.x - tiles[i].x) / 30);
+                        player.y = tiles[i].y;
+                        player.x = tiles[i].x;
+                    }
+                } else if(player.x === tiles[i].x) {
+                    if(player.y < tiles[i].y && player.movement - ((tiles[i].y - player.y) / 30) - ((player.x - tiles[i].x) / 30) >= 0) {
+                        player.movement -= (((tiles[i].y - player.y) / 30) + ((tiles[i].x - player.x) / 30));
+                        player.y = tiles[i].y;
+                        player.x = tiles[i].x;
+                    } else if(player.y > tiles[i].y && player.movement - ((player.y - tiles[i].y) / 30) - ((player.x - tiles[i].x) / 30) >= 0){
+                        player.movement -= (((player.y - tiles[i].y) / 30) + ((tiles[i].x - player.x) / 30));
+                        player.y = tiles[i].y;
+                        player.x = tiles[i].x;
+                    }
+                }
+        }
+    } 
+}
+for(let i = 0; i < backgroundItems.length; i++) {
+    if(backgroundItems[i].x === player.x && backgroundItems[i].y === player.y && backgroundItems[i].found === false) {
+        backgroundItems[i].found = true;
+        player.items.push(backgroundItems[i]);
+        alert(`you picked up ${backgroundItems[i].name}`);
+        pickedUpItem();
+    }
+}
+});
+
 //Key Events
 document.addEventListener('keydown', keyDownHandler, false);
 document.addEventListener('keyup', keyUpHandler, false);
@@ -264,7 +353,6 @@ function keyDownHandler(e) {
         player.x += player.speed;
         moving = true;
         player.movement -= 1;
-        console.log(player.items);
     }
     }
     else if(e.key == "Left" || e.key == "ArrowLeft") {
@@ -461,6 +549,20 @@ function solidColDetect() {
         }
 }
 }
+
+function isTileUnderBuilding() {
+    for(let i = 0; i < tiles.length; i++) {
+        for(let j = 0; i < buildingsArray.length; i++) {
+            if(tiles[i].x < buildingsArray[j].x + buildingsArray[j].width && 
+                tiles[i].x + tiles[i].width > buildingsArray[j].x &&
+                tiles[i].y < buildingsArray[j].y + buildingsArray[j].height &&
+                tiles[i].y + tiles[i].height > buildingsArray[j].y) {
+                    tiles[i].solid = true;
+                }
+        }
+    }
+}
+isTileUnderBuilding();
 
 /*Menu-
 Listens for menu being clicked, based on selection-
