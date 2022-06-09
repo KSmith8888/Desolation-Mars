@@ -30,23 +30,6 @@ body {
     z-index: 1;
 }
 
-#menu {
-    width: 42px;
-    height: 40px;
-    background: grey;
-    position: absolute;
-    background: url('../Images/menu-icon.png');
-    appearance: none;
-    border-radius: 15%;
-    border: 1px solid rgb(37, 44, 44);
-    z-index: 2;
-}
-
-option {
-    font-weight: bold;
-    background: rgb(211, 207, 207);
-}
-
 #itemsMenu {
     border: 3px solid rgb(117, 20, 20);
     border-radius: 10%;
@@ -80,7 +63,7 @@ option {
     z-index: 2;
 }
 
-.items:hover {
+.items:hover, .items:focus {
     width: 110px;
     height: 80px;
     z-index: 3;
@@ -91,7 +74,7 @@ option {
     display: none;
 }
 
-.items:hover .itemText {
+.items:hover .itemText, .items:focus .itemText {
     display: contents;
 }
 
@@ -99,4 +82,46 @@ option {
     width: 50px;
     height: 20px;
     margin-left: 55px;
+}
+
+#fullMenu {
+    position: absolute;
+    width: 300px;
+    height: 450px;
+    margin-left: 35%;
+    margin-top: 5%;
+    border: 3px solid rgb(117, 20, 20);
+    background:rgb(131, 120, 120);
+    z-index: 3;
+    border-radius: 10%;
+    padding-top: 20px;
+}
+
+#fullMenu button {
+    width: 75px;
+    height: 40px;
+    background:rgb(173, 157, 157);
+    margin-left: 35%;
+    border-radius: 10%;
+}
+
+#fullMenu:hover button {
+    cursor: pointer;
+}
+
+#fullMenu:focus button{
+    background: red;
+}
+
+#menuAltBtn {
+    height: 30px;
+    width: 30px;
+    background-image: url('../Images/newMenu.png');
+    z-index: 3;
+    position: absolute;
+    border-radius: 20%;
+}
+
+#menuAltBtn:hover {
+    cursor: pointer;
 }
