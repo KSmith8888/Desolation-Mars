@@ -25,16 +25,13 @@ let horizontalLines = [];
 
 let menuOpen = false;
 
-//Set movement to row and column properties on player/enemies
-
 const grid = document.getElementById('grid');
 const fsBackgroundEmpty = document.getElementById('fsBackgroundEmpty');
 const playerImage = document.getElementById('playerImage');
 
-const menu = document.getElementById('menu');
-const blankOption = document.getElementById('blankOption');
-
+const menuAltBtn = document.getElementById('menuAltBtn');
 const itemsMenu = document.getElementById('itemsMenu');
+itemsMenu.style.display = 'none';
 const itemsCloseBtn = document.getElementById('itemsCloseBtn');
 const item1 = document.getElementById('item1');
 const item2 = document.getElementById('item2');
@@ -45,6 +42,15 @@ const item6 = document.getElementById('item6');
 const item7 = document.getElementById('item7');
 const item8 = document.getElementById('item8');
 const item9 = document.getElementById('item9');
+
+const fullMenu = document.getElementById('fullMenu');
+fullMenu.style.display = 'none';
+const itemsMenuBtn = document.getElementById('itemsMenuBtn');
+const saveGameBtn = document.getElementById('saveGameBtn');
+const loadFileBtn = document.getElementById('loadFileBtn');
+const deleteDataBtn = document.getElementById('deleteDataBtn');
+const exitGameBtn = document.getElementById('exitGameBtn');   
+const closeMenuBtn = document.getElementById('closeMenuBtn');
 
 window.addEventListener('resize', function() {
     canvas.width = window.innerWidth;
@@ -128,8 +134,6 @@ function drawBackground() {
 }
 
 //Items Menu
-itemsMenu.style.display = 'none';
-
 function openedItemsMenu() {
     itemsMenu.style.display = 'grid';
     for(let i = 0; i < player.items.length; i++) {
@@ -174,7 +178,7 @@ function drawPlayer() {
 
 //Health bar container object and draw function
 const healthBarCon = {
-    x: 60,
+    x: 40,
     y: 10,
     width: 200,
     height: 15
@@ -280,7 +284,7 @@ Then a loop iterates through the array of tile objects with collision detection 
 -Checks if the space the player landed on has an item on it.
 */
 document.addEventListener('click', function(e) {
-    if(e.clientX < 60 && e.clientY < 60) {
+    if(e.clientX < 30 && e.clientY < 30) {
         console.log('Invalid Movement Area Clicked');
     } else if(!menuOpen && player.movement > 0) { 
     for(let i = 0; i < tiles.length; i++) {
@@ -306,11 +310,11 @@ document.addEventListener('click', function(e) {
                     }
                 } else if(player.x > tiles[i].x && player.movement - ((player.x - tiles[i].x) / 30) >= 0){
                     if(player.y < tiles[i].y && player.movement - ((tiles[i].y - player.y) / 30) - ((player.x - tiles[i].x) / 30) >= 0) {
-                        player.movement -= (((tiles[i].y - player.y) / 30) + ((tiles[i].x - player.x) / 30));
+                        player.movement -= (((tiles[i].y - player.y) / 30) - ((tiles[i].x - player.x) / 30));
                         player.y = tiles[i].y;
                         player.x = tiles[i].x;
                     } else if(player.y > tiles[i].y && player.movement - ((player.y - tiles[i].y) / 30) - ((player.x - tiles[i].x) / 30) >= 0){
-                        player.movement -= (((player.y - tiles[i].y) / 30) + ((tiles[i].x - player.x) / 30));
+                        player.movement -= (((player.y - tiles[i].y) / 30) - ((tiles[i].x - player.x) / 30));
                         player.y = tiles[i].y;
                         player.x = tiles[i].x;
                     } else if(tiles[i].y === player.y) {
@@ -378,7 +382,10 @@ function keyDownHandler(e) {
         moving = true;
         player.movement -= 1;
     }
-    } 
+    } else if(e.key == 'p') {
+        fullMenu.style.display = 'grid';
+        menuOpen = true;
+    }
     for(let i = 0; i < backgroundItems.length; i++) {
         if(backgroundItems[i].x === player.x && backgroundItems[i].y === player.y && backgroundItems[i].found === false) {
             backgroundItems[i].found = true;
@@ -552,45 +559,58 @@ function solidColDetect() {
 
 function isTileUnderBuilding() {
     for(let i = 0; i < tiles.length; i++) {
-        for(let j = 0; i < buildingsArray.length; i++) {
-            if(tiles[i].x < buildingsArray[j].x + buildingsArray[j].width && 
+        for(let j = 0; j < buildingsArray.length; j++) {
+            if(
+                tiles[i].x < buildingsArray[j].x + buildingsArray[j].width && 
                 tiles[i].x + tiles[i].width > buildingsArray[j].x &&
                 tiles[i].y < buildingsArray[j].y + buildingsArray[j].height &&
-                tiles[i].y + tiles[i].height > buildingsArray[j].y) {
-                    tiles[i].solid = true;
-                }
+                tiles[i].y + tiles[i].height > buildingsArray[j].y
+            ) {
+                tiles[i].solid = true;
+            }  
         }
     }
 }
 isTileUnderBuilding();
+console.log(tiles)
 
 /*Menu-
-Listens for menu being clicked, based on selection-
+Listens for p key being pressed, based on selection-
+--Items opens the items menu
 --Save game saves player object and enemy array info to localStorage
 --Delete save data removes items from localStorage
---Restart level reloads current page
+--Load file reloads current page
 --Exit game changes location to title screen
 */
-menu.addEventListener('click', function() {
+menuAltBtn.addEventListener('click', function() {
+    fullMenu.style.display = 'grid';
     menuOpen = true;
-    if(menu.value === 'Save Game') {
-        localStorage.setItem('playerInfo', JSON.stringify(player));
-        localStorage.setItem('enemyInfo', JSON.stringify(storedEnemies));
-        alert('Note: This game stores save data in the browser. If you clear your browser history, your game progress will be lost.');
-        menu.value = blankOption;
-    } else if(menu.value === 'Delete save data') {
-        localStorage.clear();
-        menu.value = blankOption;
-    } else if(menu.value === 'Exit Game') {
-        menu.value = blankOption;
-        location.href = './index.html';
-    } else if(menu.value === 'Load save file') {
-        menu.value = blankOption;
-        location.reload();
-    } else if(menu.value === 'Items') {
-        menu.value = blankOption;
-        openedItemsMenu();
-    }
+});
+            
+itemsMenuBtn.addEventListener('click', function() {
+    openedItemsMenu();
+});
+
+saveGameBtn.addEventListener('click', function() {
+    localStorage.setItem('playerInfo', JSON.stringify(player));
+    localStorage.setItem('enemyInfo', JSON.stringify(storedEnemies));
+    alert('Note: This game stores save data in the browser. If you clear your browser history, your game progress will be lost.');
+});
+
+loadFileBtn.addEventListener('click', function() {
+    location.reload();
+});
+
+deleteDataBtn.addEventListener('click', function() {
+    localStorage.clear();
+});
+
+exitGameBtn.addEventListener('click', function() {
+    location.href = './index.html';
+});
+
+closeMenuBtn.addEventListener('click', function() {
+    fullMenu.style.display = 'none';
     menuOpen = false;
 });
 
