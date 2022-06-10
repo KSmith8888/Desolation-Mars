@@ -12,35 +12,36 @@
     <img src="Images/playerV4.png" id="playerImage" alt="">
     <img src="Images/fsBackgroundEmpty.jpg" id="fsBackgroundEmpty" alt="">
     <div id="container">
+        <div id="menuAltBtn"></div>
         <canvas id="landingSiteCanvas">This page uses the HTML canvas element to display content. Please use a modern browser or turn on javascript to access the content.</canvas>
-        <select id="menu">
-            <option id="blankOption"></option>
-            <option id="itemsOption">Items</option>
-            <option id="saveOption">Save Game</option>
-            <option id="restartOption">Load save file</option>
-            <option id="deleteOption">Delete save data</option>
-            <option id="exitOption">Exit Game</option>
-        </select>
-        <div id="itemsMenu">
-            <div class="itemsRow">
-                <div id="item1" class="items"><p id='item1Text' class="itemText"></p></div>
-                <div id="item2" class="items"><p id='item2Text' class="itemText"></p></div>
-                <div id="item3" class="items"><p id='item3Text' class="itemText"></p></div>
-            </div>
-            <div class="itemsRow">
-                <div id="item4" class="items"><p id='item4Text' class="itemText"></p></div>
-                <div id="item5" class="items"><p id='item5Text' class="itemText"></p></div>
-                <div id="item6" class="items"><p id='item6Text' class="itemText"></p></div>
-            </div>
-            <div class="itemsRow">
-                <div id="item7" class="items"><p id='item7Text' class="itemText"></p></div>
-                <div id="item8" class="items"><p id='item8Text' class="itemText"></p></div>
-                <div id="item9" class="items"><p id='item9Text' class="itemText"></p></div>
-            </div>
-            <button id='itemsCloseBtn'>Close</button>
+        <div id="fullMenu">
+            <button id='itemsMenuBtn'>Items</button>
+            <button id="saveGameBtn">Save Game</button>
+            <button id="loadFileBtn">Load save file</button>
+            <button id="deleteDataBtn">Delete save data</button>
+            <button id="exitGameBtn">Exit Game</button>
+            <button id="closeMenuBtn">Close</button>
+            <div id="itemsMenu">
+                <div class="itemsRow">
+                    <div id="item1" class="items" tabindex="0"><p id='item1Text' class="itemText"></p></div>
+                    <div id="item2" class="items" tabindex="0"><p id='item2Text' class="itemText"></p></div>
+                    <div id="item3" class="items" tabindex="0"><p id='item3Text' class="itemText"></p></div>
+                </div>
+                <div class="itemsRow">
+                    <div id="item4" class="items" tabindex="0"><p id='item4Text' class="itemText"></p></div>
+                    <div id="item5" class="items" tabindex="0"><p id='item5Text' class="itemText"></p></div>
+                    <div id="item6" class="items" tabindex="0"><p id='item6Text' class="itemText"></p></div>
+                </div>
+                <div class="itemsRow">
+                    <div id="item7" class="items" tabindex="0"><p id='item7Text' class="itemText"></p></div>
+                    <div id="item8" class="items" tabindex="0"><p id='item8Text' class="itemText"></p></div>
+                    <div id="item9" class="items" tabindex="0"><p id='item9Text' class="itemText"></p></div>
+                </div>
+                <button id='itemsCloseBtn'>Close</button>
         </div>
-        <div id='grid'></div>
     </div>
+    <div id='grid'></div>
+  </div>
     <script src="JS/landingSite.js"></script>
 </body>
 </html>
