@@ -6,32 +6,35 @@ body {
     background-position: 50% 25%;
     background-repeat: no-repeat;
     text-align: center;
-    
 }
 
 #header {
     font-family: arial;
     grid-column: 2/2;
     grid-row: 2/2;
+    background:rgb(94, 19, 19);
+    border: 2px solid black;
+    color: rgb(163, 154, 154);
+    border-radius: 5%;
 }
 
 #container {
     grid-template-columns: 40vw 20vw 40vw;
-    grid-template-rows: 30vh 15vh 5vh 5vh 5vh 40vh;
+    grid-template-rows: 30vh 20vh 5vh 5vh 5vh 35vh;
     display: grid;
 }
 
-#newGameLink {
+#startGameBtn {
     grid-column: 2/2;
     grid-row: 3/3;
 }
 
-#continueGameLink  {
+#continueGameBtn  {
     grid-column: 2/2;
     grid-row: 4/4;
 }
 
-#optionsLink {
+#optionsBtn {
     grid-column: 2/2;
     grid-row: 5/5;
 }
@@ -42,4 +45,6 @@ button {
     border-radius: 5%;
     background: rgb(94, 19, 19);
     color: lightcoral;
+    margin-left: 20%;
+    cursor: pointer;
 }
