@@ -22,12 +22,20 @@ let solidCollideDown = false;
 
 let verticalLines = [];
 let horizontalLines = [];
+let tiles = [];
 
 let menuOpen = false;
+let playerTurn = true;
+let enemyTurn = false;
+
+let mouseX = 0;
+let mouseY = 0;
+let playerX = 0;
+let playerY = 0;
 
 const grid = document.getElementById('grid');
-const fsBackgroundEmpty = document.getElementById('fsBackgroundEmpty');
-const playerImage = document.getElementById('playerImage');
+const playerImage = new Image();
+playerImage.src = 'Images/playerV4.png';
 
 const menuAltBtn = document.getElementById('menuAltBtn');
 const itemsMenu = document.getElementById('itemsMenu');
@@ -46,6 +54,9 @@ const item9 = document.getElementById('item9');
 const fullMenu = document.getElementById('fullMenu');
 fullMenu.style.display = 'none';
 const itemsMenuBtn = document.getElementById('itemsMenuBtn');
+const mapInfoBtn = document.getElementById('mapInfoBtn');
+const objectiveBtn = document.getElementById('objectiveBtn');
+const endTurnBtn = document.getElementById('endTurnBtn');
 const saveGameBtn = document.getElementById('saveGameBtn');
 const loadFileBtn = document.getElementById('loadFileBtn');
 const deleteDataBtn = document.getElementById('deleteDataBtn');
@@ -69,8 +80,6 @@ function createGrid() {
     }
 }
 createGrid();
-
-let tiles = [];
 
 function createTiles() {
     let k = 0;
@@ -126,8 +135,7 @@ buildingsArray.push(destroyedFort1);
 const destFortImage = new Image();
 destFortImage.src = 'Images/destroyedFort1.png';
 
-function drawBackground() {
-    ctx.drawImage(fsBackgroundEmpty, 0, 0, canvas.width, canvas.height);
+function drawBuildings() {
     ctx.drawImage(vertBarImage, verticalBarrier1.x, verticalBarrier1.y, verticalBarrier1.width, verticalBarrier1.height);
     ctx.drawImage(horBarImage, horizontalBarrier1.x, horizontalBarrier1.y, horizontalBarrier1.width, horizontalBarrier1.height);
     ctx.drawImage(destFortImage, destroyedFort1.x, destroyedFort1.y, destroyedFort1.width, destroyedFort1.height);
@@ -227,6 +235,60 @@ function useItem(index) {
     openedItemsMenu();
 }
 
+item1.addEventListener('keydown', function(e) {
+    if(e.key == 'i' && player.items[0] !== undefined) {
+    useItem(0);
+    }
+});
+
+item2.addEventListener('keydown', function(e) {
+    if(e.key == 'i' && player.items[1] !== undefined) {
+    useItem(1);
+    }
+});
+
+item3.addEventListener('keydown', function(e) {
+    if(e.key == 'i' && player.items[2] !== undefined) {
+    useItem(2);
+    }
+});
+
+item4.addEventListener('keydown', function(e) {
+    if(e.key == 'i' && player.items[3] !== undefined) {
+    useItem(3);
+    }
+});
+
+item5.addEventListener('keydown', function(e) {
+    if(e.key == 'i' && player.items[4] !== undefined) {
+    useItem(4);
+    }
+});
+
+item6.addEventListener('keydown', function(e) {
+    if(e.key == 'i' && player.items[5] !== undefined) {
+    useItem(5);
+    }
+});
+
+item7.addEventListener('keydown', function(e) {
+    if(e.key == 'i' && player.items[6] !== undefined) {
+    useItem(6);
+    }
+});
+
+item8.addEventListener('keydown', function(e) {
+    if(e.key == 'i' && player.items[7] !== undefined) {
+    useItem(7);
+    }
+});
+
+item9.addEventListener('keydown', function(e) {
+    if(e.key == 'i' && player.items[8] !== undefined) {
+    useItem(8);
+    }
+});
+
 item1.addEventListener('click', function() {
     if(player.items[0] !== undefined) {
     useItem(0);
@@ -285,7 +347,7 @@ Then a loop iterates through the array of tile objects with collision detection 
 */
 document.addEventListener('click', function(e) {
     if(e.clientX < 30 && e.clientY < 30) {
-        console.log('Invalid Movement Area Clicked');
+        console.log('Invalid Movement Area Clicked - Menu');
     } else if(!menuOpen && player.movement > 0) { 
     for(let i = 0; i < tiles.length; i++) {
         if( 
@@ -332,7 +394,7 @@ document.addEventListener('click', function(e) {
                         player.y = tiles[i].y;
                         player.x = tiles[i].x;
                     }
-                }
+                } 
         }
     } 
 }
@@ -351,35 +413,31 @@ document.addEventListener('keydown', keyDownHandler, false);
 document.addEventListener('keyup', keyUpHandler, false);
 
 function keyDownHandler(e) {
-    if(e.key == "Right" || e.key == "ArrowRight") {
+    if(e.key == "Right" || e.key == "ArrowRight" || e.key == 'd') {
         rightPressed = true;
         if(!solidCollideRight && player.movement > 0) {
         player.x += player.speed;
-        moving = true;
         player.movement -= 1;
     }
     }
-    else if(e.key == "Left" || e.key == "ArrowLeft") {
+    else if(e.key == "Left" || e.key == "ArrowLeft" || e.key == 'a') {
         leftPressed = true;
         if(!solidCollideLeft && player.movement > 0) {
         player.x -= player.speed;
-        moving = true;
         player.movement -= 1;
     }
     }
-    else if(e.key == 'Up' || e.key == 'ArrowUp') {
+    else if(e.key == 'Up' || e.key == 'ArrowUp' || e.key == 'w') {
         upPressed = true;
         if(!solidCollideUp && player.movement > 0) {
         player.y -= player.speed;
-        moving = true;
         player.movement -= 1;
     }
     }
-    else if(e.key == 'Down' || e.key == 'ArrowDown') {
+    else if(e.key == 'Down' || e.key == 'ArrowDown' || e.key == 's') {
         downPressed = true;
         if(!solidCollideDown && player.movement > 0) {
         player.y += player.speed;
-        moving = true;
         player.movement -= 1;
     }
     } else if(e.key == 'p') {
@@ -397,21 +455,17 @@ function keyDownHandler(e) {
 }
 
 function keyUpHandler(e) {
-    if(e.key == "Right" || e.key == "ArrowRight") {
+    if(e.key == "Right" || e.key == "ArrowRight" || e.key == 'd') {
         rightPressed = false;
-        moving = false;
     }
-    else if(e.key == "Left" || e.key == "ArrowLeft") {
+    else if(e.key == "Left" || e.key == "ArrowLeft" || e.key == 'a') {
         leftPressed = false;
-        moving = false;
     }
-    else if(e.key == 'Up' || e.key == 'ArrowUp') {
+    else if(e.key == 'Up' || e.key == 'ArrowUp' || e.key == 'w') {
         upPressed = false;
-        moving = false;
     }
-    else if(e.key == 'Down' || e.key == 'ArrowDown') {
+    else if(e.key == 'Down' || e.key == 'ArrowDown' || e.key == 's') {
         downPressed = false;
-        moving = false;
     } 
 }
 
@@ -572,7 +626,6 @@ function isTileUnderBuilding() {
     }
 }
 isTileUnderBuilding();
-console.log(tiles)
 
 /*Menu-
 Listens for p key being pressed, based on selection-
@@ -617,7 +670,7 @@ closeMenuBtn.addEventListener('click', function() {
 //Animation Loop
 function animate() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-    drawBackground();
+    drawBuildings();
     drawHealthBar();
     drawPlayer();
     handleEnemies();
