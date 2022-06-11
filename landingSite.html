@@ -9,19 +9,29 @@
     <title>Landing Site</title>
 </head> 
 <body>
-    <img src="Images/playerV4.png" id="playerImage" alt="">
     <img src="Images/fsBackgroundEmpty.jpg" id="fsBackgroundEmpty" alt="">
     <div id="container">
-        <div id="menuAltBtn"></div>
-        <canvas id="landingSiteCanvas">This page uses the HTML canvas element to display content. Please use a modern browser or turn on javascript to access the content.</canvas>
-        <div id="fullMenu">
-            <button id='itemsMenuBtn'>Items</button>
-            <button id="saveGameBtn">Save Game</button>
-            <button id="loadFileBtn">Load save file</button>
-            <button id="deleteDataBtn">Delete save data</button>
-            <button id="exitGameBtn">Exit Game</button>
+        <button id="menuAltBtn"></button>
+        <canvas id="landingSiteCanvas" autofocus>This page uses the HTML canvas element to display content. Please use a modern browser or turn on javascript to access the content.</canvas>
+        <menu id="fullMenu">
+            <div class="menuRow">
+              <button id='itemsMenuBtn'>Items</button>
+              <button id="endTurnBtn">End Turn</button>
+            </div>
+            <div class="menuRow">
+                <button id="mapInfoBtn">Map Info</button>
+                <button id="objectiveBtn">Objective/ Stats</button>
+            </div>
+            <div class="menuRow">
+              <button id="saveGameBtn">Save Game</button>
+              <button id="loadFileBtn">Load save file</button>
+            </div>
+            <div class="menuRow">
+              <button id="deleteDataBtn">Delete save data</button>
+              <button id="exitGameBtn">Exit Game</button>
+            </div>
             <button id="closeMenuBtn">Close</button>
-            <div id="itemsMenu">
+            <menu id="itemsMenu">
                 <div class="itemsRow">
                     <div id="item1" class="items" tabindex="0"><p id='item1Text' class="itemText"></p></div>
                     <div id="item2" class="items" tabindex="0"><p id='item2Text' class="itemText"></p></div>
@@ -38,10 +48,10 @@
                     <div id="item9" class="items" tabindex="0"><p id='item9Text' class="itemText"></p></div>
                 </div>
                 <button id='itemsCloseBtn'>Close</button>
-        </div>
+              </menu>
+            </menu>
+      <div id='grid'></div>
     </div>
-    <div id='grid'></div>
-  </div>
     <script src="JS/landingSite.js"></script>
 </body>
 </html>
