@@ -6,16 +6,19 @@ body {
 }
 
 #landingSiteCanvas {
-    background: black;
     width: 100%;
     height: 100%;
     display: block;
     position: absolute;
-    z-index: 0;
+    z-index: 1;
 }
 
-#playerImage, #fsBackgroundEmpty {
-    display: none;
+#fsBackgroundEmpty {
+    position: absolute;
+    height: 100%;
+    width: 100%;
+    z-index: 0;
+    display: grid;
 }
 
 #grid {
@@ -27,18 +30,18 @@ body {
       repeating-linear-gradient(90deg, rgb(61, 48, 48) 0 1px, transparent 1px 100%);
     background-size: 30px 30px;
     position: absolute;
-    z-index: 1;
+    z-index: 2;
 }
 
 #itemsMenu {
     border: 3px solid rgb(117, 20, 20);
     border-radius: 10%;
-    width: 160px;
+    width: 150px;
     height: 200px;
-    z-index: 2;
+    z-index: 3;
     position: absolute;
     background:rgb(173, 157, 157);
-    margin-left: 50px;
+    margin-left: 55px;
 }
 
 .itemsRow {
@@ -55,33 +58,46 @@ body {
     padding: 2px;
     border: 1px solid black;
     margin-top: 10px;
-    margin-left: 25px;
-    margin-right: 25px;
     border-radius: 10%;
     background:rgb(131, 120, 120);
     background-repeat: no-repeat;
-    z-index: 2;
+    z-index: 3;
 }
 
 .items:hover, .items:focus {
     width: 110px;
     height: 80px;
-    z-index: 3;
+    z-index: 4;
     padding-top: 30px;
 } 
+
+.items:hover .itemText, .items:focus .itemText {
+    display: contents;
+    width: 110px;
+    height: 80px;
+    z-index: 4;
+    padding-top: 30px;
+}
+
+
+#item1Text:hover, #item2Text:hover, #item1Text:focus, #item2Text:focus {
+    display: contents;
+    width: 110px;
+    height: 80px;
+    z-index: 4;
+    padding-top: 30px;
+}
 
 .itemText {
     display: none;
 }
 
-.items:hover .itemText, .items:focus .itemText {
-    display: contents;
-}
-
 #itemsCloseBtn {
     width: 50px;
     height: 20px;
-    margin-left: 55px;
+    margin-left: 22%;
+    background:rgb(173, 157, 157);
+    border-radius: 15%;
 }
 
 #fullMenu {
@@ -97,11 +113,27 @@ body {
     padding-top: 20px;
 }
 
-#fullMenu button {
+.menuRow {
+    display: grid;
+    width: 200px;
+    height: 50px;
+    grid-template-columns: 50% 50%;
+    grid-template-rows: 100%;
+    margin-left: 15%;
+}
+
+.menuRow button {
+    width: 75px;
+    height: 45px;
+    background:rgb(173, 157, 157);
+    border-radius: 10%;
+}
+
+#closeMenuBtn {
     width: 75px;
     height: 40px;
     background:rgb(173, 157, 157);
-    margin-left: 35%;
+    margin-left: 30%;
     border-radius: 10%;
 }
 
@@ -109,13 +141,9 @@ body {
     cursor: pointer;
 }
 
-#fullMenu:focus button{
-    background: red;
-}
-
 #menuAltBtn {
-    height: 30px;
-    width: 30px;
+    height: 33px;
+    width: 33px;
     background-image: url('../Images/newMenu.png');
     z-index: 3;
     position: absolute;
