@@ -12,16 +12,20 @@ body {
     font-family: arial;
     grid-column: 2/2;
     grid-row: 2/2;
-    background:rgb(94, 19, 19);
+    background: rgb(63, 1, 1);
     border: 2px solid black;
     color: rgb(163, 154, 154);
     border-radius: 5%;
+    width: 225px;
+    height: 80px;
 }
 
 #container {
-    grid-template-columns: 40vw 20vw 40vw;
-    grid-template-rows: 30vh 20vh 5vh 5vh 5vh 35vh;
+    grid-template-columns: 35vw 30vw 35vw;
+    grid-template-rows: 25vh 25vh 5vh 5vh 5vh 35vh;
     display: grid;
+    align-items: center;
+    justify-items: center;
 }
 
 #startGameBtn {
@@ -34,7 +38,12 @@ body {
     grid-row: 4/4;
 }
 
-#optionsBtn {
+#gameInfoBtn {
+    grid-column: 2/2;
+    grid-row: 5/5;
+}
+
+#gameInfoLink {
     grid-column: 2/2;
     grid-row: 5/5;
 }
@@ -43,8 +52,7 @@ button {
     width: 150px;
     height: 25px;
     border-radius: 5%;
-    background: rgb(94, 19, 19);
+    background: rgb(63, 1, 1);
     color: lightcoral;
-    margin-left: 20%;
     cursor: pointer;
 }
