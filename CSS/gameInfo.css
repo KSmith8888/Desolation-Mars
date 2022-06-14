@@ -18,3 +18,9 @@ li {
     padding-left: 2%;
     margin: 3% 25% 0 3%;
 }
+
+noscript {
+    color:rgb(63, 1, 1);
+    font-size: 36px;
+    background: white;
+}
