@@ -56,3 +56,11 @@ button {
     color: lightcoral;
     cursor: pointer;
 }
+
+noscript {
+    color:rgb(63, 1, 1);
+    font-size: 36px;
+    grid-row: 6/6;
+    grid-column: 2/2;
+    background: white;
+}
