@@ -6,7 +6,7 @@ body {
 }
 
 #container {
-    background-image: url('../Images/fsBackgroundEmpty.png');
+    background-image: url('../Images/fsBackgroundEmpty.jpg');
     height: 100%;
     width: 100%;
     z-index: 0;
