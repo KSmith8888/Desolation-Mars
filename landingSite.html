@@ -9,7 +9,6 @@
     <title>Landing Site</title>
 </head> 
 <body>
-    <img src="Images/fsBackgroundEmpty.jpg" id="fsBackgroundEmpty" alt="">
     <div id="container">
         <button id="menuAltBtn"></button>
         <canvas id="landingSiteCanvas" autofocus>This page uses the HTML canvas element to display content. Please use a modern browser or turn on javascript to access the content.</canvas>
@@ -33,23 +32,25 @@
             <button id="closeMenuBtn">Close</button>
             <menu id="itemsMenu">
                 <div class="itemsRow">
-                    <div id="item1" class="items" tabindex="0"><p id='item1Text' class="itemText"></p></div>
-                    <div id="item2" class="items" tabindex="0"><p id='item2Text' class="itemText"></p></div>
-                    <div id="item3" class="items" tabindex="0"><p id='item3Text' class="itemText"></p></div>
+                    <button id="item1" class="items"><p id='item1Text' class="itemText"></p></button>
+                    <button id="item2" class="items"><p id='item2Text' class="itemText"></p></button>
+                    <button id="item3" class="items"><p id='item3Text' class="itemText"></p></button>
                 </div>
                 <div class="itemsRow">
-                    <div id="item4" class="items" tabindex="0"><p id='item4Text' class="itemText"></p></div>
-                    <div id="item5" class="items" tabindex="0"><p id='item5Text' class="itemText"></p></div>
-                    <div id="item6" class="items" tabindex="0"><p id='item6Text' class="itemText"></p></div>
+                    <button id="item4" class="items"><p id='item4Text' class="itemText"></p></button>
+                    <button id="item5" class="items"><p id='item5Text' class="itemText"></p></button>
+                    <button id="item6" class="items"><p id='item6Text' class="itemText"></p></button>
                 </div>
                 <div class="itemsRow">
-                    <div id="item7" class="items" tabindex="0"><p id='item7Text' class="itemText"></p></div>
-                    <div id="item8" class="items" tabindex="0"><p id='item8Text' class="itemText"></p></div>
-                    <div id="item9" class="items" tabindex="0"><p id='item9Text' class="itemText"></p></div>
+                    <button id="item7" class="items"><p id='item7Text' class="itemText"></p></button>
+                    <button id="item8" class="items"><p id='item8Text' class="itemText"></p></button>
+                    <button id="item9" class="items"><p id='item9Text' class="itemText"></p></button>
                 </div>
                 <button id='itemsCloseBtn'>Close</button>
-              </menu>
             </menu>
+        </menu>
+        <div id="objStatDetails"><button id="objStatCloseBtn">Close</button></div>
+        <div id="mapDetails"><button id="mapDetailsCloseBtn">Close</button></div>
       <div id='grid'></div>
     </div>
     <script src="JS/landingSite.js"></script>
