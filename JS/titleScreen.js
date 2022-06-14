@@ -1,34 +1,24 @@
 const startGameBtn = document.getElementById('startGameBtn');
 const continueGameBtn = document.getElementById('continueGameBtn');
-const optionsBtn = document.getElementById('optionsBtn');
+const gameInfoBtn = document.getElementById('gameInfoBtn');
 let savedInfo = {};
 
 //Start new game button sends user to level 1
-startGameBtn.addEventListener('keydown', function(e) {
-    if(e.key == 'enter') {
-        location.href = './landingSite.html';
-    }
-});
 
 startGameBtn.addEventListener('click', function() {
-    location.href = './landingSite.html';
+    if(localStorage.getItem('playerInfo') != null) { 
+        if(window.confirm('You have save data for this game, if you start a new game your previous save file will be deleted. Are you sure you want to delete your save file and start a new game?')) {
+        localStorage.clear();
+        location.href = './landingSite.html';
+        }
+    } else {
+    location.href = './intro.html';
+    }
 });
 
 /*
 Continue game button accesses saved player info if it is present in local storage, sets player object values to match saved info and sends user to correct level
 */
-continueGameBtn.addEventListener('keydown', function(e) {
-    if(e.key == 'enter') {
-        if(localStorage.getItem('playerInfo') != null) { 
-            savedInfo = JSON.parse(localStorage.getItem('playerInfo'));
-            if(savedInfo.gameLevel === 1) {
-                location.href = './landingSite.html';
-            }
-        } else {
-            alert('No save data found, please start a new game.');
-        }
-    }
-});
 
 continueGameBtn.addEventListener('click', function() {
 if(localStorage.getItem('playerInfo') != null) { 
