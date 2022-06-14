@@ -138,7 +138,7 @@ body {
     border-radius: 10%;
 }
 
-#objStatDetails, #mapDetails {
+/*#objStatDetails, #mapDetails {
     width: 275px;
     height: 300px;
     border: 3px solid rgb(117, 20, 20);
@@ -156,7 +156,7 @@ body {
     background:rgb(173, 157, 157);
     z-index: 4;
     position: absolute;
-}
+}*/
 
 #closeMenuBtn {
     width: 75px;
