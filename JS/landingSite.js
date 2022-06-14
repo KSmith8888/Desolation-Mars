@@ -55,7 +55,14 @@ const fullMenu = document.getElementById('fullMenu');
 fullMenu.style.display = 'none';
 const itemsMenuBtn = document.getElementById('itemsMenuBtn');
 const mapInfoBtn = document.getElementById('mapInfoBtn');
+const mapDetails = document.getElementById('mapDetails');
+mapDetails.style.display = 'none';
+const mapDetailsCloseBtn = document.getElementById('mapDetailsCloseBtn');
 const objectiveBtn = document.getElementById('objectiveBtn');
+const objStatDetails = document.getElementById('objStatDetails');
+objStatDetails.style.display = 'none';
+const objStatCloseBtn = document.getElementById('objStatCloseBtn');
+objStatCloseBtn.style.display = 'none';
 const endTurnBtn = document.getElementById('endTurnBtn');
 const saveGameBtn = document.getElementById('saveGameBtn');
 const loadFileBtn = document.getElementById('loadFileBtn');
@@ -234,60 +241,6 @@ function useItem(index) {
     player.items.splice(index, 1);
     openedItemsMenu();
 }
-
-item1.addEventListener('keydown', function(e) {
-    if(e.key == 'i' && player.items[0] !== undefined) {
-    useItem(0);
-    }
-});
-
-item2.addEventListener('keydown', function(e) {
-    if(e.key == 'i' && player.items[1] !== undefined) {
-    useItem(1);
-    }
-});
-
-item3.addEventListener('keydown', function(e) {
-    if(e.key == 'i' && player.items[2] !== undefined) {
-    useItem(2);
-    }
-});
-
-item4.addEventListener('keydown', function(e) {
-    if(e.key == 'i' && player.items[3] !== undefined) {
-    useItem(3);
-    }
-});
-
-item5.addEventListener('keydown', function(e) {
-    if(e.key == 'i' && player.items[4] !== undefined) {
-    useItem(4);
-    }
-});
-
-item6.addEventListener('keydown', function(e) {
-    if(e.key == 'i' && player.items[5] !== undefined) {
-    useItem(5);
-    }
-});
-
-item7.addEventListener('keydown', function(e) {
-    if(e.key == 'i' && player.items[6] !== undefined) {
-    useItem(6);
-    }
-});
-
-item8.addEventListener('keydown', function(e) {
-    if(e.key == 'i' && player.items[7] !== undefined) {
-    useItem(7);
-    }
-});
-
-item9.addEventListener('keydown', function(e) {
-    if(e.key == 'i' && player.items[8] !== undefined) {
-    useItem(8);
-    }
-});
 
 item1.addEventListener('click', function() {
     if(player.items[0] !== undefined) {
@@ -644,10 +597,17 @@ itemsMenuBtn.addEventListener('click', function() {
     openedItemsMenu();
 });
 
+mapInfoBtn.addEventListener('click', function() {
+    alert('Enemies remaining:', enemies.length)
+});
+
+objectiveBtn.addEventListener('click', function() {
+    alert('Objective: Defeat all enemies on the board.');
+});
+
 saveGameBtn.addEventListener('click', function() {
     localStorage.setItem('playerInfo', JSON.stringify(player));
     localStorage.setItem('enemyInfo', JSON.stringify(storedEnemies));
-    alert('Note: This game stores save data in the browser. If you clear your browser history, your game progress will be lost.');
 });
 
 loadFileBtn.addEventListener('click', function() {
