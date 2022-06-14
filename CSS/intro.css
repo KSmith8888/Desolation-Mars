@@ -1,0 +1,36 @@
+body {
+    margin: 0;
+    padding: 0;
+    background: black;
+    color: green;
+}
+
+#intro {
+    border: 5px solid green;
+    margin: 5% 15%;
+    padding: 20px;
+}
+
+#transmission {
+    border: 5px solid green;
+    margin: 5% 15%;
+    padding: 20px;
+}
+
+#arrowRight {
+    background-image: url('../Images/greenRightArrow.png');
+    width: 90px;
+    height: 60px;
+    color: black;
+}
+
+.arrowContainer {
+    margin: 5% 45%;
+}
+
+#arrowRight2 {
+    background-image: url('../Images/greenRightArrow.png');
+    width: 90px;
+    height: 60px;
+    color: black;
+}
