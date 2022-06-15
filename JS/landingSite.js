@@ -15,6 +15,9 @@ let buildingsArray = [];
 let enemies = [];
 let storedEnemies = [];
 
+let battle = false;
+let whichEnemyAttacking = 0;
+
 let solidCollideRight = false;
 let solidCollideLeft = false;
 let solidCollideUp = false;
@@ -27,11 +30,6 @@ let tiles = [];
 let menuOpen = false;
 let playerTurn = true;
 let enemyTurn = false;
-
-let mouseX = 0;
-let mouseY = 0;
-let playerX = 0;
-let playerY = 0;
 
 const grid = document.getElementById('grid');
 const playerImage = new Image();
@@ -170,7 +168,7 @@ const player = JSON.parse(localStorage.getItem('playerInfo')) || {
     y: 60,
     width: 30,
     height: 30,
-    damage: 1,
+    damage: 10,
     speed: 30,
     playerLevel: 1,
     gameLevel: 1,
@@ -301,7 +299,7 @@ Then a loop iterates through the array of tile objects with collision detection 
 document.addEventListener('click', function(e) {
     if(e.clientX < 30 && e.clientY < 30) {
         console.log('Invalid Movement Area Clicked - Menu');
-    } else if(!menuOpen && player.movement > 0) { 
+    } else if(!menuOpen && player.movement > 0 && !battle) { 
     for(let i = 0; i < tiles.length; i++) {
         if( 
             e.clientX >= tiles[i].x
@@ -368,32 +366,32 @@ document.addEventListener('keyup', keyUpHandler, false);
 function keyDownHandler(e) {
     if(e.key == "Right" || e.key == "ArrowRight" || e.key == 'd') {
         rightPressed = true;
-        if(!solidCollideRight && player.movement > 0) {
+        if(!solidCollideRight && player.movement > 0 && !battle) {
         player.x += player.speed;
         player.movement -= 1;
     }
     }
     else if(e.key == "Left" || e.key == "ArrowLeft" || e.key == 'a') {
         leftPressed = true;
-        if(!solidCollideLeft && player.movement > 0) {
+        if(!solidCollideLeft && player.movement > 0 && !battle) {
         player.x -= player.speed;
         player.movement -= 1;
     }
     }
     else if(e.key == 'Up' || e.key == 'ArrowUp' || e.key == 'w') {
         upPressed = true;
-        if(!solidCollideUp && player.movement > 0) {
+        if(!solidCollideUp && player.movement > 0 && !battle) {
         player.y -= player.speed;
         player.movement -= 1;
     }
     }
     else if(e.key == 'Down' || e.key == 'ArrowDown' || e.key == 's') {
         downPressed = true;
-        if(!solidCollideDown && player.movement > 0) {
+        if(!solidCollideDown && player.movement > 0 && !battle) {
         player.y += player.speed;
         player.movement -= 1;
     }
-    } else if(e.key == 'p') {
+    } else if(e.key == 'p' && !battle) {
         fullMenu.style.display = 'grid';
         menuOpen = true;
     }
@@ -445,7 +443,8 @@ class Enemy {
         this.defeated = false;
         this.width = 30; 
         this.height = 30;
-        this.damage = 1;
+        this.damage = 10;
+        this.battle = false;
         this.x = (Math.floor(Math.random() * 20)) * tileSize;
         this.y = (Math.floor(Math.random() * 20)) * tileSize;
         this.image = new Image();
@@ -475,7 +474,59 @@ if(localStorage.getItem('enemyInfo') != null) {
     createEnemies();
 }
 }
-checkForSavedEnemies()
+checkForSavedEnemies();
+
+//Enemy Healthbar
+function drawEnemyHealthBar(enemyIndex) {
+    ctx.strokeStyle = 'gold';
+    ctx.fillStyle = 'black';
+    ctx.beginPath();
+    ctx.moveTo(enemies[enemyIndex].x - 15, enemies[enemyIndex].y - 13);
+    ctx.lineTo(enemies[enemyIndex].x + 50, enemies[enemyIndex].y - 13);
+    ctx.lineTo(enemies[enemyIndex].x + 50, enemies[enemyIndex].y - 5);
+    ctx.lineTo(enemies[enemyIndex].x - 15, enemies[enemyIndex].y - 5);
+    ctx.lineTo(enemies[enemyIndex].x - 15, enemies[enemyIndex].y - 13);
+    ctx.fill();
+    ctx.stroke();
+    ctx.fillStyle = 'red';
+    ctx.fillRect(enemies[enemyIndex].x - 13, enemies[enemyIndex].y - 11, enemies[enemyIndex].health, 6);
+}
+
+
+/*Battle Mechanics
+When collision detection is set off between the player and an enemy, the battle property of that enemy is set to true. The enemyAttack and playerAttack functions go back and forth as long as both the enemy and player have health properties above 0. While the battle is active, the player cannot move or open the menu and collision detection is off.
+*/
+
+function playerAttack(enemyIndex) {
+    enemies[enemyIndex].health -= player.damage;
+    if(enemies[enemyIndex].health > 0 && player.health > 0) {
+    setTimeout(function() {
+        enemyAttack(enemyIndex);
+    }, 2000);
+} else {
+    battle = false;
+}
+}
+
+function enemyAttack(enemyIndex) {
+    battle = true;
+    player.health -= enemies[enemyIndex].damage;
+    if(enemies[enemyIndex].health > 0 && player.health > 0) {
+    setTimeout(function() {
+        playerAttack(enemyIndex);
+    }, 2000);
+} else {
+    battle = false;
+}
+}
+
+/*function battleBegin() {
+    for(let i = 0; i < enemies.length; i++) {
+        if(enemies[i].battle === true && enemies[i].health > 0) {
+            
+        }
+    }
+}*/
 
 function handleEnemies() {
     for(let i = 0; i < enemies.length; i++) {
@@ -521,9 +572,11 @@ function enemyColDetect() {
     player.y < enemies[i].y + enemies[i].height &&
     player.y + player.height > enemies[i].y
     ){
-        if(player.health > 0 && enemies[i].defeated === false) {    
-        player.health -= enemies[i].damage;
-        enemies[i].health -= player.damage;
+        if(player.health > 0 && enemies[i].defeated === false) { 
+        enemies[i].battle = true; 
+        whichEnemyAttacking = i;
+        enemyAttack(i);  
+        //battleBegin()
         }
         }
     }
@@ -564,6 +617,9 @@ function solidColDetect() {
 }
 }
 
+/*
+Checks the array of buildings to see which tiles are underneath a building or other solid feature. Sets a property of that tile that prevents user from clicking on it to move the player there.
+*/
 function isTileUnderBuilding() {
     for(let i = 0; i < tiles.length; i++) {
         for(let j = 0; j < buildingsArray.length; j++) {
@@ -589,8 +645,10 @@ Listens for p key being pressed, based on selection-
 --Exit game changes location to title screen
 */
 menuAltBtn.addEventListener('click', function() {
+    if(!battle) {
     fullMenu.style.display = 'grid';
     menuOpen = true;
+    }
 });
             
 itemsMenuBtn.addEventListener('click', function() {
@@ -633,8 +691,12 @@ function animate() {
     drawBuildings();
     drawHealthBar();
     drawPlayer();
-    handleEnemies();
+    if(battle){
+        drawEnemyHealthBar(whichEnemyAttacking);
+    }else {
     enemyColDetect();
+    }
+    handleEnemies();
     solidColDetect();
     turn();
     requestAnimationFrame(animate);
