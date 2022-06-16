@@ -31,6 +31,9 @@ let menuOpen = false;
 let playerTurn = true;
 let enemyTurn = false;
 
+let playerHit = false;
+let enemyHit = false;
+
 const grid = document.getElementById('grid');
 const playerImage = new Image();
 playerImage.src = 'Images/playerV4.png';
@@ -217,7 +220,7 @@ If player moves onto a tile that holds an item, that item is added to their inve
 */
 let backgroundItems = [
     {name: 'Medkit', background: 'Images/medkit.png', description: 'Medkit: Refills health by 50%', x: tileSize * 7, y: tileSize * 12, found: false},
-    {name: 'Blue Phaser', background: 'Images/bluePhaser.png',  description: 'Blue Phaser: Increases damage by 1 for current mission', x: tileSize * 4, y: tileSize * 5, found: false}
+    {name: 'Blue Phaser', background: 'Images/bluePhaser.png',  description: 'Blue Phaser: Increases damage by 5 for current mission', x: tileSize * 4, y: tileSize * 5, found: false}
 ];
 
 function pickedUpItem() {
@@ -234,7 +237,7 @@ function useItem(index) {
     if(player.items[index].name === 'Medkit') {
         player.health += 50;
     } else if(player.items[index].name === 'Blue Phaser') {
-        player.damage += 1;
+        player.damage += 5;
     }
     player.items.splice(index, 1);
     openedItemsMenu();
@@ -360,6 +363,9 @@ for(let i = 0; i < backgroundItems.length; i++) {
 });
 
 //Key Events
+/*
+Keyboard controls use either wasd or arrow keys to move and p to open the menu. When moving, conditionals check that the player is not attempting to move into a space occupied by a building and that a battle sequence is not currently occuring.
+*/
 document.addEventListener('keydown', keyDownHandler, false);
 document.addEventListener('keyup', keyUpHandler, false);
 
@@ -430,9 +436,11 @@ function turn() {
     if(player.movement > 0) {
         grid.style.display = 'grid';
     } else {
+        if(!battle) {
         grid.style.display = 'none';
         enemyMovement();
         player.movement = 5;
+        }
     }
 }
 
@@ -498,35 +506,48 @@ When collision detection is set off between the player and an enemy, the battle 
 */
 
 function playerAttack(enemyIndex) {
+    enemies[enemyIndex].x -= 15;
+    playerHit = false;
     enemies[enemyIndex].health -= player.damage;
+    enemyHit = true;
     if(enemies[enemyIndex].health > 0 && player.health > 0) {
     setTimeout(function() {
         enemyAttack(enemyIndex);
-    }, 2000);
-} else {
-    battle = false;
-}
+        enemies[enemyIndex].x += 15;
+    }, 1500);
+    } else {
+        enemies[enemyIndex].x += 15;
+        battle = false;
+    }
 }
 
 function enemyAttack(enemyIndex) {
+    player.x += 15;
+    enemyHit = false;
     battle = true;
     player.health -= enemies[enemyIndex].damage;
+    playerHit = true;
     if(enemies[enemyIndex].health > 0 && player.health > 0) {
     setTimeout(function() {
         playerAttack(enemyIndex);
-    }, 2000);
-} else {
-    battle = false;
-}
+        player.x -= 15;
+    }, 1500);
+    } else {
+        player.x -= 15;
+        battle = false;
+    }
 }
 
-/*function battleBegin() {
-    for(let i = 0; i < enemies.length; i++) {
-        if(enemies[i].battle === true && enemies[i].health > 0) {
-            
-        }
+function damageText() {
+    ctx.fillStyle = 'black';
+    if(playerHit) {
+        ctx.font = '22px georgia';
+        ctx.fillText(`-${enemies[whichEnemyAttacking].damage}`, healthBarCon.x, healthBarCon.y + 40);
+    } else if(enemyHit) {
+        ctx.font = '22px georgia';
+        ctx.fillText(`-${player.damage}`, enemies[whichEnemyAttacking].x, enemies[whichEnemyAttacking].y - 20);
     }
-}*/
+}
 
 function handleEnemies() {
     for(let i = 0; i < enemies.length; i++) {
@@ -576,7 +597,6 @@ function enemyColDetect() {
         enemies[i].battle = true; 
         whichEnemyAttacking = i;
         enemyAttack(i);  
-        //battleBegin()
         }
         }
     }
@@ -693,11 +713,12 @@ function animate() {
     drawPlayer();
     if(battle){
         drawEnemyHealthBar(whichEnemyAttacking);
+        damageText();
     }else {
     enemyColDetect();
+    solidColDetect();
     }
     handleEnemies();
-    solidColDetect();
     turn();
     requestAnimationFrame(animate);
 }
