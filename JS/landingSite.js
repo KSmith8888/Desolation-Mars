@@ -76,8 +76,11 @@ window.addEventListener('resize', function() {
     canvas.height = window.innerHeight;
 });
 
-//Creates dynamic JS grid to control movement
-//Visible grid is CSS only and becomes visible during players turn
+/*
+-Creates dynamic JS grid to control movement
+Draws a line on the canvas for every 30px(the tile size) vertically and horizontally and stores them in arrays. Uses those lines to create tile onjects where the lines intersect and pushes those tiles into another array.
+-Visible grid is separate and CSS only but overlaps the same lines. That grid only becomes visible during players turn.
+*/
 
 function createGrid() {
     for(let i = 0; i < canvas.width; i += tileSize) {
@@ -107,10 +110,8 @@ function createTiles() {
 createTiles();
 
 /*
-Background
-Buildings
--Creates building objects and storesthem in an array
--Collision detection to prevent player from moving into buildings
+Buildings/Features
+-Creates building objects and stores them in an array
 */
 
 const verticalBarrier1 = {
@@ -149,9 +150,12 @@ function drawBuildings() {
     ctx.drawImage(destFortImage, destroyedFort1.x, destroyedFort1.y, destroyedFort1.width, destroyedFort1.height);
 }
 
-//Items Menu
+/*Items Menu
+Loops through the players item property array and adds a background image and description of the item to the item select buttons in the item menu. The description of each item is visible on hover or focus. 
+*/
 function openedItemsMenu() {
     itemsMenu.style.display = 'grid';
+    item1.focus();
     for(let i = 0; i < player.items.length; i++) {
         document.getElementById('item' + (i + 1)).style.backgroundImage = `url('${player.items[i].background}')`;
         document.getElementById('item' + (i + 1) + 'Text').innerText = player.items[i].description;
@@ -162,6 +166,7 @@ function openedItemsMenu() {
 
 itemsCloseBtn.addEventListener('click', function() {
     itemsMenu.style.display = 'none';
+    itemsMenuBtn.focus();
 });
 
 //Player
@@ -172,7 +177,9 @@ const player = JSON.parse(localStorage.getItem('playerInfo')) || {
     width: 30,
     height: 30,
     damage: 10,
-    speed: 30,
+    exp: 0,
+    healthStat: 100,
+    movementStat: 5,
     playerLevel: 1,
     gameLevel: 1,
     movement: 5,
@@ -193,10 +200,11 @@ function drawPlayer() {
 }
 
 //Health bar container object and draw function
+//fillRect is based on players health property and changes when players health is updated
 const healthBarCon = {
     x: 40,
     y: 10,
-    width: 200,
+    width: player.healthStat * 2,
     height: 15
 }
 
@@ -216,11 +224,11 @@ function drawHealthBar() {
 }
 
 /*Items in the environment
-If player moves onto a tile that holds an item, that item is added to their inventory
+If player moves onto a tile that holds an item, that item is added to their inventory.
 */
 let backgroundItems = [
-    {name: 'Medkit', background: 'Images/medkit.png', description: 'Medkit: Refills health by 50%', x: tileSize * 7, y: tileSize * 12, found: false},
-    {name: 'Blue Phaser', background: 'Images/bluePhaser.png',  description: 'Blue Phaser: Increases damage by 5 for current mission', x: tileSize * 4, y: tileSize * 5, found: false}
+    {name: 'Medkit', background: 'Images/medkit.png', description: 'Medkit: Refills health by 50 points', x: tileSize * 7, y: tileSize * 12, found: false},
+    {name: 'Blue Phaser', background: 'Images/bluePhaser.png',  description: 'Blue Phaser: Permanently increases damage by 5', x: tileSize * 4, y: tileSize * 5, found: false}
 ];
 
 function pickedUpItem() {
@@ -233,6 +241,9 @@ function pickedUpItem() {
     }
 }
 
+/*
+When an item is used, adjusts players stats based on the name of the item and removes it from the players items property. 
+*/
 function useItem(index) {
     if(player.items[index].name === 'Medkit') {
         player.health += 50;
@@ -364,7 +375,7 @@ for(let i = 0; i < backgroundItems.length; i++) {
 
 //Key Events
 /*
-Keyboard controls use either wasd or arrow keys to move and p to open the menu. When moving, conditionals check that the player is not attempting to move into a space occupied by a building and that a battle sequence is not currently occuring.
+Keyboard controls use either wasd or arrow keys to move and p to open the menu. When moving, conditionals check that the player is not attempting to move into a space occupied by a building, that a battle sequence is not currently occuring and that the menu is not open.
 */
 document.addEventListener('keydown', keyDownHandler, false);
 document.addEventListener('keyup', keyUpHandler, false);
@@ -372,34 +383,35 @@ document.addEventListener('keyup', keyUpHandler, false);
 function keyDownHandler(e) {
     if(e.key == "Right" || e.key == "ArrowRight" || e.key == 'd') {
         rightPressed = true;
-        if(!solidCollideRight && player.movement > 0 && !battle) {
-        player.x += player.speed;
+        if(!solidCollideRight && player.movement > 0 && !battle && !menuOpen) {
+        player.x += tileSize;
         player.movement -= 1;
     }
     }
     else if(e.key == "Left" || e.key == "ArrowLeft" || e.key == 'a') {
         leftPressed = true;
-        if(!solidCollideLeft && player.movement > 0 && !battle) {
-        player.x -= player.speed;
+        if(!solidCollideLeft && player.movement > 0 && !battle && !menuOpen) {
+        player.x -= tileSize;
         player.movement -= 1;
     }
     }
     else if(e.key == 'Up' || e.key == 'ArrowUp' || e.key == 'w') {
         upPressed = true;
-        if(!solidCollideUp && player.movement > 0 && !battle) {
-        player.y -= player.speed;
+        if(!solidCollideUp && player.movement > 0 && !battle && !menuOpen) {
+        player.y -= tileSize;
         player.movement -= 1;
     }
     }
     else if(e.key == 'Down' || e.key == 'ArrowDown' || e.key == 's') {
         downPressed = true;
-        if(!solidCollideDown && player.movement > 0 && !battle) {
-        player.y += player.speed;
+        if(!solidCollideDown && player.movement > 0 && !battle && !menuOpen) {
+        player.y += tileSize;
         player.movement -= 1;
     }
     } else if(e.key == 'p' && !battle) {
         fullMenu.style.display = 'grid';
         menuOpen = true;
+        itemsMenuBtn.focus();
     }
     for(let i = 0; i < backgroundItems.length; i++) {
         if(backgroundItems[i].x === player.x && backgroundItems[i].y === player.y && backgroundItems[i].found === false) {
@@ -429,7 +441,7 @@ function keyUpHandler(e) {
 /*
 Turns 
 -When players movement property is above 0, makes grid visible
--Once movement reaches 0, hides grid and allows enemies to move, then resets players movement property
+-Once movement reaches 0, if a battle sequence is not in progress, hides grid and allows enemies to move. Then resets players movement property
 */
 
 function turn() {
@@ -452,7 +464,6 @@ class Enemy {
         this.width = 30; 
         this.height = 30;
         this.damage = 10;
-        this.battle = false;
         this.x = (Math.floor(Math.random() * 20)) * tileSize;
         this.y = (Math.floor(Math.random() * 20)) * tileSize;
         this.image = new Image();
@@ -469,6 +480,8 @@ for(let i = 0; i < 5; i++) {
 } 
 }
 
+
+//If save data is present, sets enemies array to match saved enemy positions and health, otherwise creates new level start enemies.
 function checkForSavedEnemies() {
 if(localStorage.getItem('enemyInfo') != null) { 
     storedEnemies = JSON.parse(localStorage.getItem('enemyInfo'))
@@ -500,41 +513,62 @@ function drawEnemyHealthBar(enemyIndex) {
     ctx.fillRect(enemies[enemyIndex].x - 13, enemies[enemyIndex].y - 11, enemies[enemyIndex].health, 6);
 }
 
+//Leveling Up
+function levelUp() {
+    let random = Math.floor(Math.random() * 3);
+    let stats = ['Health', 'Damage', 'Movement'];
+    if(player.exp === 100) {
+        if(stats[random] === 'Health') {
+            player.healthStat += 10;
+        } else if(stats[random] === 'Damage') {
+            player.damage += 5;
+        } else if(stats[random] === 'Movement') {
+            player.movementStat += 1;
+        }
+    player.exp = 0;
+    }
+    //levelOver();
+}
+
 
 /*Battle Mechanics
 When collision detection is set off between the player and an enemy, the battle property of that enemy is set to true. The enemyAttack and playerAttack functions go back and forth as long as both the enemy and player have health properties above 0. While the battle is active, the player cannot move or open the menu and collision detection is off.
 */
 
 function playerAttack(enemyIndex) {
-    enemies[enemyIndex].x -= 15;
-    playerHit = false;
-    enemies[enemyIndex].health -= player.damage;
-    enemyHit = true;
+        enemies[enemyIndex].x -= 15;
+        enemyHit = false;
     if(enemies[enemyIndex].health > 0 && player.health > 0) {
+        playerHit = true;
     setTimeout(function() {
+        enemies[enemyIndex].health -= player.damage;
         enemyAttack(enemyIndex);
         enemies[enemyIndex].x += 15;
     }, 1500);
     } else {
+        player.exp += 50;
+        levelUp();
         enemies[enemyIndex].x += 15;
         battle = false;
     }
 }
 
 function enemyAttack(enemyIndex) {
-    player.x += 15;
-    enemyHit = false;
-    battle = true;
-    player.health -= enemies[enemyIndex].damage;
-    playerHit = true;
-    if(enemies[enemyIndex].health > 0 && player.health > 0) {
+        player.x += 15;
+        playerHit = false;
+        battle = true;
+    if(player.health > 0 && enemies[enemyIndex].health > 0) {
+        enemyHit = true;
     setTimeout(function() {
+        player.health -= enemies[enemyIndex].damage;
         playerAttack(enemyIndex);
         player.x -= 15;
     }, 1500);
     } else {
         player.x -= 15;
         battle = false;
+        //alert('Game over');
+        //location.reload();
     }
 }
 
@@ -565,7 +599,7 @@ function handleEnemies() {
         } else {
         enemies[i].defeated = true;
         }
-        storedEnemies = enemies;
+        //storedEnemies = enemies;
     }
 }
 
@@ -584,7 +618,9 @@ function enemyMovement() {
 }
 }
 
-//Enemy Collision Detection
+/*Enemy Collision Detection
+When collision is detected, initiates battle sequence between that enemy and the player. Sets whichEnemyAttacking variable to the index of the enemy that collided so that animation loop calls the enemy health bar and damage text to show above the attacking enemy. 
+*/
 function enemyColDetect() {
     for(let i = 0; i < enemies.length; i++) {
     if(
@@ -594,7 +630,6 @@ function enemyColDetect() {
     player.y + player.height > enemies[i].y
     ){
         if(player.health > 0 && enemies[i].defeated === false) { 
-        enemies[i].battle = true; 
         whichEnemyAttacking = i;
         enemyAttack(i);  
         }
@@ -676,16 +711,26 @@ itemsMenuBtn.addEventListener('click', function() {
 });
 
 mapInfoBtn.addEventListener('click', function() {
-    alert('Enemies remaining:', enemies.length)
+    alert(`Enemies remaining: 
+    ${JSON.stringify(enemies)}`)
 });
 
 objectiveBtn.addEventListener('click', function() {
-    alert('Objective: Defeat all enemies on the board.');
+    alert(
+    `Objective: Defeat all enemies on the board 
+    Stats- 
+    Level: ${JSON.stringify(player.playerLevel)}
+    Health: ${JSON.stringify(player.healthStat)}
+    Damage: ${JSON.stringify(player.damage)}
+    Movement: ${JSON.stringify(player.movementStat)}
+    Exp: ${JSON.stringify(player.exp)}
+    `);
 });
 
 saveGameBtn.addEventListener('click', function() {
     localStorage.setItem('playerInfo', JSON.stringify(player));
-    localStorage.setItem('enemyInfo', JSON.stringify(storedEnemies));
+    localStorage.setItem('enemyInfo', JSON.stringify(enemies));
+    //localStorage.setItem('enemyInfo', JSON.stringify(storedEnemies));
 });
 
 loadFileBtn.addEventListener('click', function() {
