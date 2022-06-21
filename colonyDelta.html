@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="CSS/colonyDelta.css">
+    <link href="char.png" rel="icon" type="image/png">
+    <title>Level 2: Colony Delta</title>
+</head>
+<body>
+    <div id="container">
+        <button id="menuAltBtn"></button>
+        <canvas id="colonyDeltaCanvas" autofocus>This page uses the HTML canvas element to display content. Please use a modern browser or turn on javascript to access the content.</canvas>
+        <menu id="fullMenu">
+            <div class="menuRow">
+              <button id='itemsMenuBtn'>Items</button>
+              <button id="endTurnBtn">End Turn</button>
+            </div>
+            <div class="menuRow">
+                <button id="mapInfoBtn">Map Info</button>
+                <button id="objectiveBtn">Objective/ Stats</button>
+            </div>
+            <div class="menuRow">
+              <button id="saveGameBtn">Save Game</button>
+              <button id="loadFileBtn">Load save file</button>
+            </div>
+            <div class="menuRow">
+              <button id="deleteDataBtn">Delete save data</button>
+              <button id="exitGameBtn">Exit Game</button>
+            </div>
+            <button id="closeMenuBtn">Close</button>
+            <menu id="itemsMenu">
+                <div class="itemsRow">
+                    <button id="item1" class="items"><p id='item1Text' class="itemText"></p></button>
+                    <button id="item2" class="items"><p id='item2Text' class="itemText"></p></button>
+                    <button id="item3" class="items"><p id='item3Text' class="itemText"></p></button>
+                </div>
+                <div class="itemsRow">
+                    <button id="item4" class="items"><p id='item4Text' class="itemText"></p></button>
+                    <button id="item5" class="items"><p id='item5Text' class="itemText"></p></button>
+                    <button id="item6" class="items"><p id='item6Text' class="itemText"></p></button>
+                </div>
+                <div class="itemsRow">
+                    <button id="item7" class="items"><p id='item7Text' class="itemText"></p></button>
+                    <button id="item8" class="items"><p id='item8Text' class="itemText"></p></button>
+                    <button id="item9" class="items"><p id='item9Text' class="itemText"></p></button>
+                </div>
+                <button id='itemsCloseBtn'>Close</button>
+            </menu>
+            <menu id="objStatDetails"><p id="objStatDescription"></p><button id="objStatCloseBtn">Close</button></menu>
+            <menu id="mapDetails"><p id="mapDetailsDescription"></p><button id="mapDetailsCloseBtn">Close</button></menu>
+        </menu>
+      <div id='grid'></div>
+    </div>
+</body>
+</html>
