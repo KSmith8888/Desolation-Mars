@@ -28,8 +28,8 @@ let horizontalLines = [];
 let tiles = [];
 
 let menuOpen = false;
-let playerTurn = true;
-let enemyTurn = false;
+//let playerTurn = true;
+//let enemyTurn = false;
 
 let playerHit = false;
 let enemyHit = false;
@@ -58,12 +58,14 @@ const itemsMenuBtn = document.getElementById('itemsMenuBtn');
 const mapInfoBtn = document.getElementById('mapInfoBtn');
 const mapDetails = document.getElementById('mapDetails');
 mapDetails.style.display = 'none';
-const mapDetailsCloseBtn = document.getElementById('mapDetailsCloseBtn');
+//const mapDetailsCloseBtn = document.getElementById('mapDetailsCloseBtn');
 const objectiveBtn = document.getElementById('objectiveBtn');
 const objStatDetails = document.getElementById('objStatDetails');
 objStatDetails.style.display = 'none';
-const objStatCloseBtn = document.getElementById('objStatCloseBtn');
-objStatCloseBtn.style.display = 'none';
+const mapDetailsDescription = document.getElementById('mapDetailsDescription');
+const objStatDescription = document.getElementById('objStatDescription');
+//const objStatCloseBtn = document.getElementById('objStatCloseBtn');
+//objStatCloseBtn.style.display = 'none';
 const endTurnBtn = document.getElementById('endTurnBtn');
 const saveGameBtn = document.getElementById('saveGameBtn');
 const loadFileBtn = document.getElementById('loadFileBtn');
@@ -109,74 +111,16 @@ function createTiles() {
 }
 createTiles();
 
-/*
-Buildings/Features
--Creates building objects and stores them in an array
-*/
-
-const verticalBarrier1 = {
-    x: verticalLines[9],
-    y: horizontalLines[2],
-    width: tileSize,
-    height: tileSize * 4
-}
-buildingsArray.push(verticalBarrier1);
-const vertBarImage = new Image();
-vertBarImage.src = 'Images/verticalBarrier1.png';
-
-const horizontalBarrier1 = {
-    x: verticalLines[14],
-    y: horizontalLines[10],
-    width: tileSize * 2,
-    height: tileSize * 2
-}
-buildingsArray.push(horizontalBarrier1);
-const horBarImage = new Image();
-horBarImage.src = 'Images/horizontalBarrier1.png';
-
-const destroyedFort1 = {
-    x: verticalLines[15],
-    y: 0,
-    width: tileSize * 5,
-    height: tileSize * 6
-}
-buildingsArray.push(destroyedFort1);
-const destFortImage = new Image();
-destFortImage.src = 'Images/destroyedFort1.png';
-
-function drawBuildings() {
-    ctx.drawImage(vertBarImage, verticalBarrier1.x, verticalBarrier1.y, verticalBarrier1.width, verticalBarrier1.height);
-    ctx.drawImage(horBarImage, horizontalBarrier1.x, horizontalBarrier1.y, horizontalBarrier1.width, horizontalBarrier1.height);
-    ctx.drawImage(destFortImage, destroyedFort1.x, destroyedFort1.y, destroyedFort1.width, destroyedFort1.height);
-}
-
-/*Items Menu
-Loops through the players item property array and adds a background image and description of the item to the item select buttons in the item menu. The description of each item is visible on hover or focus. 
-*/
-function openedItemsMenu() {
-    itemsMenu.style.display = 'grid';
-    item1.focus();
-    for(let i = 0; i < player.items.length; i++) {
-        document.getElementById('item' + (i + 1)).style.backgroundImage = `url('${player.items[i].background}')`;
-        document.getElementById('item' + (i + 1) + 'Text').innerText = player.items[i].description;
-    }
-    document.getElementById('item' + (player.items.length + 1)).style.backgroundImage = '';
-    document.getElementById('item' + (player.items.length + 1) + 'Text').innerText = '';
-}
-
-itemsCloseBtn.addEventListener('click', function() {
-    itemsMenu.style.display = 'none';
-    itemsMenuBtn.focus();
-});
-
 //Player
 const player = JSON.parse(localStorage.getItem('playerInfo')) || {
     health: 100,
     x: 60,
     y: 60,
+    posX: 60,
+    posY: 60,
     width: 30,
     height: 30,
-    damage: 10,
+    damage: 20,
     exp: 0,
     healthStat: 100,
     movementStat: 5,
@@ -198,6 +142,84 @@ function drawPlayer() {
     }
     ctx.drawImage(playerImage, player.x, player.y, player.width, player.height);
 }
+
+/*
+Buildings/Features
+-Creates building objects and stores them in an array
+*/
+
+let verticalBarrier1 = {
+    x: 300,
+    y: 60,
+    width: tileSize,
+    height: tileSize * 4
+}
+buildingsArray.push(verticalBarrier1);
+const vertBarImage = new Image();
+vertBarImage.src = 'Images/verticalBarrier1.png';
+
+let horizontalBarrier1 = {
+    x: 420,
+    y: 270,
+    width: tileSize * 2,
+    height: tileSize * 2
+}
+buildingsArray.push(horizontalBarrier1);
+const horBarImage = new Image();
+horBarImage.src = 'Images/horizontalBarrier1.png';
+
+let destroyedFort1 = {
+    x: 450,
+    y: 0,
+    width: tileSize * 5,
+    height: tileSize * 6
+}
+buildingsArray.push(destroyedFort1);
+const destFortImage = new Image();
+destFortImage.src = 'Images/destroyedFort1.png';
+
+function drawBuildings() {
+    ctx.drawImage(vertBarImage, verticalBarrier1.x, verticalBarrier1.y, verticalBarrier1.width, verticalBarrier1.height);
+    ctx.drawImage(horBarImage, horizontalBarrier1.x, horizontalBarrier1.y, horizontalBarrier1.width, horizontalBarrier1.height);
+    ctx.drawImage(destFortImage, destroyedFort1.x, destroyedFort1.y, destroyedFort1.width, destroyedFort1.height);
+}
+
+/*function shiftBuildings() {
+    for(let i = 0; i < buildingsArray.length; i++) {
+        if(rightPressed) {
+            buildingsArray[i].x -= tileSize;
+            isTileUnderBuilding();
+        } else if(leftPressed) {
+            buildingsArray[i].x += tileSize;
+            isTileUnderBuilding();
+        } else if(upPressed) {
+            buildingsArray[i].y += tileSize;
+            isTileUnderBuilding();
+        } else if(downPressed) {
+            buildingsArray[i].y -= tileSize;
+            isTileUnderBuilding();
+        }
+    }
+}*/
+
+/*Items Menu
+Loops through the players item property array and adds a background image and description of the item to the item select buttons in the item menu. The description of each item is visible on hover or focus. 
+*/
+function openedItemsMenu() {
+    itemsMenu.style.display = 'grid';
+    item1.focus();
+    for(let i = 0; i < player.items.length; i++) {
+        document.getElementById('item' + (i + 1)).style.backgroundImage = `url('${player.items[i].background}')`;
+        document.getElementById('item' + (i + 1) + 'Text').innerText = player.items[i].description;
+    }
+    document.getElementById('item' + (player.items.length + 1)).style.backgroundImage = '';
+    document.getElementById('item' + (player.items.length + 1) + 'Text').innerText = '';
+}
+
+itemsCloseBtn.addEventListener('click', function() {
+    itemsMenu.style.display = 'none';
+    itemsMenuBtn.focus();
+});
 
 //Health bar container object and draw function
 //fillRect is based on players health property and changes when players health is updated
@@ -421,6 +443,7 @@ function keyDownHandler(e) {
             pickedUpItem();
         }
     }
+    //shiftBuildings();
 }
 
 function keyUpHandler(e) {
@@ -457,15 +480,15 @@ function turn() {
 }
 
 //Enemies
-class Enemy {
+class greenNomad {
     constructor() {
+        this.enemyType = 'Green Nomad';
         this.health = 50;
+        this.maxHealth = 50;
         this.defeated = false;
         this.width = 30; 
         this.height = 30;
         this.damage = 10;
-        this.x = (Math.floor(Math.random() * 20)) * tileSize;
-        this.y = (Math.floor(Math.random() * 20)) * tileSize;
         this.image = new Image();
         this.image.src = 'Images/greenMageV3.png';
     } draw() {
@@ -473,23 +496,54 @@ class Enemy {
     }
 }
 
-function createEnemies() {
-for(let i = 0; i < 5; i++) {
-    enemies.push(new Enemy());
-    storedEnemies = enemies;
-} 
+class redNomad {
+    constructor() {
+        this.enemyType = 'Red Nomad';
+        this.health = 70;
+        this.maxHealth = 70;
+        this.defeated = false;
+        this.width = 30; 
+        this.height = 30;
+        this.damage = 15;
+        this.image = new Image();
+        this.image.src = 'Images/redNomad.png';
+    } draw() {
+        ctx.drawImage(this.image, this.x, this.y, this.width, this.height);
+    }
 }
 
+function createEnemies() {
+for(let i = 0; i < 3; i++) {
+    enemies.push(new greenNomad());
+    storedEnemies = enemies;
+} 
+enemies[0].x = 810;
+enemies[0].y = 330;
+enemies[1].x = 390;
+enemies[1].y = 450;
+enemies[2].x = 210;
+enemies[2].y = 210;
+enemies.push(new redNomad());
+enemies[3].x = 990;
+enemies[3].y = 540;
+}
 
 //If save data is present, sets enemies array to match saved enemy positions and health, otherwise creates new level start enemies.
 function checkForSavedEnemies() {
 if(localStorage.getItem('enemyInfo') != null) { 
     storedEnemies = JSON.parse(localStorage.getItem('enemyInfo'))
     for(let i = 0; i < storedEnemies.length; i++) {
-        enemies.push(new Enemy());
+        if(storedEnemies.enemyType === 'Green Nomad') {
+        enemies.push(new greenNomad());
         enemies[i].health = storedEnemies[i].health;
         enemies[i].x = storedEnemies[i].x;
         enemies[i].y = storedEnemies[i].y;
+        } else if(storedEnemies.enemyType === 'Red Nomad') {
+        enemies.push(new redNomad());
+        enemies[i].health = storedEnemies[i].health;
+        enemies[i].x = storedEnemies[i].x;
+        enemies[i].y = storedEnemies[i].y;    
+        }
     }
 } else {
     createEnemies();
@@ -499,18 +553,20 @@ checkForSavedEnemies();
 
 //Enemy Healthbar
 function drawEnemyHealthBar(enemyIndex) {
+    if(enemies[enemyIndex].health > 0) {
     ctx.strokeStyle = 'gold';
     ctx.fillStyle = 'black';
     ctx.beginPath();
     ctx.moveTo(enemies[enemyIndex].x - 15, enemies[enemyIndex].y - 13);
-    ctx.lineTo(enemies[enemyIndex].x + 50, enemies[enemyIndex].y - 13);
-    ctx.lineTo(enemies[enemyIndex].x + 50, enemies[enemyIndex].y - 5);
+    ctx.lineTo(enemies[enemyIndex].x + enemies[enemyIndex].maxHealth, enemies[enemyIndex].y - 13);
+    ctx.lineTo(enemies[enemyIndex].x + enemies[enemyIndex].maxHealth, enemies[enemyIndex].y - 5);
     ctx.lineTo(enemies[enemyIndex].x - 15, enemies[enemyIndex].y - 5);
     ctx.lineTo(enemies[enemyIndex].x - 15, enemies[enemyIndex].y - 13);
     ctx.fill();
     ctx.stroke();
     ctx.fillStyle = 'red';
     ctx.fillRect(enemies[enemyIndex].x - 13, enemies[enemyIndex].y - 11, enemies[enemyIndex].health, 6);
+    }
 }
 
 //Leveling Up
@@ -526,58 +582,63 @@ function levelUp() {
             player.movementStat += 1;
         }
     player.exp = 0;
+    player.playerLevel += 1;
     }
-    //levelOver();
+    if(enemies.length === 0) {
+        player.gameLevel = 2;
+        alert('Level 2: Colony Delta');
+        location.href = './colonyDelta.html';
+    }
 }
-
 
 /*Battle Mechanics
 When collision detection is set off between the player and an enemy, the battle property of that enemy is set to true. The enemyAttack and playerAttack functions go back and forth as long as both the enemy and player have health properties above 0. While the battle is active, the player cannot move or open the menu and collision detection is off.
 */
 
 function playerAttack(enemyIndex) {
-        enemies[enemyIndex].x -= 15;
-        enemyHit = false;
-    if(enemies[enemyIndex].health > 0 && player.health > 0) {
-        playerHit = true;
+    enemies[enemyIndex].x -= 15;
+    playerHit = false;
+if(enemies[enemyIndex].health > 0 && player.health > 0) {
+    enemyHit = true;
+    enemies[enemyIndex].health -= player.damage;
     setTimeout(function() {
-        enemies[enemyIndex].health -= player.damage;
-        enemyAttack(enemyIndex);
-        enemies[enemyIndex].x += 15;
+    enemies[enemyIndex].x += 15;
+    enemyAttack(enemyIndex);
     }, 1500);
-    } else {
-        player.exp += 50;
-        levelUp();
-        enemies[enemyIndex].x += 15;
-        battle = false;
-    }
+} else {
+    battle = false;
+    enemies[enemyIndex].x += 15;
+    alert('Game over');
+    location.reload();
+}
 }
 
 function enemyAttack(enemyIndex) {
-        player.x += 15;
-        playerHit = false;
-        battle = true;
-    if(player.health > 0 && enemies[enemyIndex].health > 0) {
-        enemyHit = true;
+    player.x += 15;
+    enemyHit = false;
+    battle = true;
+if(player.health > 0 && enemies[enemyIndex].health > 0) {
+    playerHit = true;
+    player.health -= enemies[enemyIndex].damage;
     setTimeout(function() {
-        player.health -= enemies[enemyIndex].damage;
-        playerAttack(enemyIndex);
-        player.x -= 15;
+    player.x -= 15;
+    playerAttack(enemyIndex);
     }, 1500);
-    } else {
-        player.x -= 15;
-        battle = false;
-        //alert('Game over');
-        //location.reload();
-    }
+} else {
+    battle = false;
+    player.x -= 15;
+    player.exp += 50;
+    enemies.splice(whichEnemyAttacking, 1);
+    levelUp();
+}
 }
 
 function damageText() {
     ctx.fillStyle = 'black';
-    if(playerHit) {
+    if(playerHit && player.health > 0) {
         ctx.font = '22px georgia';
         ctx.fillText(`-${enemies[whichEnemyAttacking].damage}`, healthBarCon.x, healthBarCon.y + 40);
-    } else if(enemyHit) {
+    } else if(enemyHit && enemies[whichEnemyAttacking].health > 0) {
         ctx.font = '22px georgia';
         ctx.fillText(`-${player.damage}`, enemies[whichEnemyAttacking].x, enemies[whichEnemyAttacking].y - 20);
     }
@@ -694,6 +755,8 @@ isTileUnderBuilding();
 /*Menu-
 Listens for p key being pressed, based on selection-
 --Items opens the items menu
+--Map Details shows the current enemies on the board
+--Objective/Stats shows the mission objective and the players current stats
 --Save game saves player object and enemy array info to localStorage
 --Delete save data removes items from localStorage
 --Load file reloads current page
@@ -710,21 +773,45 @@ itemsMenuBtn.addEventListener('click', function() {
     openedItemsMenu();
 });
 
+mapDetailsCloseBtn.addEventListener('click', function() {
+    mapDetails.style.display = 'none';
+    mapDetailsCloseBtn.style.display = 'none';
+    mapDetailsDescription.innerText = '';
+});
+
 mapInfoBtn.addEventListener('click', function() {
-    alert(`Enemies remaining: 
-    ${JSON.stringify(enemies)}`)
+    let currentEnemies = [];
+    for(let i = 0; i < enemies.length; i++) {
+        currentEnemies.push(enemies[i].enemyType);
+        currentEnemies.push(enemies[i].health);
+        currentEnemies.push(enemies[i].damage);
+    }
+    mapDetails.style.display = 'grid';
+    mapDetailsCloseBtn.style.display = 'grid';
+    mapDetailsDescription.innerText = `Enemies remaining: 
+    ${JSON.stringify(currentEnemies)}`;
+    mapDetailsCloseBtn.focus();
+});
+
+objStatCloseBtn.addEventListener('click', function() {
+    objStatDetails.style.display = 'none';
+    objStatCloseBtn.style.display = 'none';
+    objStatDescription.innerText = '';
 });
 
 objectiveBtn.addEventListener('click', function() {
-    alert(
-    `Objective: Defeat all enemies on the board 
+    objStatDetails.style.display = 'grid';
+    objStatCloseBtn.style.display = 'grid';
+    objStatDescription.innerText = `Objective: Defeat all enemies on the board 
     Stats- 
     Level: ${JSON.stringify(player.playerLevel)}
-    Health: ${JSON.stringify(player.healthStat)}
+    Max Health: ${JSON.stringify(player.healthStat)}
     Damage: ${JSON.stringify(player.damage)}
     Movement: ${JSON.stringify(player.movementStat)}
     Exp: ${JSON.stringify(player.exp)}
-    `);
+    Current Health: ${JSON.stringify(player.health)}
+    `;
+    objStatCloseBtn.focus();
 });
 
 saveGameBtn.addEventListener('click', function() {
