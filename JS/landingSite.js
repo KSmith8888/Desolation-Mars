@@ -9,7 +9,7 @@ let upPressed = false;
 let downPressed = false;
 
 let moving = false;
-let tileSize = 30;
+let tileSize = 25;
 let buildingsArray = [];
 
 let enemies = [];
@@ -28,13 +28,11 @@ let horizontalLines = [];
 let tiles = [];
 
 let menuOpen = false;
-//let playerTurn = true;
-//let enemyTurn = false;
-
 let playerHit = false;
 let enemyHit = false;
 
 const grid = document.getElementById('grid');
+grid.style.display = 'none';
 const playerImage = new Image();
 playerImage.src = 'Images/playerV4.png';
 
@@ -66,6 +64,8 @@ const mapDetailsDescription = document.getElementById('mapDetailsDescription');
 const objStatDescription = document.getElementById('objStatDescription');
 //const objStatCloseBtn = document.getElementById('objStatCloseBtn');
 //objStatCloseBtn.style.display = 'none';
+const showGridBtn = document.getElementById('showGridBtn');
+const hideGridBtn = document.getElementById('hideGridBtn');
 const endTurnBtn = document.getElementById('endTurnBtn');
 const saveGameBtn = document.getElementById('saveGameBtn');
 const loadFileBtn = document.getElementById('loadFileBtn');
@@ -104,7 +104,7 @@ function createTiles() {
                 x: verticalLines[j], 
                 y: horizontalLines[i],
                 row: (i + 1), column: (j + 1),
-                width: 30, height: 30,
+                width: 25, height: 25,
                 solid: false});
         }
     }
@@ -114,12 +114,12 @@ createTiles();
 //Player
 const player = JSON.parse(localStorage.getItem('playerInfo')) || {
     health: 100,
-    x: 60,
-    y: 60,
+    x: 50,
+    y: 50,
     posX: 60,
     posY: 60,
-    width: 30,
-    height: 30,
+    width: 25,
+    height: 25,
     damage: 20,
     exp: 0,
     healthStat: 100,
@@ -150,7 +150,7 @@ Buildings/Features
 
 let verticalBarrier1 = {
     x: 300,
-    y: 60,
+    y: 50,
     width: tileSize,
     height: tileSize * 4
 }
@@ -159,8 +159,8 @@ const vertBarImage = new Image();
 vertBarImage.src = 'Images/verticalBarrier1.png';
 
 let horizontalBarrier1 = {
-    x: 420,
-    y: 270,
+    x: 425,
+    y: 275,
     width: tileSize * 2,
     height: tileSize * 2
 }
@@ -184,24 +184,6 @@ function drawBuildings() {
     ctx.drawImage(destFortImage, destroyedFort1.x, destroyedFort1.y, destroyedFort1.width, destroyedFort1.height);
 }
 
-/*function shiftBuildings() {
-    for(let i = 0; i < buildingsArray.length; i++) {
-        if(rightPressed) {
-            buildingsArray[i].x -= tileSize;
-            isTileUnderBuilding();
-        } else if(leftPressed) {
-            buildingsArray[i].x += tileSize;
-            isTileUnderBuilding();
-        } else if(upPressed) {
-            buildingsArray[i].y += tileSize;
-            isTileUnderBuilding();
-        } else if(downPressed) {
-            buildingsArray[i].y -= tileSize;
-            isTileUnderBuilding();
-        }
-    }
-}*/
-
 /*Items Menu
 Loops through the players item property array and adds a background image and description of the item to the item select buttons in the item menu. The description of each item is visible on hover or focus. 
 */
@@ -218,7 +200,7 @@ function openedItemsMenu() {
 
 itemsCloseBtn.addEventListener('click', function() {
     itemsMenu.style.display = 'none';
-    itemsMenuBtn.focus();
+    closeMenuBtn.focus();
 });
 
 //Health bar container object and draw function
@@ -333,7 +315,7 @@ Then a loop iterates through the array of tile objects with collision detection 
 -Checks if the space the player landed on has an item on it.
 */
 document.addEventListener('click', function(e) {
-    if(e.clientX < 30 && e.clientY < 30) {
+    if(e.clientX < 50 && e.clientY < 50) {
         console.log('Invalid Movement Area Clicked - Menu');
     } else if(!menuOpen && player.movement > 0 && !battle) { 
     for(let i = 0; i < tiles.length; i++) {
@@ -343,41 +325,41 @@ document.addEventListener('click', function(e) {
             && e.clientY >= tiles[i].y
             && e.clientY < tiles[i].y + tiles[i].height
             && tiles[i].solid === false) {
-                if(player.x < tiles[i].x && player.movement - ((tiles[i].x - player.x) / 30) >= 0) {
-                    if(player.y < tiles[i].y && player.movement - ((tiles[i].y - player.y) / 30) - ((tiles[i].x - player.x) / 30) >= 0) {
-                        player.movement -= (((tiles[i].y - player.y) / 30) + ((tiles[i].x - player.x) / 30));
+                if(player.x < tiles[i].x && player.movement - ((tiles[i].x - player.x) / 25) >= 0) {
+                    if(player.y < tiles[i].y && player.movement - ((tiles[i].y - player.y) / 25) - ((tiles[i].x - player.x) / 25) >= 0) {
+                        player.movement -= (((tiles[i].y - player.y) / 25) + ((tiles[i].x - player.x) / 25));
                         player.y = tiles[i].y;
                         player.x = tiles[i].x;
-                    } else if(player.y > tiles[i].y && player.movement - ((player.y - tiles[i].y) / 30) - ((tiles[i].x - player.x) / 30) >= 0){
-                        player.movement -= (((player.y - tiles[i].y) / 30) + ((tiles[i].x - player.x) / 30));
+                    } else if(player.y > tiles[i].y && player.movement - ((player.y - tiles[i].y) / 25) - ((tiles[i].x - player.x) / 25) >= 0){
+                        player.movement -= (((player.y - tiles[i].y) / 25) + ((tiles[i].x - player.x) / 30));
                         player.y = tiles[i].y;
                         player.x = tiles[i].x;
                     } else if(tiles[i].y === player.y) {
-                        player.movement -= ((tiles[i].x - player.x) / 30);
+                        player.movement -= ((tiles[i].x - player.x) / 25);
                         player.y = tiles[i].y;
                         player.x = tiles[i].x;
                     }
-                } else if(player.x > tiles[i].x && player.movement - ((player.x - tiles[i].x) / 30) >= 0){
-                    if(player.y < tiles[i].y && player.movement - ((tiles[i].y - player.y) / 30) - ((player.x - tiles[i].x) / 30) >= 0) {
-                        player.movement -= (((tiles[i].y - player.y) / 30) - ((tiles[i].x - player.x) / 30));
+                } else if(player.x > tiles[i].x && player.movement - ((player.x - tiles[i].x) / 25) >= 0){
+                    if(player.y < tiles[i].y && player.movement - ((tiles[i].y - player.y) / 25) - ((player.x - tiles[i].x) / 25) >= 0) {
+                        player.movement -= (((tiles[i].y - player.y) / 25) - ((tiles[i].x - player.x) / 25));
                         player.y = tiles[i].y;
                         player.x = tiles[i].x;
-                    } else if(player.y > tiles[i].y && player.movement - ((player.y - tiles[i].y) / 30) - ((player.x - tiles[i].x) / 30) >= 0){
-                        player.movement -= (((player.y - tiles[i].y) / 30) - ((tiles[i].x - player.x) / 30));
+                    } else if(player.y > tiles[i].y && player.movement - ((player.y - tiles[i].y) / 25) - ((player.x - tiles[i].x) / 25) >= 0){
+                        player.movement -= (((player.y - tiles[i].y) / 25) - ((tiles[i].x - player.x) / 25));
                         player.y = tiles[i].y;
                         player.x = tiles[i].x;
                     } else if(tiles[i].y === player.y) {
-                        player.movement -= ((player.x - tiles[i].x) / 30);
+                        player.movement -= ((player.x - tiles[i].x) / 25);
                         player.y = tiles[i].y;
                         player.x = tiles[i].x;
                     }
                 } else if(player.x === tiles[i].x) {
-                    if(player.y < tiles[i].y && player.movement - ((tiles[i].y - player.y) / 30) - ((player.x - tiles[i].x) / 30) >= 0) {
-                        player.movement -= (((tiles[i].y - player.y) / 30) + ((tiles[i].x - player.x) / 30));
+                    if(player.y < tiles[i].y && player.movement - ((tiles[i].y - player.y) / 25) - ((player.x - tiles[i].x) / 25) >= 0) {
+                        player.movement -= (((tiles[i].y - player.y) / 25) + ((tiles[i].x - player.x) / 25));
                         player.y = tiles[i].y;
                         player.x = tiles[i].x;
-                    } else if(player.y > tiles[i].y && player.movement - ((player.y - tiles[i].y) / 30) - ((player.x - tiles[i].x) / 30) >= 0){
-                        player.movement -= (((player.y - tiles[i].y) / 30) + ((tiles[i].x - player.x) / 30));
+                    } else if(player.y > tiles[i].y && player.movement - ((player.y - tiles[i].y) / 25) - ((player.x - tiles[i].x) / 25) >= 0){
+                        player.movement -= (((player.y - tiles[i].y) / 25) + ((tiles[i].x - player.x) / 25));
                         player.y = tiles[i].y;
                         player.x = tiles[i].x;
                     }
@@ -443,7 +425,6 @@ function keyDownHandler(e) {
             pickedUpItem();
         }
     }
-    //shiftBuildings();
 }
 
 function keyUpHandler(e) {
@@ -469,12 +450,11 @@ Turns
 
 function turn() {
     if(player.movement > 0) {
-        grid.style.display = 'grid';
+       //players turn
     } else {
         if(!battle) {
-        grid.style.display = 'none';
         enemyMovement();
-        player.movement = 5;
+        player.movement = player.movementStat;
         }
     }
 }
@@ -486,8 +466,8 @@ class greenNomad {
         this.health = 50;
         this.maxHealth = 50;
         this.defeated = false;
-        this.width = 30; 
-        this.height = 30;
+        this.width = 25; 
+        this.height = 25;
         this.damage = 10;
         this.image = new Image();
         this.image.src = 'Images/greenMageV3.png';
@@ -502,8 +482,8 @@ class redNomad {
         this.health = 70;
         this.maxHealth = 70;
         this.defeated = false;
-        this.width = 30; 
-        this.height = 30;
+        this.width = 25; 
+        this.height = 25;
         this.damage = 15;
         this.image = new Image();
         this.image.src = 'Images/redNomad.png';
@@ -517,15 +497,15 @@ for(let i = 0; i < 3; i++) {
     enemies.push(new greenNomad());
     storedEnemies = enemies;
 } 
-enemies[0].x = 810;
-enemies[0].y = 330;
-enemies[1].x = 390;
+enemies[0].x = 800;
+enemies[0].y = 325;
+enemies[1].x = 375;
 enemies[1].y = 450;
-enemies[2].x = 210;
-enemies[2].y = 210;
+enemies[2].x = 200;
+enemies[2].y = 200;
 enemies.push(new redNomad());
-enemies[3].x = 990;
-enemies[3].y = 540;
+enemies[3].x = 975;
+enemies[3].y = 550;
 }
 
 //If save data is present, sets enemies array to match saved enemy positions and health, otherwise creates new level start enemies.
@@ -604,7 +584,7 @@ if(enemies[enemyIndex].health > 0 && player.health > 0) {
     setTimeout(function() {
     enemies[enemyIndex].x += 15;
     enemyAttack(enemyIndex);
-    }, 1500);
+    }, 1250);
 } else {
     battle = false;
     enemies[enemyIndex].x += 15;
@@ -623,7 +603,7 @@ if(player.health > 0 && enemies[enemyIndex].health > 0) {
     setTimeout(function() {
     player.x -= 15;
     playerAttack(enemyIndex);
-    }, 1500);
+    }, 1250);
 } else {
     battle = false;
     player.x -= 15;
@@ -773,10 +753,15 @@ itemsMenuBtn.addEventListener('click', function() {
     openedItemsMenu();
 });
 
+endTurnBtn.addEventListener('click', function() {
+    player.movement = 0;
+});
+
 mapDetailsCloseBtn.addEventListener('click', function() {
     mapDetails.style.display = 'none';
     mapDetailsCloseBtn.style.display = 'none';
     mapDetailsDescription.innerText = '';
+    closeMenuBtn.focus();
 });
 
 mapInfoBtn.addEventListener('click', function() {
@@ -790,7 +775,15 @@ mapInfoBtn.addEventListener('click', function() {
     mapDetailsCloseBtn.style.display = 'grid';
     mapDetailsDescription.innerText = `Enemies remaining: 
     ${JSON.stringify(currentEnemies)}`;
-    mapDetailsCloseBtn.focus();
+    showGridBtn.focus();
+});
+
+showGridBtn.addEventListener('click', function() {
+    grid.style.display = 'grid';
+});
+
+hideGridBtn.addEventListener('click', function() {
+    grid.style.display = 'none';
 });
 
 objStatCloseBtn.addEventListener('click', function() {
