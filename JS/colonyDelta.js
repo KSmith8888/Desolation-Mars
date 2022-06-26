@@ -243,8 +243,8 @@ function drawHealthBar() {
 If player moves onto a tile that holds an item, that item is added to their inventory.
 */
 let backgroundItems = [
-    {name: 'Medkit', background: 'Images/medkit.png', description: 'Medkit: Refills health by 50 points', x: tileSize * 7, y: tileSize * 12, found: false},
-    {name: 'Blue Phaser', background: 'Images/bluePhaser.png',  description: 'Blue Phaser: Permanently increases damage by 5', x: tileSize * 4, y: tileSize * 5, found: false}
+    {name: 'Medkit', background: 'Images/medkit.png', description: 'Medkit: Refills health by 50 points', x: tileSize * 15, y: tileSize * 12, found: false},
+    {name: 'Blue Phaser', background: 'Images/bluePhaser.png',  description: 'Blue Phaser: Permanently increases damage by 5', x: tileSize * 8, y: tileSize * 7, found: false}
 ];
 
 function pickedUpItem() {
@@ -506,18 +506,23 @@ class redNomad {
 
 function createEnemies() {
 for(let i = 0; i < 3; i++) {
+    enemies.push(new redNomad());
+    storedEnemies = enemies;
+} 
+for(let j = 0; j < 2; j++) {
     enemies.push(new greenNomad());
     storedEnemies = enemies;
 } 
-enemies[0].x = 800;
+enemies[0].x = 300;
 enemies[0].y = 325;
 enemies[1].x = 375;
 enemies[1].y = 450;
 enemies[2].x = 200;
 enemies[2].y = 200;
-enemies.push(new redNomad());
 enemies[3].x = 975;
 enemies[3].y = 550;
+enemies[4].x = 775;
+enemies[4].y = 450;
 }
 
 //If save data is present, sets enemies array to match saved enemy positions and health, otherwise creates new level start enemies.
@@ -577,9 +582,13 @@ function levelUp() {
     player.playerLevel += 1;
     }
     if(enemies.length === 0) {
-        player.gameLevel = 2;
-        alert('Level 2: Colony Delta');
-        location.href = './colonyDelta.html';
+        //push boss in this condition or add function?
+        player.gameLevel = 3;
+        player.health = player.healthStat; 
+        localStorage.removeItem('enemyInfo');
+        localStorage.setItem('playerInfo', JSON.stringify(player));
+        alert('Thanks for playing, the rest of the game is still in development.');
+        location.href = './index.html';
     }
 }
 
@@ -686,6 +695,28 @@ function enemyColDetect() {
         whichEnemyAttacking = i;
         enemyAttack(i);  
         }
+        }
+    }
+}
+
+//Prevent enemies from landing on space occupied by building
+function enemySolidColDetect() {
+    for(let i = 0; i < enemies.length; i++) {
+        for(let j = 0; j < tiles.length; j++) {
+            if(enemies[i].x === tiles[j].x && enemies[i].y === tiles[j].y && tiles[j].solid === true) {
+                enemies[i].y += tileSize;
+            }
+        }
+    }
+}
+
+//Prevent multiple enemies from landing on the same tile
+function enemyEnemyColDetect() {
+    for(let i = 0; i < enemies.length; i++) {
+        for(let j = 0; j < enemies.length; j++) {
+            if(i !== j && enemies[i].x === enemies[j].x && enemies[i].y === enemies[j].y) {
+                enemies[i].y += tileSize;
+            }
         }
     }
 }
@@ -815,6 +846,7 @@ objectiveBtn.addEventListener('click', function() {
     Movement: ${JSON.stringify(player.movementStat)}
     Exp: ${JSON.stringify(player.exp)}
     Current Health: ${JSON.stringify(player.health)}
+    Remaining Moves: ${JSON.stringify(player.movement)}
     `;
     objStatCloseBtn.focus();
 });
@@ -854,6 +886,8 @@ function animate() {
     }else {
     enemyColDetect();
     solidColDetect();
+    enemySolidColDetect();
+    enemyEnemyColDetect();
     }
     handleEnemies();
     turn();
