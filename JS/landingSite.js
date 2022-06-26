@@ -566,6 +566,9 @@ function levelUp() {
     }
     if(enemies.length === 0) {
         player.gameLevel = 2;
+        player.health = player.healthStat; 
+        localStorage.removeItem('enemyInfo');
+        localStorage.setItem('playerInfo', JSON.stringify(player));
         alert('Level 2: Colony Delta');
         location.href = './colonyDelta.html';
     }
@@ -656,7 +659,7 @@ function enemyMovement() {
         } else {
             enemies[i].y -= (Math.floor(Math.random() * 3) + 1) * tileSize;
         }
-}
+    }
 }
 
 /*Enemy Collision Detection
@@ -674,6 +677,28 @@ function enemyColDetect() {
         whichEnemyAttacking = i;
         enemyAttack(i);  
         }
+        }
+    }
+}
+
+//Prevent enemies from landing on space occupied by building
+function enemySolidColDetect() {
+    for(let i = 0; i < enemies.length; i++) {
+        for(let j = 0; j < tiles.length; j++) {
+            if(enemies[i].x === tiles[j].x && enemies[i].y === tiles[j].y && tiles[j].solid === true) {
+                enemies[i].y += tileSize;
+            }
+        }
+    }
+}
+
+//Prevent multiple enemies from landing on the same tile
+function enemyEnemyColDetect() {
+    for(let i = 0; i < enemies.length; i++) {
+        for(let j = 0; j < enemies.length; j++) {
+            if(i !== j && enemies[i].x === enemies[j].x && enemies[i].y === enemies[j].y) {
+                enemies[i].y += tileSize;
+            }
         }
     }
 }
@@ -803,6 +828,7 @@ objectiveBtn.addEventListener('click', function() {
     Movement: ${JSON.stringify(player.movementStat)}
     Exp: ${JSON.stringify(player.exp)}
     Current Health: ${JSON.stringify(player.health)}
+    Remaining Moves: ${JSON.stringify(player.movement)}
     `;
     objStatCloseBtn.focus();
 });
@@ -842,6 +868,8 @@ function animate() {
     }else {
     enemyColDetect();
     solidColDetect();
+    enemySolidColDetect();
+    enemyEnemyColDetect();
     }
     handleEnemies();
     turn();
