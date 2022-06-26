@@ -1,0 +1,34 @@
+body {
+    margin: 0;
+    padding: 0;
+    background: black;
+    width: 100vw;
+    height: 100vh;
+}
+
+#wastelandCon {
+    width: 100%;
+    height: 100%;
+    background-image: url('../Images/marsmountain.png');
+    display: grid;
+    grid-template-columns: 10vw 20vw 40vw 20vw 10vw;
+    grid-template-rows: 40vh 50vh 10vh;
+}
+
+#textCon {
+    font-size: 26px;
+    grid-column: 2/5;
+    grid-row: 2/2;
+}
+
+#arrowRight1 {
+    background-image: url('../Images/greenRightArrow.png');
+    width: 100px;
+    height: 60px;
+}
+
+#arrowRight2 {
+    background-image: url('../Images/greenRightArrow.png');
+    width: 100px;
+    height: 60px;
+}
