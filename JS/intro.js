@@ -14,5 +14,5 @@ arrowRight.addEventListener('click', function() {
 });
 
 arrowRight2.addEventListener('click', function() {
-    location.href = './landingSite.html';
+    location.href = './wasteland.html';
 });
