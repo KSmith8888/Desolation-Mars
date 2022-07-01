@@ -9,6 +9,8 @@ let upPressed = false;
 let downPressed = false;
 
 let tileSize = 25;
+let team = [];
+let items = [];
 let buildingsArray = [];
 let backgroundItems = [];
 
@@ -37,6 +39,8 @@ const grid = document.getElementById('grid');
 grid.style.display = 'none';
 const playerImage = new Image();
 playerImage.src = 'Images/playerV4.png';
+const blueNomadImage = new Image();
+blueNomadImage.src = 'Images/blueNomad.png';
 
 const menuAltBtn = document.getElementById('menuAltBtn');
 const itemsMenu = document.getElementById('itemsMenu');
@@ -114,12 +118,10 @@ function createTiles() {
 createTiles();
 
 //Player
-const player = JSON.parse(localStorage.getItem('playerInfo')) || {
+const atlas = JSON.parse(localStorage.getItem('playerInfo')) || {
     health: 100,
     x: 50,
     y: 50,
-    posX: 60,
-    posY: 60,
     width: 25,
     height: 25,
     damage: 20,
@@ -132,17 +134,48 @@ const player = JSON.parse(localStorage.getItem('playerInfo')) || {
     items: []
 }
 
+team.push(atlas);
+let player = atlas;
+let activeChar = 0;
+
 function drawPlayer() {
-    if(player.x > verticalLines[verticalLines.length - 2]) {
-        player.x = verticalLines[verticalLines.length - 2];
-    } else if(player.x < 0) {
-        player.x = 0;
-    } else if(player.y < 0) {
-        player.y = 0;
-    } else if(player.y > horizontalLines[horizontalLines.length - 2]) {
-        player.y = horizontalLines[horizontalLines.length - 2];
+    if(atlas.x > verticalLines[verticalLines.length - 2]) {
+        atlas.x = verticalLines[verticalLines.length - 2];
+    } else if(atlas.x < 0) {
+        atlas.x = 0;
+    } else if(atlas.y < 0) {
+        atlas.y = 0;
+    } else if(atlas.y > horizontalLines[horizontalLines.length - 2]) {
+        atlas.y = horizontalLines[horizontalLines.length - 2];
     }
-    ctx.drawImage(playerImage, player.x, player.y, player.width, player.height);
+    ctx.drawImage(playerImage, atlas.x, atlas.y, atlas.width, atlas.height);
+}
+
+const blueNomad = JSON.parse(localStorage.getItem('blueNomadInfo')) || {
+    x: 50,
+    y: 75,
+    width: 25,
+    height: 25,
+    exp: 0,
+    movementStat: 6,
+    movement: 6,
+    healthStat: 80,
+    health: 80,
+    damage: 15,
+    playerLevel: 1
+}
+
+function drawBlueNomad() {
+    if(blueNomad.x > verticalLines[verticalLines.length - 2]) {
+        blueNomad.x = verticalLines[verticalLines.length - 2];
+    } else if(blueNomad.x < 0) {
+        blueNomad.x = 0;
+    } else if(blueNomad.y < 0) {
+        blueNomad.y = 0;
+    } else if(blueNomad.y > horizontalLines[horizontalLines.length - 2]) {
+        blueNomad.y = horizontalLines[horizontalLines.length - 2];
+    }
+    ctx.drawImage(blueNomadImage, blueNomad.x, blueNomad.y, blueNomad.width, blueNomad.height);
 }
 
 /*Items Menu
@@ -151,12 +184,12 @@ Loops through the players item property array and adds a background image and de
 function openedItemsMenu() {
     itemsMenu.style.display = 'grid';
     item1.focus();
-    for(let i = 0; i < player.items.length; i++) {
-        document.getElementById('item' + (i + 1)).style.backgroundImage = `url('${player.items[i].background}')`;
-        document.getElementById('item' + (i + 1) + 'Text').innerText = player.items[i].description;
+    for(let i = 0; i < items.length; i++) {
+        document.getElementById('item' + (i + 1)).style.backgroundImage = `url('${items[i].background}')`;
+        document.getElementById('item' + (i + 1) + 'Text').innerText = items[i].description;
     }
-    document.getElementById('item' + (player.items.length + 1)).style.backgroundImage = '';
-    document.getElementById('item' + (player.items.length + 1) + 'Text').innerText = '';
+    document.getElementById('item' + (items.length + 1)).style.backgroundImage = '';
+    document.getElementById('item' + (items.length + 1) + 'Text').innerText = '';
 }
 
 itemsCloseBtn.addEventListener('click', function() {
@@ -173,7 +206,8 @@ const healthBarCon = {
     height: 15
 }
 
-function drawHealthBar() {
+function drawHealthBar(player) {
+    player = team[activeChar];
     ctx.strokeStyle = 'gold';
     ctx.fillStyle = 'black';
     ctx.beginPath();
@@ -189,11 +223,11 @@ function drawHealthBar() {
 }
 
 function pickedUpItem() {
-    for(let i = 0; i < player.items.length; i++) {
-        if(player.items[i].found === true) {
-            delete player.items[i].x;
-            delete player.items[i].y;
-            delete player.items[i].found;
+    for(let i = 0; i < items.length; i++) {
+        if(items[i].found === true) {
+            delete items[i].x;
+            delete items[i].y;
+            delete items[i].found;
         }
     }
 }
@@ -201,58 +235,59 @@ function pickedUpItem() {
 /*
 When an item is used, adjusts players stats based on the name of the item and removes it from the players items property. 
 */
-function useItem(index) {
-    if(player.items[index].name === 'Medkit') {
+function useItem(index, player) {
+    player = team[activeChar];
+    if(items[index].name === 'Medkit') {
         player.health += 50;
-    } else if(player.items[index].name === 'Blue Phaser') {
+    } else if(items[index].name === 'Blue Phaser') {
         player.damage += 5;
     }
-    player.items.splice(index, 1);
+    items.splice(index, 1);
     openedItemsMenu();
 }
 
 item1.addEventListener('click', function() {
-    if(player.items[0] !== undefined) {
+    if(items[0] !== undefined) {
     useItem(0);
     }
 });
 item2.addEventListener('click', function() {
-    if(player.items[1] !== undefined) {
+    if(items[1] !== undefined) {
     useItem(1);
     }
 });
 item3.addEventListener('click', function() {
-    if(player.items[2] !== undefined) {
+    if(items[2] !== undefined) {
     useItem(2);
     }
 });
 item4.addEventListener('click', function() {
-    if(player.items[3] !== undefined) {
+    if(items[3] !== undefined) {
     useItem(3);
     }
 });
 item5.addEventListener('click', function() {
-    if(player.items[4] !== undefined) {
+    if(items[4] !== undefined) {
     useItem(4);
     }
 });
 item6.addEventListener('click', function() {
-    if(player.items[5] !== undefined) {
+    if(items[5] !== undefined) {
     useItem(5);
     }
 });
 item7.addEventListener('click', function() {
-    if(player.items[6] !== undefined) {
+    if(items[6] !== undefined) {
     useItem(6);
     }
 });
 item8.addEventListener('click', function() {
-    if(player.items[7] !== undefined) {
+    if(items[7] !== undefined) {
     useItem(7);
     }
 });
 item9.addEventListener('click', function() {
-    if(player.items[8] !== undefined) {
+    if(items[8] !== undefined) {
     useItem(8);
     }
 });
@@ -267,7 +302,8 @@ Then a loop iterates through the array of tile objects with collision detection 
 -If so, players coordinates are updated to the clicked tile and the movement property is updated.
 -Checks if the space the player landed on has an item on it.
 */
-document.addEventListener('click', function(e) {
+document.addEventListener('click', function(e, player) {
+    player = team[activeChar];
     if(e.clientX < 50 && e.clientY < 50) {
         console.log('Invalid Movement Area Clicked - Menu');
     } else if(!menuOpen && player.movement > 0 && !battle && !enemyTurn) { 
@@ -323,7 +359,7 @@ document.addEventListener('click', function(e) {
 for(let i = 0; i < backgroundItems.length; i++) {
     if(backgroundItems[i].x === player.x && backgroundItems[i].y === player.y && backgroundItems[i].found === false) {
         backgroundItems[i].found = true;
-        player.items.push(backgroundItems[i]);
+        items.push(backgroundItems[i]);
         alert(`you picked up ${backgroundItems[i].name}`);
         pickedUpItem();
     }
@@ -337,7 +373,8 @@ Keyboard controls use either wasd or arrow keys to move and p to open the menu. 
 document.addEventListener('keydown', keyDownHandler, false);
 document.addEventListener('keyup', keyUpHandler, false);
 
-function keyDownHandler(e) {
+function keyDownHandler(e, player) {
+    player = team[activeChar];
     if(e.key == "Right" || e.key == "ArrowRight" || e.key == 'd') {
         rightPressed = true;
         if(!solidCollideRight && player.movement > 0 && !battle && !menuOpen && !enemyTurn) {
@@ -373,7 +410,7 @@ function keyDownHandler(e) {
     for(let i = 0; i < backgroundItems.length; i++) {
         if(backgroundItems[i].x === player.x && backgroundItems[i].y === player.y && backgroundItems[i].found === false) {
             backgroundItems[i].found = true;
-            player.items.push(backgroundItems[i]);
+            items.push(backgroundItems[i]);
             alert(`you picked up ${backgroundItems[i].name}`);
             pickedUpItem();
         }
@@ -401,7 +438,8 @@ Turns
 -Once movement reaches 0, if a battle sequence is not in progress, hides grid and allows enemies to move. Then resets players movement property
 */
 
-function turn() {
+function turn(player) {
+    player = team[activeChar];
     if(player.movement > 0) {
        //players turn
     } else {
@@ -468,7 +506,8 @@ function drawEnemyHealthBar(enemyIndex) {
 When collision detection is set off between the player and an enemy, the battle property of that enemy is set to true. The enemyAttack and playerAttack functions go back and forth as long as both the enemy and player have health properties above 0. While the battle is active, the player cannot move or open the menu and collision detection is off.
 */
 
-function playerAttack(enemyIndex) {
+function playerAttack(enemyIndex, player) {
+    player = team[activeChar];
     enemies[enemyIndex].x -= 15;
     playerHit = false;
 if(enemies[enemyIndex].health > 0 && player.health > 0) {
@@ -486,7 +525,8 @@ if(enemies[enemyIndex].health > 0 && player.health > 0) {
 }
 }
 
-function enemyAttack(enemyIndex) {
+function enemyAttack(enemyIndex, player) {
+    player = team[activeChar];
     player.x += 15;
     enemyHit = false;
     battle = true;
@@ -506,7 +546,8 @@ if(player.health > 0 && enemies[enemyIndex].health > 0) {
 }
 }
 
-function damageText() {
+function damageText(player) {
+    player = team[activeChar];
     ctx.fillStyle = 'black';
     if(playerHit && player.health > 0) {
         ctx.font = '22px georgia';
@@ -537,7 +578,8 @@ function handleEnemies() {
     }
 }
 
-function enemyMovement() {
+function enemyMovement(player) {
+    player = team[activeChar];
     let i = whichEnemyMoving;
     if(i < enemies.length) {
         setTimeout(function() {
@@ -563,7 +605,8 @@ function enemyMovement() {
 /*Enemy Collision Detection
 When collision is detected, initiates battle sequence between that enemy and the player. Sets whichEnemyAttacking variable to the index of the enemy that collided so that animation loop calls the enemy health bar and damage text to show above the attacking enemy. 
 */
-function enemyColDetect() {
+function enemyColDetect(player) {
+    player = team[activeChar];
     for(let i = 0; i < enemies.length; i++) {
     if(
         player.x < enemies[i].x + enemies[i].width && 
@@ -623,7 +666,17 @@ itemsMenuBtn.addEventListener('click', function() {
 });
 
 endTurnBtn.addEventListener('click', function() {
-    player.movement = 0;
+    //player = team[activeChar];
+    if(team.length === 2) {
+        if(activeChar === 0) {
+            activeChar = 1;
+            player = blueNomad;
+        } else {
+        activeChar = 0;
+        player = atlas;
+        }
+    }
+    //player.movement = 0;
 });
 
 mapDetailsCloseBtn.addEventListener('click', function() {
@@ -661,7 +714,8 @@ objStatCloseBtn.addEventListener('click', function() {
     objStatDescription.innerText = '';
 });
 
-objectiveBtn.addEventListener('click', function() {
+objectiveBtn.addEventListener('click', function(player) {
+    player = team[activeChar];
     objStatDetails.style.display = 'grid';
     objStatCloseBtn.style.display = 'grid';
     objStatDescription.innerText = `Objective: Defeat all enemies on the board 
@@ -678,7 +732,10 @@ objectiveBtn.addEventListener('click', function() {
 });
 
 saveGameBtn.addEventListener('click', function() {
-    localStorage.setItem('playerInfo', JSON.stringify(player));
+    localStorage.setItem('playerInfo', JSON.stringify(atlas));
+    if(team.includes('blueNomad')) {
+    localStorage.setItem('blueNomadInfo', JSON.stringify(blueNomad));
+    }
     localStorage.setItem('enemyInfo', JSON.stringify(enemies));
     //localStorage.setItem('enemyInfo', JSON.stringify(storedEnemies));
 });
