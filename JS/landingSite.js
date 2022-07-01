@@ -90,7 +90,8 @@ if(localStorage.getItem('enemyInfo') != null) {
 checkForSavedEnemies();
 
 //Solid Environmental Collision Detection
-function solidColDetect() {
+function solidColDetect(player) {
+    player = team[activeChar];
     solidCollideRight = false;
     solidCollideLeft = false;
     solidCollideUp = false;
@@ -144,7 +145,8 @@ function isTileUnderBuilding() {
 isTileUnderBuilding();
 
 //Leveling Up
-function levelUp() {
+function levelUp(player) {
+    player = team[activeChar];
     let random = Math.floor(Math.random() * 3);
     let stats = ['Health', 'Damage', 'Movement'];
     if(player.exp === 100) {
