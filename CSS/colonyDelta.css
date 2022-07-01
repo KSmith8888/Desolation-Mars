@@ -233,3 +233,26 @@ body {
 #menuAltBtn:hover {
     cursor: pointer;
 }
+
+#blueNomadMessage {
+    width: 250px;
+    height: 250px;
+    background:rgb(173, 157, 157);
+    border:rgb(117, 20, 20) 3px solid;
+    margin-top: 10%;
+    margin-left: 10%;
+    position: absolute;
+}
+
+#blueNomadMessage button {
+    width: 80px;
+    height: 30px;
+}
+
+#recruitSpace {
+    width: 25px;
+    height: 25px;
+    border: 5px solid orange;
+    margin-left: 50px;
+    margin-top: 300px;
+}
