@@ -1,3 +1,17 @@
+const blueNomadMessage = document.getElementById('blueNomadMessage');
+blueNomadMessage.style.display = 'none';
+const recruitSpace = document.getElementById('recruitSpace');
+const recruitBtn = document.getElementById('recruitBtn');
+
+function recruitBlueNomad() {
+    if(player.x === 50 && player.y === 300 && team.length === 1) {
+        menuOpen = true;
+        recruitSpace.style.display = 'none';
+        blueNomadMessage.style.display = 'grid';
+        recruitBtn.focus();
+    }
+}
+
 /*
 Buildings/Features
 -Creates building objects and stores them in an array
@@ -107,7 +121,8 @@ if(localStorage.getItem('enemyInfo') != null) {
 checkForSavedEnemies();
 
 //Solid Environmental Collision Detection
-function solidColDetect() {
+function solidColDetect(player) {
+    player = team[activeChar];
     solidCollideRight = false;
     solidCollideLeft = false;
     solidCollideUp = false;
@@ -160,7 +175,8 @@ function isTileUnderBuilding() {
 }
 isTileUnderBuilding();
 
-function levelUp() {
+function levelUp(player) {
+    player = team[activeChar];
     let random = Math.floor(Math.random() * 3);
     let stats = ['Health', 'Damage', 'Movement'];
     if(player.exp === 100) {
@@ -186,12 +202,24 @@ function levelUp() {
     }
 }
 
+recruitBtn.addEventListener('click', function() {
+    team.push(blueNomad);
+    blueNomadMessage.style.display = 'none';
+    alert('You have recruited Blue Nomad to your team!');
+    activeChar = 0;
+    player = atlas;
+    console.log(player, activeChar, team)
+});
+
 //Animation Loop
 function animate() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     drawBuildings();
     drawHealthBar();
     drawPlayer();
+    if(team.includes(blueNomad)) {
+        drawBlueNomad();
+    }
     if(battle){
         drawEnemyHealthBar(whichEnemyAttacking);
         damageText();
@@ -200,6 +228,7 @@ function animate() {
     solidColDetect();
     enemySolidColDetect();
     enemyEnemyColDetect();
+    recruitBlueNomad();
     }
     handleEnemies();
     turn();
