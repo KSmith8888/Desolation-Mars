@@ -242,6 +242,7 @@ body {
     margin-top: 10%;
     margin-left: 10%;
     position: absolute;
+    z-index: 4;
 }
 
 #blueNomadMessage button {
@@ -255,4 +256,5 @@ body {
     border: 5px solid orange;
     margin-left: 50px;
     margin-top: 300px;
+    position: absolute;
 }
