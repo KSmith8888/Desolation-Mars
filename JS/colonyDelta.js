@@ -202,13 +202,13 @@ function levelUp(player) {
     }
 }
 
-recruitBtn.addEventListener('click', function() {
+recruitBtn.addEventListener('click', function(){ 
     team.push(blueNomad);
     blueNomadMessage.style.display = 'none';
-    alert('You have recruited Blue Nomad to your team!');
-    activeChar = 0;
-    player = atlas;
-    console.log(player, activeChar, team)
+    alert('You have recruited Blue Nomad to your team! Use the switch Character button in the menu to change between your characters.');
+    fullMenu.style.display = 'grid';
+    menuOpen = true;
+    endTurnBtn.focus();
 });
 
 //Animation Loop
