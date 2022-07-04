@@ -437,16 +437,24 @@ Turns
 -When players movement property is above 0, makes grid visible
 -Once movement reaches 0, if a battle sequence is not in progress, hides grid and allows enemies to move. Then resets players movement property
 */
-
-function turn(player) {
-    player = team[activeChar];
-    if(player.movement > 0) {
-       //players turn
+let totalMovement = 0;
+function turn() {
+    if(team.length === 1) {
+        totalMovement = atlas.movement;
+    } else if(team.length === 2) {
+        totalMovement = atlas.movement + blueNomad.movement;
+    }
+    //player = team[activeChar];
+    if(totalMovement > 0) {
+       //players turn 
     } else {
         if(!battle) {
         enemyTurn = true;
         enemyMovement();
-        player.movement = player.movementStat;
+        atlas.movement = atlas.movementStat;
+        if(team.length === 2) {
+            blueNomad.movement = blueNomad.movementStat;
+        }
         }
     }
 }
@@ -714,7 +722,7 @@ objStatCloseBtn.addEventListener('click', function() {
     objStatDescription.innerText = '';
 });
 
-objectiveBtn.addEventListener('click', function(player) {
+objectiveBtn.addEventListener('click', function() {
     player = team[activeChar];
     objStatDetails.style.display = 'grid';
     objStatCloseBtn.style.display = 'grid';
