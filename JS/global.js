@@ -135,7 +135,7 @@ const atlas = JSON.parse(localStorage.getItem('playerInfo')) || {
 }
 
 team.push(atlas);
-let player = atlas;
+//let player = atlas;
 let activeChar = 0;
 
 function drawPlayer() {
@@ -151,7 +151,7 @@ function drawPlayer() {
     ctx.drawImage(playerImage, atlas.x, atlas.y, atlas.width, atlas.height);
 }
 
-const blueNomad = JSON.parse(localStorage.getItem('blueNomadInfo')) || {
+let blueNomad = JSON.parse(localStorage.getItem('blueNomadInfo')) || {
     x: 50,
     y: 75,
     width: 25,
@@ -202,7 +202,7 @@ itemsCloseBtn.addEventListener('click', function() {
 const healthBarCon = {
     x: 40,
     y: 10,
-    width: player.healthStat * 2,
+    width: team[activeChar].healthStat * 2,
     height: 15
 }
 
@@ -320,7 +320,7 @@ document.addEventListener('click', function(e, player) {
                         player.y = tiles[i].y;
                         player.x = tiles[i].x;
                     } else if(player.y > tiles[i].y && player.movement - ((player.y - tiles[i].y) / 25) - ((tiles[i].x - player.x) / 25) >= 0){
-                        player.movement -= (((player.y - tiles[i].y) / 25) + ((tiles[i].x - player.x) / 30));
+                        player.movement -= (((player.y - tiles[i].y) / 25) + ((tiles[i].x - player.x) / 25));
                         player.y = tiles[i].y;
                         player.x = tiles[i].x;
                     } else if(tiles[i].y === player.y) {
@@ -406,6 +406,16 @@ function keyDownHandler(e, player) {
         fullMenu.style.display = 'grid';
         menuOpen = true;
         itemsMenuBtn.focus();
+    } else if(e.key == 'o' && !battle && !enemyTurn) {
+        if(team.length === 2) {
+            if(activeChar === 0) {
+                activeChar = 1;
+                player = blueNomad;
+            } else {
+            activeChar = 0;
+            player = atlas;
+            }
+        }
     }
     for(let i = 0; i < backgroundItems.length; i++) {
         if(backgroundItems[i].x === player.x && backgroundItems[i].y === player.y && backgroundItems[i].found === false) {
@@ -548,7 +558,7 @@ if(player.health > 0 && enemies[enemyIndex].health > 0) {
 } else {
     battle = false;
     player.x -= 15;
-    player.exp += 50;
+    team[activeChar].exp += 50;
     enemies.splice(whichEnemyAttacking, 1);
     levelUp();
 }
@@ -674,17 +684,15 @@ itemsMenuBtn.addEventListener('click', function() {
 });
 
 endTurnBtn.addEventListener('click', function() {
-    //player = team[activeChar];
     if(team.length === 2) {
         if(activeChar === 0) {
             activeChar = 1;
-            player = blueNomad;
+            //player = blueNomad;
         } else {
         activeChar = 0;
-        player = atlas;
+        //player = atlas;
         }
     }
-    //player.movement = 0;
 });
 
 mapDetailsCloseBtn.addEventListener('click', function() {
@@ -723,25 +731,25 @@ objStatCloseBtn.addEventListener('click', function() {
 });
 
 objectiveBtn.addEventListener('click', function() {
-    player = team[activeChar];
     objStatDetails.style.display = 'grid';
     objStatCloseBtn.style.display = 'grid';
     objStatDescription.innerText = `Objective: Defeat all enemies on the board 
     Stats- 
-    Level: ${JSON.stringify(player.playerLevel)}
-    Max Health: ${JSON.stringify(player.healthStat)}
-    Damage: ${JSON.stringify(player.damage)}
-    Movement: ${JSON.stringify(player.movementStat)}
-    Exp: ${JSON.stringify(player.exp)}
-    Current Health: ${JSON.stringify(player.health)}
-    Remaining Moves: ${JSON.stringify(player.movement)}
+    Level: ${JSON.stringify(team[activeChar].playerLevel)}
+    Max Health: ${JSON.stringify(team[activeChar].healthStat)}
+    Damage: ${JSON.stringify(team[activeChar].damage)}
+    Movement: ${JSON.stringify(team[activeChar].movementStat)}
+    Exp: ${JSON.stringify(team[activeChar].exp)}
+    Current Health: ${JSON.stringify(team[activeChar].health)}
+    Remaining Moves: ${JSON.stringify(team[activeChar].movement)}
     `;
     objStatCloseBtn.focus();
 });
 
 saveGameBtn.addEventListener('click', function() {
     localStorage.setItem('playerInfo', JSON.stringify(atlas));
-    if(team.includes('blueNomad')) {
+    if(team.length === 2) {
+        console.log('includes')
     localStorage.setItem('blueNomadInfo', JSON.stringify(blueNomad));
     }
     localStorage.setItem('enemyInfo', JSON.stringify(enemies));
