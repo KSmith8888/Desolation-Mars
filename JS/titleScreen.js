@@ -25,6 +25,8 @@ if(localStorage.getItem('playerInfo') != null) {
     savedInfo = JSON.parse(localStorage.getItem('playerInfo'));
     if(savedInfo.gameLevel === 1) {
         location.href = './landingSite.html';
+    } else if(savedInfo.gameLevel === 2) {
+        location.href = './colonyDelta.html';
     }
 } else {
     alert('No save data found, please start a new game.');
