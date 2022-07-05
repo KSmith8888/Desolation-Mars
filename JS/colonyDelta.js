@@ -1,13 +1,17 @@
+//Level 2: Colony Delta
+
 const blueNomadMessage = document.getElementById('blueNomadMessage');
 blueNomadMessage.style.display = 'none';
 const recruitSpace = document.getElementById('recruitSpace');
 const recruitBtn = document.getElementById('recruitBtn');
+//recruitBtn.style.display = 'none';
 
 function recruitBlueNomad() {
-    if(player.x === 50 && player.y === 300 && team.length === 1) {
+    if(team[activeChar].x === 50 && team[activeChar].y === 300 && team.length === 1) {
         menuOpen = true;
         recruitSpace.style.display = 'none';
         blueNomadMessage.style.display = 'grid';
+        //recruitBtn.style.display = 'grid';
         recruitBtn.focus();
     }
 }
@@ -102,12 +106,12 @@ function checkForSavedEnemies() {
 if(localStorage.getItem('enemyInfo') != null) { 
     storedEnemies = JSON.parse(localStorage.getItem('enemyInfo'))
     for(let i = 0; i < storedEnemies.length; i++) {
-        if(storedEnemies.enemyType === 'Green Nomad') {
+        if(storedEnemies[i].enemyType === 'Green Nomad') {
         enemies.push(new greenNomad());
         enemies[i].health = storedEnemies[i].health;
         enemies[i].x = storedEnemies[i].x;
         enemies[i].y = storedEnemies[i].y;
-        } else if(storedEnemies.enemyType === 'Red Nomad') {
+        } else if(storedEnemies[i].enemyType === 'Red Nomad') {
         enemies.push(new redNomad());
         enemies[i].health = storedEnemies[i].health;
         enemies[i].x = storedEnemies[i].x;
@@ -175,41 +179,50 @@ function isTileUnderBuilding() {
 }
 isTileUnderBuilding();
 
-function levelUp(player) {
-    player = team[activeChar];
+function levelUp() {
+    //player = team[activeChar];
     let random = Math.floor(Math.random() * 3);
     let stats = ['Health', 'Damage', 'Movement'];
-    if(player.exp === 100) {
+    if(team[activeChar].exp === 100) {
         if(stats[random] === 'Health') {
-            player.healthStat += 10;
+            team[activeChar].healthStat += 10;
         } else if(stats[random] === 'Damage') {
-            player.damage += 5;
+            team[activeChar].damage += 5;
         } else if(stats[random] === 'Movement') {
-            player.movementStat += 1;
+            team[activeChar].movementStat += 1;
         }
-    player.exp = 0;
-    player.playerLevel += 1;
+    team[activeChar].exp = 0;
+    team[activeChar].playerLevel += 1;
     }
     if(enemies.length === 0) {
         //push boss in this condition or add function?
-        player.gameLevel = 3;
-        player.health = player.healthStat; 
-        player.movement = player.movementStat;
+        team[activeChar].gameLevel = 3;
+        team[activeChar].health = player.healthStat; 
+        team[activeChar].movement = player.movementStat;
         localStorage.removeItem('enemyInfo');
-        localStorage.setItem('playerInfo', JSON.stringify(player));
+        localStorage.setItem('playerInfo', JSON.stringify(atlas));
+        localStorage.setItem('blueNomadInfo', JSON.stringify(blueNomad));
         alert('Thanks for playing, the rest of the game is still in development.');
         location.href = './index.html';
     }
+    console.log(atlas.movement)
 }
 
+if(localStorage.getItem('blueNomadInfo') === null) {
 recruitBtn.addEventListener('click', function(){ 
     team.push(blueNomad);
+    localStorage.setItem('blueNomadInfo', JSON.stringify(blueNomad))
     blueNomadMessage.style.display = 'none';
-    alert('You have recruited Blue Nomad to your team! Use the switch Character button in the menu to change between your characters.');
+    alert('You have recruited Blue Nomad to your team! Use the "o" key or the switch Character button in the menu to change between your characters.');
     fullMenu.style.display = 'grid';
     menuOpen = true;
     endTurnBtn.focus();
 });
+} else {
+    recruitSpace.style.display = 'none';
+    blueNomad = JSON.parse(localStorage.getItem('blueNomadInfo'));
+    team.push(blueNomad);
+}
 
 //Animation Loop
 function animate() {
