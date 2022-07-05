@@ -1,3 +1,5 @@
+//Level 1: The Landing Site
+
 /*
 Buildings/Features
 -Creates building objects and stores them in an array
@@ -71,12 +73,12 @@ function checkForSavedEnemies() {
 if(localStorage.getItem('enemyInfo') != null) { 
     storedEnemies = JSON.parse(localStorage.getItem('enemyInfo'))
     for(let i = 0; i < storedEnemies.length; i++) {
-        if(storedEnemies.enemyType === 'Green Nomad') {
+        if(storedEnemies[i].enemyType === 'Green Nomad') {
         enemies.push(new greenNomad());
         enemies[i].health = storedEnemies[i].health;
         enemies[i].x = storedEnemies[i].x;
         enemies[i].y = storedEnemies[i].y;
-        } else if(storedEnemies.enemyType === 'Red Nomad') {
+        } else if(storedEnemies[i].enemyType === 'Red Nomad') {
         enemies.push(new redNomad());
         enemies[i].health = storedEnemies[i].health;
         enemies[i].x = storedEnemies[i].x;
@@ -145,31 +147,30 @@ function isTileUnderBuilding() {
 isTileUnderBuilding();
 
 //Leveling Up
-function levelUp(player) {
-    player = team[activeChar];
+function levelUp() {
     let random = Math.floor(Math.random() * 3);
     let stats = ['Health', 'Damage', 'Movement'];
-    if(player.exp === 100) {
+    if(team[activeChar].exp === 100) {
         if(stats[random] === 'Health') {
-            player.healthStat += 10;
+            team[activeChar].healthStat += 10;
         } else if(stats[random] === 'Damage') {
-            player.damage += 5;
+            team[activeChar].damage += 5;
         } else if(stats[random] === 'Movement') {
-            player.movementStat += 1;
+            team[activeChar].movementStat += 1;
         }
-    player.exp = 0;
-    player.playerLevel += 1;
+    team[activeChar].exp = 0;
+    team[activeChar].playerLevel += 1;
     }
     if(enemies.length === 0) {
-        player.gameLevel = 2;
-        player.x = 50;
-        player.y = 50;
-        player.health = player.healthStat; 
-        player.movement = player.movementStat;
+        team[activeChar].gameLevel = 2;
+        team[activeChar].x = 50;
+        team[activeChar].y = 50;
+        team[activeChar].health = team[activeChar].healthStat; 
+        team[activeChar].movement = team[activeChar].movementStat;
         buildingsArray = [];
         backgroundItems = [];
         localStorage.removeItem('enemyInfo');
-        localStorage.setItem('playerInfo', JSON.stringify(player));
+        localStorage.setItem('playerInfo', JSON.stringify(atlas));
         alert('Level 2: Colony Delta');
         location.href = './colonyDelta.html';
     }
@@ -181,6 +182,9 @@ function animate() {
     drawBuildings();
     drawHealthBar();
     drawPlayer();
+    if(team.includes(blueNomad)) {
+        drawBlueNomad();
+    }
     if(battle){
         drawEnemyHealthBar(whichEnemyAttacking);
         damageText();
