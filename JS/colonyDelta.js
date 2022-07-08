@@ -4,6 +4,7 @@ const blueNomadMessage = document.getElementById('blueNomadMessage');
 blueNomadMessage.style.display = 'none';
 const recruitSpace = document.getElementById('recruitSpace');
 const recruitBtn = document.getElementById('recruitBtn');
+let bossReleased = false;
 //recruitBtn.style.display = 'none';
 
 function recruitBlueNomad() {
@@ -81,11 +82,11 @@ function level2BackgroundItems() {
 level2BackgroundItems();
 
 function createEnemies() {
-for(let i = 0; i < 3; i++) {
+for(let i = 0; i < 1; i++) {
     enemies.push(new redNomad());
     storedEnemies = enemies;
 } 
-for(let j = 0; j < 2; j++) {
+for(let j = 0; j < 1; j++) {
     enemies.push(new greenNomad());
     storedEnemies = enemies;
 } 
@@ -93,12 +94,12 @@ enemies[0].x = 300;
 enemies[0].y = 325;
 enemies[1].x = 375;
 enemies[1].y = 450;
-enemies[2].x = 200;
-enemies[2].y = 200;
-enemies[3].x = 975;
-enemies[3].y = 550;
-enemies[4].x = 775;
-enemies[4].y = 450;
+//enemies[2].x = 200;
+//enemies[2].y = 200;
+//enemies[3].x = 975;
+//enemies[3].y = 550;
+//enemies[4].x = 775;
+//enemies[4].y = 450;
 }
 
 //If save data is present, sets enemies array to match saved enemy positions and health, otherwise creates new level start enemies.
@@ -195,17 +196,24 @@ function levelUp() {
     team[activeChar].playerLevel += 1;
     }
     if(enemies.length === 0) {
-        //push boss in this condition or add function?
+        if(bossReleased === false) {
+            enemies.push(new colonyDeltaBoss);
+            enemies[0].x = 100;
+            enemies[0].y = 100;
+        } else {
         team[activeChar].gameLevel = 3;
-        team[activeChar].health = player.healthStat; 
-        team[activeChar].movement = player.movementStat;
+        team[activeChar].health = team[activeChar].healthStat; 
+        team[activeChar].movement = team[activeChar].movementStat;
         localStorage.removeItem('enemyInfo');
         localStorage.setItem('playerInfo', JSON.stringify(atlas));
+        if(blueNomad.health > 0) {
         localStorage.setItem('blueNomadInfo', JSON.stringify(blueNomad));
+        }
         alert('Thanks for playing, the rest of the game is still in development.');
         location.href = './index.html';
+        }
+        bossReleased = true;
     }
-    console.log(atlas.movement)
 }
 
 if(localStorage.getItem('blueNomadInfo') === null) {
