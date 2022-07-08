@@ -21,3 +21,11 @@ https://opengameart.org/users/leyren
 -Quantiset
 https://opengameart.org/users/quantiset
 "Mars Background Pixel Art"
+
+-Tozan
+https://opengameart.org/users/tozan
+"Deep Space Array"
+
+-Qubodup
+https://opengameart.org/users/qubodup
+"Beep Tone Sound Effect"
