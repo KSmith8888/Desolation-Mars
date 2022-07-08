@@ -79,6 +79,9 @@ const deleteDataBtn = document.getElementById('deleteDataBtn');
 const exitGameBtn = document.getElementById('exitGameBtn');   
 const closeMenuBtn = document.getElementById('closeMenuBtn');
 
+const menuSound = new Audio();
+menuSound.src = 'Audio/beep.wav';
+
 window.addEventListener('resize', function() {
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
@@ -405,6 +408,7 @@ function keyDownHandler(e, player) {
     } else if(e.key == 'p' && !battle && !enemyTurn) {
         fullMenu.style.display = 'grid';
         menuOpen = true;
+        menuSound.play();
         itemsMenuBtn.focus();
     } else if(e.key == 'o' && !battle && !enemyTurn) {
         if(team.length === 2) {
@@ -476,6 +480,7 @@ class greenNomad {
         this.health = 50;
         this.maxHealth = 50;
         this.defeated = false;
+        this.movementStat = 2;
         this.width = 25; 
         this.height = 25;
         this.damage = 10;
@@ -491,12 +496,30 @@ class redNomad {
         this.enemyType = 'Red Nomad';
         this.health = 70;
         this.maxHealth = 70;
+        this.movementStat = 3;
         this.defeated = false;
         this.width = 25; 
         this.height = 25;
         this.damage = 15;
         this.image = new Image();
         this.image.src = 'Images/redNomad.png';
+    } draw() {
+        ctx.drawImage(this.image, this.x, this.y, this.width, this.height);
+    }
+}
+
+class colonyDeltaBoss {
+    constructor() {
+    this.enemyType = 'Colony Delta Boss';
+    this.health = 70;
+        this.maxHealth = 120;
+        this.movementStat = 5;
+        this.defeated = false;
+        this.width = 50; 
+        this.height = 50;
+        this.damage = 25;
+        this.image = new Image();
+        this.image.src = 'Images/colonyDeltaBoss.png';
     } draw() {
         ctx.drawImage(this.image, this.x, this.y, this.width, this.height);
     }
@@ -601,18 +624,18 @@ function enemyMovement(player) {
     let i = whichEnemyMoving;
     if(i < enemies.length) {
         setTimeout(function() {
-        if(player.x > enemies[i].x) {
-            enemies[i].x += (Math.floor(Math.random() * 3) + 1) * tileSize;
-        } else {
-            enemies[i].x -= (Math.floor(Math.random() * 3) + 1) * tileSize;
-        }
-        if(player.y > enemies[i].y) {
-            enemies[i].y += (Math.floor(Math.random() * 3) + 1) * tileSize;
-        } else {
-            enemies[i].y -= (Math.floor(Math.random() * 3) + 1) * tileSize;
-        }
-        whichEnemyMoving += 1;;
-        enemyMovement()
+            if(player.x > enemies[i].x) {
+                enemies[i].x += enemies[i].movementStat * tileSize;
+            } else if(player.x < enemies[i].x){
+                enemies[i].x -= enemies[i].movementStat * tileSize;
+            }
+            if(player.y > enemies[i].y) {
+                enemies[i].y += enemies[i].movementStat * tileSize;
+            } else if(player.y < enemies[i].y){
+                enemies[i].y -= enemies[i].movementStat * tileSize;
+            }
+            whichEnemyMoving += 1;
+            enemyMovement()
     }, 1000);
     } else {
         whichEnemyMoving = 0;
@@ -677,6 +700,7 @@ menuAltBtn.addEventListener('click', function() {
     fullMenu.style.display = 'grid';
     menuOpen = true;
     }
+    menuSound.play();
 });
             
 itemsMenuBtn.addEventListener('click', function() {
@@ -771,4 +795,5 @@ exitGameBtn.addEventListener('click', function() {
 closeMenuBtn.addEventListener('click', function() {
     fullMenu.style.display = 'none';
     menuOpen = false;
+    menuSound.play();
 });
