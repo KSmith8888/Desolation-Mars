@@ -2,14 +2,16 @@ const startGameBtn = document.getElementById('startGameBtn');
 const continueGameBtn = document.getElementById('continueGameBtn');
 const gameInfoBtn = document.getElementById('gameInfoBtn');
 let savedInfo = {};
+const titleScreenAudio = document.getElementById('titleScreenAudio');
 
-//Start new game button sends user to level 1
-
+/*
+Start new game button sends user to level 1. If user has a save file already, prompts if they want to delete it to start a new game.
+*/
 startGameBtn.addEventListener('click', function() {
     if(localStorage.getItem('playerInfo') != null) { 
         if(window.confirm('You have save data for this game, if you start a new game your previous save file will be deleted. Are you sure you want to delete your save file and start a new game?')) {
         localStorage.clear();
-        location.href = './landingSite.html';
+        location.href = './intro.html';
         }
     } else {
     location.href = './intro.html';
@@ -19,7 +21,6 @@ startGameBtn.addEventListener('click', function() {
 /*
 Continue game button accesses saved player info if it is present in local storage, sets player object values to match saved info and sends user to correct level
 */
-
 continueGameBtn.addEventListener('click', function() {
 if(localStorage.getItem('playerInfo') != null) { 
     savedInfo = JSON.parse(localStorage.getItem('playerInfo'));
@@ -34,5 +35,9 @@ if(localStorage.getItem('playerInfo') != null) {
 });
 
 document.addEventListener('mousemove', function() {
-    document.getElementById('titleScreenAudio').play();
+    titleScreenAudio.play();
+});
+
+document.addEventListener('keydown', function() {
+    titleScreenAudio.play();
 });
