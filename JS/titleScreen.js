@@ -32,3 +32,7 @@ if(localStorage.getItem('playerInfo') != null) {
     alert('No save data found, please start a new game.');
 }
 });
+
+document.addEventListener('mousemove', function() {
+    document.getElementById('titleScreenAudio').play();
+});
