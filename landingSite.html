@@ -15,18 +15,18 @@
         <menu id="fullMenu">
             <div class="menuRow">
               <button id='itemsMenuBtn'>Items</button>
-              <button id="endTurnBtn">End Turn</button>
+              <button id="changeCharBtn">Change Character</button>
             </div>
             <div class="menuRow">
-                <button id="mapInfoBtn">Map Info</button>
+                <button id="mapInfoBtn">Map/Enemy Info</button>
                 <button id="objectiveBtn">Objective/ Stats</button>
             </div>
             <div class="menuRow">
-              <button id="saveGameBtn">Save Game</button>
-              <button id="loadFileBtn">Load save file</button>
+                <button id="openSaveMenu">Open Save Menu</button>
+                <button id="muteMusicBtn">Pause/Play Music</button>
             </div>
             <div class="menuRow">
-              <button id="deleteDataBtn">Delete save data</button>
+              <button id="endTurnBtn">End Turn</button>
               <button id="exitGameBtn">Exit Game</button>
             </div>
             <button id="closeMenuBtn">Close</button>
@@ -48,8 +48,24 @@
                 </div>
                 <button id='itemsCloseBtn'>Close</button>
             </menu>
-            <menu id="objStatDetails"><p id="objStatDescription"></p><button id="objStatCloseBtn">Close</button></menu>
-            <menu id="mapDetails"><div id="mapDetailsCon"><p id="mapDetailsDescription"></p><button id="showGridBtn">Show Grid</button><button id="hideGridBtn">Hide Grid</button><button id="mapDetailsCloseBtn">Close</button></div></menu>
+            <menu id="saveMenu">
+                <button id="saveGameBtn">Save Game</button>
+                <button id="loadFileBtn">Load save file</button>
+                <button id="deleteDataBtn">Delete save data</button>
+                <button id="closeSaveMenu">Close</button>
+            </menu>
+            <menu id="objStatDetails">
+                <p id="objStatDescription"></p>
+                <button id="objStatCloseBtn">Close</button>
+            </menu>
+            <menu id="mapDetails">
+                <div id="mapDetailsCon">
+                    <p id="mapDetailsDescription"></p>
+                    <button id="showGridBtn">Show Grid</button>
+                    <button id="hideGridBtn">Hide Grid</button>
+                    <button id="mapDetailsCloseBtn">Close</button>
+                </div>
+            </menu>
         </menu>
       <div id='grid'></div>
     </div>
