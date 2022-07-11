@@ -21,6 +21,7 @@ let battle = false;
 let whichEnemyAttacking = 0;
 let whichEnemyMoving = 0;
 let enemyTurn = false;
+let totalMovement = 0;
 
 let solidCollideRight = false;
 let solidCollideLeft = false;
@@ -70,12 +71,18 @@ const mapDetailsDescription = document.getElementById('mapDetailsDescription');
 const objStatDescription = document.getElementById('objStatDescription');
 //const objStatCloseBtn = document.getElementById('objStatCloseBtn');
 //objStatCloseBtn.style.display = 'none';
+const saveMenu = document.getElementById('saveMenu');
+saveMenu.style.display = 'none';
+const closeSaveMenu = document.getElementById('closeSaveMenu');
+const openSaveMenu = document.getElementById('openSaveMenu'); 
 const showGridBtn = document.getElementById('showGridBtn');
 const hideGridBtn = document.getElementById('hideGridBtn');
+const changeCharBtn = document.getElementById('changeCharBtn');
 const endTurnBtn = document.getElementById('endTurnBtn');
 const saveGameBtn = document.getElementById('saveGameBtn');
 const loadFileBtn = document.getElementById('loadFileBtn');
 const deleteDataBtn = document.getElementById('deleteDataBtn');
+const muteMusicBtn = document.getElementById('muteMusicBtn');
 const exitGameBtn = document.getElementById('exitGameBtn');   
 const closeMenuBtn = document.getElementById('closeMenuBtn');
 
@@ -406,10 +413,15 @@ function keyDownHandler(e, player) {
         player.movement -= 1;
     }
     } else if(e.key == 'p' && !battle && !enemyTurn) {
+        if(!menuOpen) {
         fullMenu.style.display = 'grid';
         menuOpen = true;
         menuSound.play();
         itemsMenuBtn.focus();
+        } else {
+            fullMenu.style.display = 'none';
+            menuOpen = false;
+        }
     } else if(e.key == 'o' && !battle && !enemyTurn) {
         if(team.length === 2) {
             if(activeChar === 0) {
@@ -451,7 +463,6 @@ Turns
 -When players movement property is above 0, makes grid visible
 -Once movement reaches 0, if a battle sequence is not in progress, hides grid and allows enemies to move. Then resets players movement property
 */
-let totalMovement = 0;
 function turn() {
     if(team.length === 1) {
         totalMovement = atlas.movement;
@@ -707,7 +718,7 @@ itemsMenuBtn.addEventListener('click', function() {
     openedItemsMenu();
 });
 
-endTurnBtn.addEventListener('click', function() {
+changeCharBtn.addEventListener('click', function() {
     if(team.length === 2) {
         if(activeChar === 0) {
             activeChar = 1;
@@ -717,6 +728,17 @@ endTurnBtn.addEventListener('click', function() {
         //player = atlas;
         }
     }
+});
+
+endTurnBtn.addEventListener('click', function() {
+    if(team.length === 1) {
+        atlas.movement = 0;
+    } else if(team.length === 2) {
+        atlas.movement = 0;
+        blueNomad.movement = 0;
+    }
+    fullMenu.style.display = 'none';
+    menuOpen = false;
 });
 
 mapDetailsCloseBtn.addEventListener('click', function() {
@@ -770,6 +792,14 @@ objectiveBtn.addEventListener('click', function() {
     objStatCloseBtn.focus();
 });
 
+openSaveMenu.addEventListener('click', function() {
+    saveMenu.style.display = 'grid';
+});
+
+closeSaveMenu.addEventListener('click', function() {
+    saveMenu.style.display = 'none';
+});
+
 saveGameBtn.addEventListener('click', function() {
     localStorage.setItem('playerInfo', JSON.stringify(atlas));
     if(team.length === 2) {
@@ -788,6 +818,16 @@ deleteDataBtn.addEventListener('click', function() {
     localStorage.clear();
 });
 
+muteMusicBtn.addEventListener('click', function() {
+    if(atlas.gameLevel === 1) {
+        if(landingSiteAudio.paused === false) {
+            landingSiteAudio.pause();
+        } else {
+            landingSiteAudio.play();
+        }
+    }
+})
+
 exitGameBtn.addEventListener('click', function() {
     location.href = './index.html';
 });
@@ -795,5 +835,4 @@ exitGameBtn.addEventListener('click', function() {
 closeMenuBtn.addEventListener('click', function() {
     fullMenu.style.display = 'none';
     menuOpen = false;
-    menuSound.play();
 });
