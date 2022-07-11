@@ -13,44 +13,60 @@
         <button id="menuAltBtn"></button>
         <canvas id="canvas" autofocus>This page uses the HTML canvas element to display content. Please use a modern browser or turn on javascript to access the content.</canvas>
         <menu id="fullMenu">
-            <div class="menuRow">
-              <button id='itemsMenuBtn'>Items</button>
-              <button id="endTurnBtn">Change Character/ End Turn</button>
-            </div>
-            <div class="menuRow">
-                <button id="mapInfoBtn">Map Info</button>
-                <button id="objectiveBtn">Objective/ Stats</button>
-            </div>
-            <div class="menuRow">
+          <div class="menuRow">
+            <button id='itemsMenuBtn'>Items</button>
+            <button id="changeCharBtn">Change Character</button>
+          </div>
+          <div class="menuRow">
+              <button id="mapInfoBtn">Map/Enemy Info</button>
+              <button id="objectiveBtn">Objective/ Stats</button>
+          </div>
+          <div class="menuRow">
+              <button id="openSaveMenu">Open Save Menu</button>
+              <button id="muteMusicBtn">Pause/Play Music</button>
+          </div>
+          <div class="menuRow">
+            <button id="endTurnBtn">End Turn</button>
+            <button id="exitGameBtn">Exit Game</button>
+          </div>
+          <button id="closeMenuBtn">Close</button>
+          <menu id="itemsMenu">
+              <div class="itemsRow">
+                  <button id="item1" class="items"><p id='item1Text' class="itemText"></p></button>
+                  <button id="item2" class="items"><p id='item2Text' class="itemText"></p></button>
+                  <button id="item3" class="items"><p id='item3Text' class="itemText"></p></button>
+              </div>
+              <div class="itemsRow">
+                  <button id="item4" class="items"><p id='item4Text' class="itemText"></p></button>
+                  <button id="item5" class="items"><p id='item5Text' class="itemText"></p></button>
+                  <button id="item6" class="items"><p id='item6Text' class="itemText"></p></button>
+              </div>
+              <div class="itemsRow">
+                  <button id="item7" class="items"><p id='item7Text' class="itemText"></p></button>
+                  <button id="item8" class="items"><p id='item8Text' class="itemText"></p></button>
+                  <button id="item9" class="items"><p id='item9Text' class="itemText"></p></button>
+              </div>
+              <button id='itemsCloseBtn'>Close</button>
+          </menu>
+          <menu id="saveMenu">
               <button id="saveGameBtn">Save Game</button>
               <button id="loadFileBtn">Load save file</button>
-            </div>
-            <div class="menuRow">
               <button id="deleteDataBtn">Delete save data</button>
-              <button id="exitGameBtn">Exit Game</button>
-            </div>
-            <button id="closeMenuBtn">Close</button>
-            <menu id="itemsMenu">
-                <div class="itemsRow">
-                    <button id="item1" class="items"><p id='item1Text' class="itemText"></p></button>
-                    <button id="item2" class="items"><p id='item2Text' class="itemText"></p></button>
-                    <button id="item3" class="items"><p id='item3Text' class="itemText"></p></button>
-                </div>
-                <div class="itemsRow">
-                    <button id="item4" class="items"><p id='item4Text' class="itemText"></p></button>
-                    <button id="item5" class="items"><p id='item5Text' class="itemText"></p></button>
-                    <button id="item6" class="items"><p id='item6Text' class="itemText"></p></button>
-                </div>
-                <div class="itemsRow">
-                    <button id="item7" class="items"><p id='item7Text' class="itemText"></p></button>
-                    <button id="item8" class="items"><p id='item8Text' class="itemText"></p></button>
-                    <button id="item9" class="items"><p id='item9Text' class="itemText"></p></button>
-                </div>
-                <button id='itemsCloseBtn'>Close</button>
-            </menu>
-            <menu id="objStatDetails"><p id="objStatDescription"></p><button id="objStatCloseBtn">Close</button></menu>
-            <menu id="mapDetails"><div id="mapDetailsCon"><p id="mapDetailsDescription"></p><button id="showGridBtn">Show Grid</button><button id="hideGridBtn">Hide Grid</button><button id="mapDetailsCloseBtn">Close</button></div></menu>
-        </menu>
+              <button id="closeSaveMenu">Close</button>
+          </menu>
+          <menu id="objStatDetails">
+              <p id="objStatDescription"></p>
+              <button id="objStatCloseBtn">Close</button>
+          </menu>
+          <menu id="mapDetails">
+              <div id="mapDetailsCon">
+                  <p id="mapDetailsDescription"></p>
+                  <button id="showGridBtn">Show Grid</button>
+                  <button id="hideGridBtn">Hide Grid</button>
+                  <button id="mapDetailsCloseBtn">Close</button>
+              </div>
+          </menu>
+      </menu>
       <div id="recruitSpace"></div>
       <menu id="blueNomadMessage">
         <p>I am Blue Nomad, I can help you clear out this area if you are willing to trust me. Can I join you?</p><button id="recruitBtn">Yes</button><button id="doNotRecruitBtn">No</button>
