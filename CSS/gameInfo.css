@@ -2,11 +2,15 @@ body {
     color: rgb(163, 154, 154);
     background: rgb(94, 19, 19);
     margin: 0;
-    padding: 0;
 }
 
 a {
     color: lightcoral;
+    font-size: 18px;
+}
+
+a:hover {
+    color: rgb(129, 68, 129);
 }
 
 li {
@@ -15,8 +19,9 @@ li {
 
 #container {
     background: rgb(63, 1, 1);
-    padding-left: 2%;
-    margin: 3% 25% 0 3%;
+    width: 70%;
+    padding: 10px 0 0 50px;
+    margin: 50px 0 0 50px;
 }
 
 noscript {
