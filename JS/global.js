@@ -186,7 +186,7 @@ function drawBlueNomad() {
         blueNomad.y = horizontalLines[horizontalLines.length - 2];
     }
     ctx.drawImage(blueNomadImage, blueNomad.x, blueNomad.y, blueNomad.width, blueNomad.height);
-}
+} 
 
 /*Items Menu
 Loops through the players item property array and adds a background image and description of the item to the item select buttons in the item menu. The description of each item is visible on hover or focus. 
@@ -572,8 +572,13 @@ if(enemies[enemyIndex].health > 0 && player.health > 0) {
 } else {
     battle = false;
     enemies[enemyIndex].x += 15;
+    if(team[activeChar] === 0) {
     alert('Game over');
     location.reload();
+    } else {
+    team.splice(activeChar, 1);
+    activeChar = 0;
+    }
 }
 }
 
@@ -636,14 +641,30 @@ function enemyMovement(player) {
     if(i < enemies.length) {
         setTimeout(function() {
             if(player.x > enemies[i].x) {
-                enemies[i].x += enemies[i].movementStat * tileSize;
+                if(player.x - enemies[i].x <= enemies[i].movementStat * tileSize) {
+                    enemies[i].x = player.x;
+                } else {
+                    enemies[i].x += enemies[i].movementStat * tileSize;
+                }
             } else if(player.x < enemies[i].x){
-                enemies[i].x -= enemies[i].movementStat * tileSize;
+                if(enemies[i].x - player.x <= enemies[i].movementStat * tileSize) {
+                    enemies[i].x = player.x;
+                } else {
+                    enemies[i].x -= enemies[i].movementStat * tileSize;
+                }
             }
             if(player.y > enemies[i].y) {
-                enemies[i].y += enemies[i].movementStat * tileSize;
+                if(player.y - enemies[i].y <= enemies[i].movementStat * tileSize) {
+                    enemies[i].y = player.y;
+                } else {
+                    enemies[i].y += enemies[i].movementStat * tileSize;
+                }
             } else if(player.y < enemies[i].y){
-                enemies[i].y -= enemies[i].movementStat * tileSize;
+                if(enemies[i].y - player.y <= enemies[i].movementStat * tileSize) {
+                    enemies[i].y = player.y;
+                } else {
+                    enemies[i].y -= enemies[i].movementStat * tileSize;
+                }
             }
             whichEnemyMoving += 1;
             enemyMovement()
@@ -728,6 +749,7 @@ changeCharBtn.addEventListener('click', function() {
         //player = atlas;
         }
     }
+    menuSound.play();
 });
 
 endTurnBtn.addEventListener('click', function() {
@@ -794,6 +816,7 @@ objectiveBtn.addEventListener('click', function() {
 
 openSaveMenu.addEventListener('click', function() {
     saveMenu.style.display = 'grid';
+    saveGameBtn.focus();
 });
 
 closeSaveMenu.addEventListener('click', function() {
@@ -803,7 +826,6 @@ closeSaveMenu.addEventListener('click', function() {
 saveGameBtn.addEventListener('click', function() {
     localStorage.setItem('playerInfo', JSON.stringify(atlas));
     if(team.length === 2) {
-        console.log('includes')
     localStorage.setItem('blueNomadInfo', JSON.stringify(blueNomad));
     }
     localStorage.setItem('enemyInfo', JSON.stringify(enemies));
