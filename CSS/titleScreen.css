@@ -12,12 +12,13 @@ body {
     font-family: arial;
     grid-column: 2/2;
     grid-row: 2/2;
-    background: rgb(63, 1, 1);
     border: 2px solid black;
-    color: rgb(163, 154, 154);
-    border-radius: 5%;
-    width: 225px;
-    height: 80px;
+    color: rgb(221, 111, 111);
+    border-radius: 10px;
+    width: 275px;
+    height: 90px;
+    text-shadow: 5px 5px 5px black;
+    background-color: rgb(63, 1, 1);
 }
 
 #container {
@@ -53,8 +54,13 @@ button {
     height: 25px;
     border-radius: 5%;
     background: rgb(63, 1, 1);
+    border-radius: 5px;
     color: lightcoral;
     cursor: pointer;
+}
+
+button:hover, button:focus {
+    color:rgb(163, 154, 154);
 }
 
 noscript {
