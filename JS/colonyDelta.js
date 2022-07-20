@@ -4,11 +4,13 @@ const blueNomadMessage = document.getElementById('blueNomadMessage');
 blueNomadMessage.style.display = 'none';
 const recruitSpace = document.getElementById('recruitSpace');
 const recruitBtn = document.getElementById('recruitBtn');
+const doNotRecruitBtn = document.getElementById('doNotRecruitBtn');
 let bossReleased = false;
+let recruited = false;
 //recruitBtn.style.display = 'none';
 
 function recruitBlueNomad() {
-    if(team[activeChar].x === 50 && team[activeChar].y === 300 && team.length === 1) {
+    if(team[activeChar].x === 50 && team[activeChar].y === 300 && team.length === 1 && recruited === false) {
         menuOpen = true;
         recruitSpace.style.display = 'none';
         blueNomadMessage.style.display = 'grid';
@@ -216,21 +218,27 @@ function levelUp() {
     }
 }
 
-if(localStorage.getItem('blueNomadInfo') === null) {
-recruitBtn.addEventListener('click', function(){ 
-    team.push(blueNomad);
-    localStorage.setItem('blueNomadInfo', JSON.stringify(blueNomad))
-    blueNomadMessage.style.display = 'none';
-    alert('You have recruited Blue Nomad to your team! Use the "o" key or the switch Character button in the menu to change between your characters.');
-    fullMenu.style.display = 'grid';
-    menuOpen = true;
-    endTurnBtn.focus();
+if(localStorage.getItem('blueNomadInfo') === null && recruited === false) {
+    recruitBtn.addEventListener('click', function(){ 
+        team.push(blueNomad);
+        localStorage.setItem('blueNomadInfo', JSON.stringify(blueNomad))
+        blueNomadMessage.style.display = 'none';
+        alert('You have recruited Blue Nomad to your team! Use the "o" key or the switch Character button in the menu to change between your characters.');
+        recruited = true;
+        fullMenu.style.display = 'grid';
+        menuOpen = true;
+        changeCharBtn.focus();
 });
 } else {
-    recruitSpace.style.display = 'none';
-    blueNomad = JSON.parse(localStorage.getItem('blueNomadInfo'));
-    team.push(blueNomad);
+        recruitSpace.style.display = 'none';
+        recruited = true;
+        blueNomad = JSON.parse(localStorage.getItem('blueNomadInfo'));
+        team.push(blueNomad);
 }
+
+doNotRecruitBtn.addEventListener('click', function() {
+    blueNomadMessage.style.display = 'none';
+});
 
 //Animation Loop
 function animate() {
