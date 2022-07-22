@@ -19,6 +19,7 @@ body {
     display: block;
     position: absolute;
     z-index: 1;
+    max-width: 1500px;
 }
 
 #fsBackgroundEmpty {
@@ -26,7 +27,6 @@ body {
     height: 100%;
     width: 100%;
     z-index: 0;
-    display: grid;
 }
 
 #grid {
@@ -278,4 +278,8 @@ body {
     background:rgb(173, 157, 157);
     z-index: 4;
     border-radius: 10%;
+}
+
+#fullMenu button:active {
+    background-color:rgb(150, 135, 135);
 }
