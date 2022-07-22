@@ -127,7 +127,7 @@ function createTiles() {
 }
 createTiles();
 
-//Player
+//Main Character
 const atlas = JSON.parse(localStorage.getItem('playerInfo')) || {
     health: 100,
     x: 50,
@@ -145,7 +145,6 @@ const atlas = JSON.parse(localStorage.getItem('playerInfo')) || {
 }
 
 team.push(atlas);
-//let player = atlas;
 let activeChar = 0;
 
 function drawPlayer() {
@@ -160,6 +159,8 @@ function drawPlayer() {
     }
     ctx.drawImage(playerImage, atlas.x, atlas.y, atlas.width, atlas.height);
 }
+
+//Optional character recruitable in level 2
 
 let blueNomad = JSON.parse(localStorage.getItem('blueNomadInfo')) || {
     x: 50,
@@ -212,24 +213,26 @@ itemsCloseBtn.addEventListener('click', function() {
 const healthBarCon = {
     x: 40,
     y: 10,
-    width: team[activeChar].healthStat * 2,
-    height: 15
+    width: 200,
+    height: 15,
+    fill: 195
 }
 
-function drawHealthBar(player) {
-    player = team[activeChar];
+function drawHealthBar() {
+    healthBarCon.width = team[activeChar].healthStat * 2 - 5;
+    healthBarCon.fill = team[activeChar].health * 2 - 5;
     ctx.strokeStyle = 'gold';
     ctx.fillStyle = 'black';
     ctx.beginPath();
     ctx.moveTo(healthBarCon.x, healthBarCon.y);
-    ctx.lineTo(healthBarCon.x + healthBarCon.width, healthBarCon.y);
-    ctx.lineTo(healthBarCon.x + healthBarCon.width, healthBarCon.y + healthBarCon.height);
+    ctx.lineTo(healthBarCon.x + healthBarCon.width + 3, healthBarCon.y);
+    ctx.lineTo(healthBarCon.x + healthBarCon.width + 3, healthBarCon.y + healthBarCon.height);
     ctx.lineTo(healthBarCon.x, healthBarCon.y + healthBarCon.height);
     ctx.lineTo(healthBarCon.x, healthBarCon.y);
     ctx.fill();
     ctx.stroke();
     ctx.fillStyle = 'red';
-    ctx.fillRect(healthBarCon.x + 2, healthBarCon.y + 2, player.health * 2 - 4, healthBarCon.height - 4);
+    ctx.fillRect(healthBarCon.x + 2, healthBarCon.y + 2, healthBarCon.fill, healthBarCon.height - 4);
 }
 
 function pickedUpItem() {
@@ -248,7 +251,11 @@ When an item is used, adjusts players stats based on the name of the item and re
 function useItem(index, player) {
     player = team[activeChar];
     if(items[index].name === 'Medkit') {
+        if(player.health + 50 > player.healthStat) {
+            player.health = player.healthStat;
+        } else {
         player.health += 50;
+        }
     } else if(items[index].name === 'Blue Phaser') {
         player.damage += 5;
     }
@@ -420,6 +427,7 @@ function keyDownHandler(e, player) {
         itemsMenuBtn.focus();
         } else {
             fullMenu.style.display = 'none';
+            itemsMenu.style.display = 'none';
             menuOpen = false;
         }
     } else if(e.key == 'o' && !battle && !enemyTurn) {
@@ -641,26 +649,26 @@ function enemyMovement(player) {
     if(i < enemies.length) {
         setTimeout(function() {
             if(player.x > enemies[i].x) {
-                if(player.x - enemies[i].x <= enemies[i].movementStat * tileSize) {
+                if(player.x - enemies[i].x <= enemies[i].movementStat * tileSize && !battle) {
                     enemies[i].x = player.x;
                 } else {
                     enemies[i].x += enemies[i].movementStat * tileSize;
                 }
             } else if(player.x < enemies[i].x){
-                if(enemies[i].x - player.x <= enemies[i].movementStat * tileSize) {
+                if(enemies[i].x - player.x <= enemies[i].movementStat * tileSize && !battle) {
                     enemies[i].x = player.x;
                 } else {
                     enemies[i].x -= enemies[i].movementStat * tileSize;
                 }
             }
             if(player.y > enemies[i].y) {
-                if(player.y - enemies[i].y <= enemies[i].movementStat * tileSize) {
+                if(player.y - enemies[i].y <= enemies[i].movementStat * tileSize && !battle) {
                     enemies[i].y = player.y;
                 } else {
                     enemies[i].y += enemies[i].movementStat * tileSize;
                 }
             } else if(player.y < enemies[i].y){
-                if(enemies[i].y - player.y <= enemies[i].movementStat * tileSize) {
+                if(enemies[i].y - player.y <= enemies[i].movementStat * tileSize && !battle) {
                     enemies[i].y = player.y;
                 } else {
                     enemies[i].y -= enemies[i].movementStat * tileSize;
@@ -682,12 +690,9 @@ function enemyColDetect(player) {
     player = team[activeChar];
     for(let i = 0; i < enemies.length; i++) {
     if(
-        player.x < enemies[i].x + enemies[i].width && 
-    player.x + player.width > enemies[i].x &&
-    player.y < enemies[i].y + enemies[i].height &&
-    player.y + player.height > enemies[i].y
+        player.x === enemies[i].x && player.y === enemies[i].y
     ){
-        if(player.health > 0 && enemies[i].defeated === false) { 
+        if(player.health > 0 && enemies[i].defeated === false && !battle) { 
         whichEnemyAttacking = i;
         enemyAttack(i);  
         }
@@ -785,7 +790,7 @@ mapInfoBtn.addEventListener('click', function() {
 });
 
 showGridBtn.addEventListener('click', function() {
-    grid.style.display = 'grid';
+    grid.style.display = 'block';
 });
 
 hideGridBtn.addEventListener('click', function() {
@@ -848,7 +853,7 @@ muteMusicBtn.addEventListener('click', function() {
             landingSiteAudio.play();
         }
     }
-})
+});
 
 exitGameBtn.addEventListener('click', function() {
     location.href = './index.html';
