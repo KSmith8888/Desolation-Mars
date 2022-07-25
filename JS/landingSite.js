@@ -13,7 +13,7 @@ let verticalBarrier1 = {
 }
 buildingsArray.push(verticalBarrier1);
 const vertBarImage = new Image();
-vertBarImage.src = 'Images/verticalBarrier1.png';
+vertBarImage.src = 'Images/Buildings/verticalBarrier1.png';
 
 let horizontalBarrier1 = {
     x: 425,
@@ -23,7 +23,7 @@ let horizontalBarrier1 = {
 }
 buildingsArray.push(horizontalBarrier1);
 const horBarImage = new Image();
-horBarImage.src = 'Images/horizontalBarrier1.png';
+horBarImage.src = 'Images/Buildings/horizontalBarrier1.png';
 
 let destroyedFort1 = {
     x: 450,
@@ -33,7 +33,7 @@ let destroyedFort1 = {
 }
 buildingsArray.push(destroyedFort1);
 const destFortImage = new Image();
-destFortImage.src = 'Images/destroyedFort1.png';
+destFortImage.src = 'Images/Buildings/destroyedFort1.png';
 
 function drawBuildings() {
     ctx.drawImage(vertBarImage, verticalBarrier1.x, verticalBarrier1.y, verticalBarrier1.width, verticalBarrier1.height);
@@ -46,9 +46,9 @@ If player moves onto a tile that holds an item, that item is added to their inve
 */
 function level1BackgroundItems() {
     backgroundItems.push(
-    {name: 'Medkit', background: 'Images/medkit.png', description: 'Medkit: Refills health by 50 points', x: tileSize * 7, y: tileSize * 12, found: false})
+    {name: 'Medkit', background: 'Images/Items/medkit.png', description: 'Medkit: Refills health by up to 50 points', x: tileSize * 7, y: tileSize * 12, found: false});
     backgroundItems.push(
-    {name: 'Blue Phaser', background: 'Images/bluePhaser.png',  description: 'Blue Phaser: Permanently increases damage by 5', x: tileSize * 4, y: tileSize * 5, found: false});
+    {name: 'Blue Phaser', background: 'Images/Items/bluePhaser.png',  description: 'Blue Phaser: Permanently increases damage by 5', x: tileSize * 4, y: tileSize * 5, found: false});
 };
 level1BackgroundItems();
 
