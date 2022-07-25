@@ -33,43 +33,89 @@ let waterPlant = {
 
 buildingsArray.push(waterPlant);
 const waterPlantImage = new Image();
-waterPlantImage.src = 'Images/waterPlant.png';
+waterPlantImage.src = 'Images/Buildings/waterPlant.png';
 
 let verticalBarrier1 = {
-    x: 300,
+    x: 450,
     y: 50,
     width: tileSize,
     height: tileSize * 4
 }
 buildingsArray.push(verticalBarrier1);
 const vertBarImage = new Image();
-vertBarImage.src = 'Images/verticalBarrier1.png';
+vertBarImage.src = 'Images/Buildings/verticalBarrier1.png';
 
 let horizontalBarrier1 = {
-    x: 425,
+    x: 525,
     y: 275,
     width: tileSize * 2,
     height: tileSize * 2
 }
 buildingsArray.push(horizontalBarrier1);
 const horBarImage = new Image();
-horBarImage.src = 'Images/horizontalBarrier1.png';
+horBarImage.src = 'Images/Buildings/horizontalBarrier1.png';
+
+let horizontalBarrier2 = {
+    x: 625,
+    y: 350,
+    width: tileSize * 3,
+    height: tileSize * 1
+}
+buildingsArray.push(horizontalBarrier2);
+const horBar2Image = new Image();
+horBar2Image.src = 'Images/Buildings/horizontalBarrier2.png';
+
+let horizontalBarrier3 = {
+    x: 625,
+    y: 300,
+    width: tileSize * 2,
+    height: tileSize * 2
+}
+buildingsArray.push(horizontalBarrier3);
+const horBar3Image = new Image();
+horBar3Image.src = 'Images/Buildings/horizontalBarrier3.png';
 
 let destroyedFort1 = {
-    x: 450,
+    x: 650,
     y: 0,
     width: tileSize * 5,
     height: tileSize * 6
 }
 buildingsArray.push(destroyedFort1);
 const destFortImage = new Image();
-destFortImage.src = 'Images/destroyedFort1.png';
+destFortImage.src = 'Images/Buildings/destroyedFort1.png';
+
+let fortcliffLeft = {
+    x: 550,
+    y: 0,
+    width: tileSize * 4,
+    height: tileSize * 3
+}
+
+buildingsArray.push(fortcliffLeft);
+const fortcliffLeftImage = new Image();
+fortcliffLeftImage.src = 'Images/Buildings/fortcliffLeft.png';
+
+let fortcliffRight = {
+    x: 775,
+    y: 0,
+    width: tileSize * 4,
+    height: tileSize * 3
+}
+
+buildingsArray.push(fortcliffRight);
+const fortcliffRightImage = new Image();
+fortcliffRightImage.src = 'Images/Buildings/fortcliffRight.png';
 
 function drawBuildings() {
     ctx.drawImage(vertBarImage, verticalBarrier1.x, verticalBarrier1.y, verticalBarrier1.width, verticalBarrier1.height);
     ctx.drawImage(horBarImage, horizontalBarrier1.x, horizontalBarrier1.y, horizontalBarrier1.width, horizontalBarrier1.height);
+    ctx.drawImage(horBar2Image, horizontalBarrier2.x, horizontalBarrier2.y, horizontalBarrier2.width, horizontalBarrier2.height);
+    ctx.drawImage(horBar3Image, horizontalBarrier3.x, horizontalBarrier3.y, horizontalBarrier3.width, horizontalBarrier3.height);
     ctx.drawImage(destFortImage, destroyedFort1.x, destroyedFort1.y, destroyedFort1.width, destroyedFort1.height);
     ctx.drawImage(waterPlantImage, waterPlant.x, waterPlant.y, waterPlant.width, waterPlant.height);
+    ctx.drawImage(fortcliffLeftImage, fortcliffLeft.x, fortcliffLeft.y, fortcliffLeft.width, fortcliffLeft.height);
+    ctx.drawImage(fortcliffRightImage, fortcliffRight.x, fortcliffRight.y, fortcliffRight.width, fortcliffRight.height);
 }
 
 /*Items in the environment
@@ -77,9 +123,9 @@ If player moves onto a tile that holds an item, that item is added to their inve
 */
 function level2BackgroundItems() {
     backgroundItems.push(
-    {name: 'Medkit', background: 'Images/medkit.png', description: 'Medkit: Refills health by 50 points', x: tileSize * 15, y: tileSize * 12, found: false})
+    {name: 'Medkit', background: 'Images/Items/medkit.png', description: 'Medkit: Refills health by up to 50 points', x: tileSize * 15, y: tileSize * 12, found: false})
     backgroundItems.push(
-    {name: 'Blue Phaser', background: 'Images/bluePhaser.png',  description: 'Blue Phaser: Permanently increases damage by 5', x: tileSize * 8, y: tileSize * 7, found: false})
+    {name: 'Blue Phaser', background: 'Images/Items/bluePhaser.png',  description: 'Blue Phaser: Permanently increases damage by 5', x: tileSize * 8, y: tileSize * 7, found: false})
 };
 level2BackgroundItems();
 
