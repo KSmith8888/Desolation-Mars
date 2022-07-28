@@ -129,6 +129,7 @@ createTiles();
 
 //Main Character
 const atlas = JSON.parse(localStorage.getItem('playerInfo')) || {
+    name: 'Atlas',
     health: 100,
     x: 50,
     y: 50,
@@ -163,6 +164,7 @@ function drawPlayer() {
 //Optional character recruitable in level 2
 
 let blueNomad = JSON.parse(localStorage.getItem('blueNomadInfo')) || {
+    name: 'Blue Nomad',
     x: 50,
     y: 75,
     width: 25,
@@ -428,6 +430,8 @@ function keyDownHandler(e, player) {
         } else {
             fullMenu.style.display = 'none';
             itemsMenu.style.display = 'none';
+            mapDetails.style.display = 'none';
+            objStatDetails.style.display = 'none';
             menuOpen = false;
         }
     } else if(e.key == 'o' && !battle && !enemyTurn) {
@@ -504,7 +508,7 @@ class greenNomad {
         this.height = 25;
         this.damage = 10;
         this.image = new Image();
-        this.image.src = 'Images/greenMageV3.png';
+        this.image.src = 'Images/Enemies/greenNomad.png';
     } draw() {
         ctx.drawImage(this.image, this.x, this.y, this.width, this.height);
     }
@@ -521,15 +525,15 @@ class redNomad {
         this.height = 25;
         this.damage = 15;
         this.image = new Image();
-        this.image.src = 'Images/redNomad.png';
+        this.image.src = 'Images/Enemies/redNomad.png';
     } draw() {
         ctx.drawImage(this.image, this.x, this.y, this.width, this.height);
     }
 }
 
-class colonyDeltaBoss {
+class voidWrecker {
     constructor() {
-    this.enemyType = 'Colony Delta Boss';
+    this.enemyType = 'Void Wrecker';
     this.health = 70;
         this.maxHealth = 120;
         this.movementStat = 5;
@@ -538,7 +542,7 @@ class colonyDeltaBoss {
         this.height = 50;
         this.damage = 25;
         this.image = new Image();
-        this.image.src = 'Images/colonyDeltaBoss.png';
+        this.image.src = 'Images/Enemies/voidWrecker.png';
     } draw() {
         ctx.drawImage(this.image, this.x, this.y, this.width, this.height);
     }
@@ -804,10 +808,12 @@ objStatCloseBtn.addEventListener('click', function() {
 });
 
 objectiveBtn.addEventListener('click', function() {
+    console.log(team)
     objStatDetails.style.display = 'grid';
     objStatCloseBtn.style.display = 'grid';
     objStatDescription.innerText = `Objective: Defeat all enemies on the board 
     Stats- 
+    Character: ${JSON.stringify(team[activeChar].name)}
     Level: ${JSON.stringify(team[activeChar].playerLevel)}
     Max Health: ${JSON.stringify(team[activeChar].healthStat)}
     Damage: ${JSON.stringify(team[activeChar].damage)}
