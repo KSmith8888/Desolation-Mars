@@ -7,14 +7,12 @@ const recruitBtn = document.getElementById('recruitBtn');
 const doNotRecruitBtn = document.getElementById('doNotRecruitBtn');
 let bossReleased = false;
 let recruited = false;
-//recruitBtn.style.display = 'none';
 
 function recruitBlueNomad() {
     if(team[activeChar].x === 50 && team[activeChar].y === 300 && team.length === 1 && recruited === false) {
         menuOpen = true;
         recruitSpace.style.display = 'none';
         blueNomadMessage.style.display = 'grid';
-        //recruitBtn.style.display = 'grid';
         recruitBtn.focus();
     }
 }
@@ -245,7 +243,7 @@ function levelUp() {
     }
     if(enemies.length === 0) {
         if(bossReleased === false) {
-            enemies.push(new colonyDeltaBoss);
+            enemies.push(new voidWrecker);
             enemies[0].x = 100;
             enemies[0].y = 100;
         } else {
