@@ -37,7 +37,6 @@ let playerHit = false;
 let enemyHit = false;
 
 const grid = document.getElementById('grid');
-grid.style.display = 'none';
 const playerImage = new Image();
 playerImage.src = 'Images/playerV4.png';
 const blueNomadImage = new Image();
@@ -45,7 +44,6 @@ blueNomadImage.src = 'Images/blueNomad.png';
 
 const menuAltBtn = document.getElementById('menuAltBtn');
 const itemsMenu = document.getElementById('itemsMenu');
-itemsMenu.style.display = 'none';
 const itemsCloseBtn = document.getElementById('itemsCloseBtn');
 const item1 = document.getElementById('item1');
 const item2 = document.getElementById('item2');
@@ -58,21 +56,16 @@ const item8 = document.getElementById('item8');
 const item9 = document.getElementById('item9');
 
 const fullMenu = document.getElementById('fullMenu');
-fullMenu.style.display = 'none';
 const itemsMenuBtn = document.getElementById('itemsMenuBtn');
 const mapInfoBtn = document.getElementById('mapInfoBtn');
 const mapDetails = document.getElementById('mapDetails');
-mapDetails.style.display = 'none';
-//const mapDetailsCloseBtn = document.getElementById('mapDetailsCloseBtn');
+const mapDetailsCloseBtn = document.getElementById('mapDetailsCloseBtn');
 const objectiveBtn = document.getElementById('objectiveBtn');
 const objStatDetails = document.getElementById('objStatDetails');
-objStatDetails.style.display = 'none';
 const mapDetailsDescription = document.getElementById('mapDetailsDescription');
 const objStatDescription = document.getElementById('objStatDescription');
-//const objStatCloseBtn = document.getElementById('objStatCloseBtn');
-//objStatCloseBtn.style.display = 'none';
+const objStatCloseBtn = document.getElementById('objStatCloseBtn');
 const saveMenu = document.getElementById('saveMenu');
-saveMenu.style.display = 'none';
 const closeSaveMenu = document.getElementById('closeSaveMenu');
 const openSaveMenu = document.getElementById('openSaveMenu'); 
 const showGridBtn = document.getElementById('showGridBtn');
@@ -162,7 +155,6 @@ function drawPlayer() {
 }
 
 //Optional character recruitable in level 2
-
 let blueNomad = JSON.parse(localStorage.getItem('blueNomadInfo')) || {
     name: 'Blue Nomad',
     x: 50,
@@ -260,6 +252,9 @@ function useItem(index, player) {
         }
     } else if(items[index].name === 'Blue Phaser') {
         player.damage += 5;
+    } else if(items[index].name === 'Pills') {
+        player.movementStat += 1;
+        player.health -= 45;
     }
     items.splice(index, 1);
     openedItemsMenu();
@@ -481,7 +476,6 @@ function turn() {
     } else if(team.length === 2) {
         totalMovement = atlas.movement + blueNomad.movement;
     }
-    //player = team[activeChar];
     if(totalMovement > 0) {
        //players turn 
     } else {
@@ -752,10 +746,8 @@ changeCharBtn.addEventListener('click', function() {
     if(team.length === 2) {
         if(activeChar === 0) {
             activeChar = 1;
-            //player = blueNomad;
         } else {
         activeChar = 0;
-        //player = atlas;
         }
     }
     menuSound.play();
