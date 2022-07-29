@@ -124,6 +124,8 @@ function level2BackgroundItems() {
     {name: 'Medkit', background: 'Images/Items/medkit.png', description: 'Medkit: Refills health by up to 50 points', x: tileSize * 15, y: tileSize * 12, found: false})
     backgroundItems.push(
     {name: 'Blue Phaser', background: 'Images/Items/bluePhaser.png',  description: 'Blue Phaser: Permanently increases damage by 5', x: tileSize * 8, y: tileSize * 7, found: false})
+    backgroundItems.push(
+    {name: 'Pills', background: 'Images/Items/pills.png', description: 'Pills: Increases movement stat by 1, but reduces health by 45 points', x: tileSize * 4, y: tileSize * 2, found: false})
 };
 level2BackgroundItems();
 
