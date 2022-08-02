@@ -36,6 +36,9 @@ let menuOpen = false;
 let playerHit = false;
 let enemyHit = false;
 
+let minimapTiles = [];
+let displayMinimap = false;
+
 const grid = document.getElementById('grid');
 const playerImage = new Image();
 playerImage.src = 'Images/playerV4.png';
@@ -119,6 +122,39 @@ function createTiles() {
     }
 }
 createTiles();
+
+/*
+Uncomment line in istileunderbuilding function to enable 
+function makeMinimap() {
+    let k = 0;
+    for(let horLine of horizontalLines) {
+        for(let vertLine of verticalLines) {
+            k += 1;
+            minimapTiles.push(
+                {name: 'miniTile' + (k), 
+                x: vertLine/5, 
+                y: horLine/5,
+                row: (horLine + 1), column: (vertLine + 1),
+                width: 5, height: 5,
+                solid: false});
+        }
+    }
+}
+makeMinimap();
+
+function drawMinimap() {
+    let xoffSet = canvas.width - horizontalLines.length * 12;
+    let yoffSet = canvas.height - verticalLines.length * 3;
+    for(let miniTile of minimapTiles) {
+        if(miniTile.solid) {
+            ctx.fillStyle = 'blue';
+        } else {
+            ctx.fillStyle = 'white';
+        }
+        ctx.fillRect(miniTile.x + xoffSet, miniTile.y + yoffSet, miniTile.width, miniTile.height);
+    }
+}
+*/
 
 //Main Character
 const atlas = JSON.parse(localStorage.getItem('playerInfo')) || {
@@ -520,8 +556,35 @@ class redNomad {
         this.damage = 15;
         this.image = new Image();
         this.image.src = 'Images/Enemies/redNomad.png';
+        this.range = 2;
     } draw() {
         ctx.drawImage(this.image, this.x, this.y, this.width, this.height);
+    } rangedAttack() {
+        for(const player of team) {
+            //ctx.fillStyle = 'black';
+            //ctx.font = '22px georgia';
+            if(player.x > this.x && player.y === this.y) {
+                if(player.x - this.x <= this.range * tileSize) {
+                    player.health -= this.damage;
+                    ctx.fillText(`-${this.damage}`, healthBarCon.x, healthBarCon.y + 40);
+                }
+            } else if(player.x < this.x && player.y === this.y) {
+                if(this.x - player.x <= this.range * tileSize) {
+                    player.health -= this.damage;
+                    ctx.fillText(`-${this.damage}`, healthBarCon.x, healthBarCon.y + 40);
+                }
+            } else if(player.y > this.y && player.x === this.x) {
+                if(player.y - this.y <= this.range * tileSize) {
+                    player.health -= this.damage;
+                    ctx.fillText(`-${this.damage}`, healthBarCon.x, healthBarCon.y + 40);
+                }
+            } else if(player.y < this.y && player.x === this.x) {
+                if(this.y - player.y <= this.range * tileSize) {
+                    player.health -= this.damage;
+                    ctx.fillText(`-${this.damage}`, healthBarCon.x, healthBarCon.y + 40);
+                }
+            }
+        }
     }
 }
 
@@ -678,6 +741,11 @@ function enemyMovement(player) {
     } else {
         whichEnemyMoving = 0;
         enemyTurn = false;
+    }
+    for(const enemy of enemies) {
+        if(enemy.enemyType === 'Red Nomad' && !battle) {
+            enemy.rangedAttack()
+        }
     }
 }
 
