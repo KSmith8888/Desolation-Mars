@@ -73,6 +73,8 @@ const closeSaveMenu = document.getElementById('closeSaveMenu');
 const openSaveMenu = document.getElementById('openSaveMenu'); 
 const showGridBtn = document.getElementById('showGridBtn');
 const hideGridBtn = document.getElementById('hideGridBtn');
+const showMapBtn = document.getElementById('showMapBtn');
+const hideMapBtn = document.getElementById('hideMapBtn');
 const changeCharBtn = document.getElementById('changeCharBtn');
 const endTurnBtn = document.getElementById('endTurnBtn');
 const saveGameBtn = document.getElementById('saveGameBtn');
@@ -123,8 +125,8 @@ function createTiles() {
 }
 createTiles();
 
-/*
-Uncomment line in istileunderbuilding function to enable 
+
+//Uncomment line in istileunderbuilding function to enable 
 function makeMinimap() {
     let k = 0;
     for(let horLine of horizontalLines) {
@@ -149,12 +151,12 @@ function drawMinimap() {
         if(miniTile.solid) {
             ctx.fillStyle = 'blue';
         } else {
-            ctx.fillStyle = 'white';
+            ctx.fillStyle = 'grey';
         }
         ctx.fillRect(miniTile.x + xoffSet, miniTile.y + yoffSet, miniTile.width, miniTile.height);
     }
 }
-*/
+
 
 //Main Character
 const atlas = JSON.parse(localStorage.getItem('playerInfo')) || {
@@ -840,16 +842,18 @@ mapDetailsCloseBtn.addEventListener('click', function() {
 });
 
 mapInfoBtn.addEventListener('click', function() {
-    let currentEnemies = [];
-    for(let i = 0; i < enemies.length; i++) {
-        currentEnemies.push(enemies[i].enemyType);
-        currentEnemies.push(enemies[i].health);
-        currentEnemies.push(enemies[i].damage);
+    mapDetailsDescription.innerText = `Enemies remaining:
+    `
+    for(const enemy of enemies) {
+        mapDetailsDescription.innerHTML += `
+        <br>
+        Enemy-type: ${enemy.enemyType} 
+        <br>
+        Health: ${enemy.health} Damage: ${enemy.damage}
+        `
     }
     mapDetails.style.display = 'grid';
     mapDetailsCloseBtn.style.display = 'grid';
-    mapDetailsDescription.innerText = `Enemies remaining: 
-    ${JSON.stringify(currentEnemies)}`;
     showGridBtn.focus();
 });
 
@@ -859,6 +863,14 @@ showGridBtn.addEventListener('click', function() {
 
 hideGridBtn.addEventListener('click', function() {
     grid.style.display = 'none';
+});
+
+showMapBtn.addEventListener('click', function() {
+    displayMinimap = true;
+});
+
+hideMapBtn.addEventListener('click', function() {
+    displayMinimap = false;
 });
 
 objStatCloseBtn.addEventListener('click', function() {
@@ -871,7 +883,10 @@ objectiveBtn.addEventListener('click', function() {
     console.log(team)
     objStatDetails.style.display = 'grid';
     objStatCloseBtn.style.display = 'grid';
-    objStatDescription.innerText = `Objective: Defeat all enemies on the board 
+    objStatDescription.innerText = `
+    Objective-
+    Defeat all enemies on the board 
+
     Stats- 
     Character: ${JSON.stringify(team[activeChar].name)}
     Level: ${JSON.stringify(team[activeChar].playerLevel)}
@@ -911,7 +926,7 @@ deleteDataBtn.addEventListener('click', function() {
     localStorage.clear();
 });
 
-muteMusicBtn.addEventListener('click', function() {
+/*muteMusicBtn.addEventListener('click', function() {
     if(atlas.gameLevel === 1) {
         if(landingSiteAudio.paused === false) {
             landingSiteAudio.pause();
@@ -919,7 +934,7 @@ muteMusicBtn.addEventListener('click', function() {
             landingSiteAudio.play();
         }
     }
-});
+});*/
 
 exitGameBtn.addEventListener('click', function() {
     location.href = './index.html';
