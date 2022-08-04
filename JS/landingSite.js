@@ -55,7 +55,7 @@ level1BackgroundItems();
 function createEnemies() {
 for(let i = 0; i < 3; i++) {
     enemies.push(new greenNomad());
-    storedEnemies = enemies;
+    
 } 
 enemies[0].x = 800;
 enemies[0].y = 325;
@@ -66,6 +66,7 @@ enemies[2].y = 200;
 enemies.push(new redNomad());
 enemies[3].x = 975;
 enemies[3].y = 550;
+storedEnemies = enemies;
 }
 
 //If save data is present, sets enemies array to match saved enemy positions and health, otherwise creates new level start enemies.
@@ -140,6 +141,7 @@ function isTileUnderBuilding() {
                 tiles[i].y + tiles[i].height > buildingsArray[j].y
             ) {
                 tiles[i].solid = true;
+                minimapTiles[i].solid = true;
             }  
         }
     }
@@ -182,6 +184,9 @@ function animate() {
     drawBuildings();
     drawHealthBar();
     drawPlayer();
+    if(displayMinimap) {
+        drawMinimap();
+    }
     if(team.includes(blueNomad)) {
         drawBlueNomad();
     }
