@@ -222,6 +222,7 @@ function isTileUnderBuilding() {
                 tiles[i].y + tiles[i].height > buildingsArray[j].y
             ) {
                 tiles[i].solid = true;
+                minimapTiles[i].solid = true;
             }  
         }
     }
@@ -292,6 +293,9 @@ function animate() {
     drawBuildings();
     drawHealthBar();
     drawPlayer();
+    if(displayMinimap) {
+        drawMinimap();
+    }
     if(team.includes(blueNomad)) {
         drawBlueNomad();
     }
