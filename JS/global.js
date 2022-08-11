@@ -125,8 +125,6 @@ function createTiles() {
 }
 createTiles();
 
-
-//Uncomment line in istileunderbuilding function to enable 
 function makeMinimap() {
     let k = 0;
     for(let horLine of horizontalLines) {
@@ -138,7 +136,7 @@ function makeMinimap() {
                 y: horLine/5,
                 row: (horLine + 1), column: (vertLine + 1),
                 width: 5, height: 5,
-                solid: false});
+                solid: false, hasEnemy: false});
         }
     }
 }
@@ -148,15 +146,21 @@ function drawMinimap() {
     let xoffSet = canvas.width - horizontalLines.length * 12;
     let yoffSet = canvas.height - verticalLines.length * 3;
     for(let miniTile of minimapTiles) {
+        for(let enemy of enemies) {
         if(miniTile.solid) {
             ctx.fillStyle = 'blue';
-        } else {
+        }else if(miniTile.x === enemy.x/5 && miniTile.y === enemy.y/5) {
+            miniTile.hasEnemy = true;
+            ctx.fillStyle = 'red';
+        }else if(miniTile.x === team[activeChar].x/5 && miniTile.y === team[activeChar].y/5) {
+            ctx.fillStyle = 'black';
+        }else if(miniTile.hasEnemy === false){
             ctx.fillStyle = 'grey';
         }
         ctx.fillRect(miniTile.x + xoffSet, miniTile.y + yoffSet, miniTile.width, miniTile.height);
     }
 }
-
+}
 
 //Main Character
 const atlas = JSON.parse(localStorage.getItem('playerInfo')) || {
