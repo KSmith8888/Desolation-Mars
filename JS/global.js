@@ -125,6 +125,10 @@ function createTiles() {
 }
 createTiles();
 
+/*Minimap
+Minimap tiles mirror the main grid tiles. They have a "solid" property is the grid tile that they are mirroring is under a building. Buildings are marked in blue. Tiles are marked red if an enemy has landed on that space, noted by the "hasEnemy" property. The tile that the active player is on is marked in black.
+*/
+
 function makeMinimap() {
     let k = 0;
     for(let horLine of horizontalLines) {
@@ -244,8 +248,9 @@ itemsCloseBtn.addEventListener('click', function() {
     closeMenuBtn.focus();
 });
 
-//Health bar container object and draw function
-//fillRect is based on players health property and changes when players health is updated
+/*Health Bar
+Health bar size is determined by the maximum health of the currently active characterand fill length is determined by their current health.
+*/
 const healthBarCon = {
     x: 40,
     y: 10,
@@ -271,6 +276,7 @@ function drawHealthBar() {
     ctx.fillRect(healthBarCon.x + 2, healthBarCon.y + 2, healthBarCon.fill, healthBarCon.height - 4);
 }
 
+//Removes properties that no longer apply once an item has been picked up.
 function pickedUpItem() {
     for(let i = 0; i < items.length; i++) {
         if(items[i].found === true) {
@@ -611,7 +617,9 @@ class voidWrecker {
     }
 }
 
-//Enemy Healthbar
+/*Enemy Healthbar
+Only appears when enemy is currently in a battle. 
+*/
 function drawEnemyHealthBar(enemyIndex) {
     if(enemies[enemyIndex].health > 0) {
     ctx.strokeStyle = 'gold';
@@ -678,6 +686,7 @@ if(player.health > 0 && enemies[enemyIndex].health > 0) {
 }
 }
 
+//Displays number of hit points lost during each attack. 
 function damageText(player) {
     player = team[activeChar];
     ctx.fillStyle = 'black';
@@ -690,6 +699,7 @@ function damageText(player) {
     }
 }
 
+//Prevents enemies from going out of bounds and draws them if they are still alive.
 function handleEnemies() {
     for(let i = 0; i < enemies.length; i++) {
         if(enemies[i].x > verticalLines[verticalLines.length - 2]) {
@@ -710,6 +720,9 @@ function handleEnemies() {
     }
 }
 
+/*
+Enemies move in the direction of the player, but are prevented from landing on the tile that the player is on if the player is currently in a battle. Enemies will move the full x and y length of their "movementStat" unless the player is already closer than that. If the enemy is a type that has a ranged attack, the enemy will attempt to hit the player from a distance if the player is within a specified range. 
+*/
 function enemyMovement(player) {
     player = team[activeChar];
     let i = whichEnemyMoving;
