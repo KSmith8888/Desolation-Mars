@@ -49,7 +49,9 @@ function level1BackgroundItems() {
     {name: 'Medkit', background: 'Images/Items/medkit.png', description: 'Medkit: Refills health by up to 50 points', x: tileSize * 7, y: tileSize * 12, found: false});
     backgroundItems.push(
     {name: 'Blue Phaser', background: 'Images/Items/bluePhaser.png',  description: 'Blue Phaser: Permanently increases damage by 5', x: tileSize * 4, y: tileSize * 5, found: false});
-};
+    backgroundItems.push(
+    {name: 'Phase Shield', background: 'Images/Items/phaseShield.png', description: 'Phase Shield: Protects against ranged attacks', x: tileSize * 2, y: tileSize * 10, found: false});
+}
 level1BackgroundItems();
 
 function createEnemies() {
@@ -58,7 +60,7 @@ for(let i = 0; i < 3; i++) {
     
 } 
 enemies[0].x = 800;
-enemies[0].y = 325;
+enemies[0].y = 225;
 enemies[1].x = 375;
 enemies[1].y = 450;
 enemies[2].x = 200;
@@ -200,6 +202,7 @@ function animate() {
     enemyEnemyColDetect();
     }
     handleEnemies();
+    
     turn();
     requestAnimationFrame(animate);
 }
