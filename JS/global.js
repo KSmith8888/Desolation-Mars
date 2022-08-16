@@ -10,7 +10,6 @@ let downPressed = false;
 
 let tileSize = 25;
 let team = [];
-let items = [];
 let buildingsArray = [];
 let backgroundItems = [];
 
@@ -181,7 +180,8 @@ const atlas = JSON.parse(localStorage.getItem('playerInfo')) || {
     playerLevel: 1,
     gameLevel: 1,
     movement: 5,
-    items: []
+    items: [],
+    hasShield: false
 }
 
 team.push(atlas);
@@ -213,7 +213,8 @@ let blueNomad = JSON.parse(localStorage.getItem('blueNomadInfo')) || {
     healthStat: 80,
     health: 80,
     damage: 15,
-    playerLevel: 1
+    playerLevel: 1,
+    hasShield: false
 }
 
 function drawBlueNomad() {
@@ -235,12 +236,12 @@ Loops through the players item property array and adds a background image and de
 function openedItemsMenu() {
     itemsMenu.style.display = 'grid';
     item1.focus();
-    for(let i = 0; i < items.length; i++) {
-        document.getElementById('item' + (i + 1)).style.backgroundImage = `url('${items[i].background}')`;
-        document.getElementById('item' + (i + 1) + 'Text').innerText = items[i].description;
+    for(let i = 0; i < atlas.items.length; i++) {
+        document.getElementById('item' + (i + 1)).style.backgroundImage = `url('${atlas.items[i].background}')`;
+        document.getElementById('item' + (i + 1) + 'Text').innerText = atlas.items[i].description;
     }
-    document.getElementById('item' + (items.length + 1)).style.backgroundImage = '';
-    document.getElementById('item' + (items.length + 1) + 'Text').innerText = '';
+    document.getElementById('item' + (atlas.items.length + 1)).style.backgroundImage = '';
+    document.getElementById('item' + (atlas.items.length + 1) + 'Text').innerText = '';
 }
 
 itemsCloseBtn.addEventListener('click', function() {
@@ -278,11 +279,11 @@ function drawHealthBar() {
 
 //Removes properties that no longer apply once an item has been picked up.
 function pickedUpItem() {
-    for(let i = 0; i < items.length; i++) {
-        if(items[i].found === true) {
-            delete items[i].x;
-            delete items[i].y;
-            delete items[i].found;
+    for(let i = 0; i < atlas.items.length; i++) {
+        if(atlas.items[i].found === true) {
+            delete atlas.items[i].x;
+            delete atlas.items[i].y;
+            delete atlas.items[i].found;
         }
     }
 }
@@ -292,64 +293,66 @@ When an item is used, adjusts players stats based on the name of the item and re
 */
 function useItem(index, player) {
     player = team[activeChar];
-    if(items[index].name === 'Medkit') {
+    if(atlas.items[index].name === 'Medkit') {
         if(player.health + 50 > player.healthStat) {
             player.health = player.healthStat;
         } else {
         player.health += 50;
         }
-    } else if(items[index].name === 'Blue Phaser') {
+    } else if(atlas.items[index].name === 'Blue Phaser') {
         player.damage += 5;
-    } else if(items[index].name === 'Pills') {
+    } else if(atlas.items[index].name === 'Pills') {
         player.movementStat += 1;
         player.health -= 45;
+    } else if(atlas.items[index].name === 'Phase Shield') {
+        player.hasShield = true;
     }
-    items.splice(index, 1);
+    atlas.items.splice(index, 1);
     openedItemsMenu();
 }
 
 item1.addEventListener('click', function() {
-    if(items[0] !== undefined) {
+    if(atlas.items[0] !== undefined) {
     useItem(0);
     }
 });
 item2.addEventListener('click', function() {
-    if(items[1] !== undefined) {
+    if(atlas.items[1] !== undefined) {
     useItem(1);
     }
 });
 item3.addEventListener('click', function() {
-    if(items[2] !== undefined) {
+    if(atlas.items[2] !== undefined) {
     useItem(2);
     }
 });
 item4.addEventListener('click', function() {
-    if(items[3] !== undefined) {
+    if(atlas.items[3] !== undefined) {
     useItem(3);
     }
 });
 item5.addEventListener('click', function() {
-    if(items[4] !== undefined) {
+    if(atlas.items[4] !== undefined) {
     useItem(4);
     }
 });
 item6.addEventListener('click', function() {
-    if(items[5] !== undefined) {
+    if(atlas.items[5] !== undefined) {
     useItem(5);
     }
 });
 item7.addEventListener('click', function() {
-    if(items[6] !== undefined) {
+    if(atlas.items[6] !== undefined) {
     useItem(6);
     }
 });
 item8.addEventListener('click', function() {
-    if(items[7] !== undefined) {
+    if(atlas.items[7] !== undefined) {
     useItem(7);
     }
 });
 item9.addEventListener('click', function() {
-    if(items[8] !== undefined) {
+    if(atlas.items[8] !== undefined) {
     useItem(8);
     }
 });
@@ -421,7 +424,7 @@ document.addEventListener('click', function(e, player) {
 for(let i = 0; i < backgroundItems.length; i++) {
     if(backgroundItems[i].x === player.x && backgroundItems[i].y === player.y && backgroundItems[i].found === false) {
         backgroundItems[i].found = true;
-        items.push(backgroundItems[i]);
+        atlas.items.push(backgroundItems[i]);
         alert(`you picked up ${backgroundItems[i].name}`);
         pickedUpItem();
     }
@@ -491,7 +494,7 @@ function keyDownHandler(e, player) {
     for(let i = 0; i < backgroundItems.length; i++) {
         if(backgroundItems[i].x === player.x && backgroundItems[i].y === player.y && backgroundItems[i].found === false) {
             backgroundItems[i].found = true;
-            items.push(backgroundItems[i]);
+            atlas.items.push(backgroundItems[i]);
             alert(`you picked up ${backgroundItems[i].name}`);
             pickedUpItem();
         }
@@ -576,22 +579,22 @@ class redNomad {
             //ctx.fillStyle = 'black';
             //ctx.font = '22px georgia';
             if(player.x > this.x && player.y === this.y) {
-                if(player.x - this.x <= this.range * tileSize) {
+                if(player.x - this.x <= this.range * tileSize && !player.hasShield) {
                     player.health -= this.damage;
                     ctx.fillText(`-${this.damage}`, healthBarCon.x, healthBarCon.y + 40);
                 }
             } else if(player.x < this.x && player.y === this.y) {
-                if(this.x - player.x <= this.range * tileSize) {
+                if(this.x - player.x <= this.range * tileSize && !player.hasShield) {
                     player.health -= this.damage;
                     ctx.fillText(`-${this.damage}`, healthBarCon.x, healthBarCon.y + 40);
                 }
             } else if(player.y > this.y && player.x === this.x) {
-                if(player.y - this.y <= this.range * tileSize) {
+                if(player.y - this.y <= this.range * tileSize && !player.hasShield) {
                     player.health -= this.damage;
                     ctx.fillText(`-${this.damage}`, healthBarCon.x, healthBarCon.y + 40);
                 }
             } else if(player.y < this.y && player.x === this.x) {
-                if(this.y - player.y <= this.range * tileSize) {
+                if(this.y - player.y <= this.range * tileSize && !player.hasShield) {
                     player.health -= this.damage;
                     ctx.fillText(`-${this.damage}`, healthBarCon.x, healthBarCon.y + 40);
                 }
@@ -897,7 +900,6 @@ objStatCloseBtn.addEventListener('click', function() {
 });
 
 objectiveBtn.addEventListener('click', function() {
-    console.log(team)
     objStatDetails.style.display = 'grid';
     objStatCloseBtn.style.display = 'grid';
     objStatDescription.innerText = `
