@@ -5,32 +5,44 @@ body {
     color: green;
 }
 
-#intro {
-    border: 5px solid green;
-    margin: 5% 15%;
-    padding: 20px;
+#introContainer, #transmissionContainer {
+    width: 75%;
 }
 
-#transmission {
+#intro, #transmission {
     border: 5px solid green;
-    margin: 5% 15%;
-    padding: 20px;
-}
-
-#arrowRight {
-    background-image: url('../Images/greenRightArrow.png');
-    width: 90px;
-    height: 60px;
-    color: black;
+    margin: 1em 3em;
+    padding: 2em;
 }
 
 .arrowContainer {
-    margin: 5% 45%;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    margin: 1em 0;
 }
 
-#arrowRight2 {
+#arrowRight, #arrowRight2 {
     background-image: url('../Images/greenRightArrow.png');
-    width: 90px;
-    height: 60px;
+    background-position: center;
+    width: 6em;
+    height: 4em;
     color: black;
+    cursor: pointer;
+}
+
+#arrowRight:hover, #arrowRight2:hover, 
+#arrowRight:focus, #arrowRight2:focus {
+    border: 2px solid green;
+}
+
+@media (max-width: 950px) {
+    #introContainer, #transmissionContainer {
+        width: 95%;
+    }
+    #intro, #transmission {
+        border: 5px solid green;
+        margin: 1em;
+        padding: 1em;
+    }
 }
