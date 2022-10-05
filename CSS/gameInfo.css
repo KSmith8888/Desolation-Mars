@@ -6,7 +6,7 @@ body {
 
 a {
     color: lightcoral;
-    font-size: 18px;
+    font-size: 1.2rem;
 }
 
 a:hover {
@@ -14,18 +14,46 @@ a:hover {
 }
 
 li {
-    padding-bottom: 10px;
+    padding-bottom: .8em;
 }
 
 #container {
-    background: rgb(63, 1, 1);
+    background-color: rgb(63, 1, 1);
     width: 70%;
-    padding: 10px 0 0 50px;
-    margin: 50px 0 0 50px;
+    padding: .8em 0 0 3em;
+    margin: 3em 0 0 3em;
 }
 
 noscript {
     color:rgb(63, 1, 1);
-    font-size: 36px;
+    font-size: 2rem;
     background: white;
+}
+
+@media (max-width: 950px) {
+    body {
+        background-color: rgb(63, 1, 1);
+    }
+    #container {
+        width: 90%;
+        height: 100%;
+        padding: .8em 0 0 3em;
+        margin: 0;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+    }
+    #container ul {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        padding-left: 0;
+    }
+    #container ul li {
+        width: 95%;
+        overflow-wrap: break-word;
+    }
+    h2 {
+        margin: .4em 0;
+    }
 }
